@@ -1,0 +1,224 @@
+.composer-card {
+  background: rgba(13, 17, 23, 0.4);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.composer-header {
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  color: #fff;
+}
+
+.composer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.composer-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.composer-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.composer-field.half {
+  min-width: 250px;
+}
+
+.composer-field.relative {
+  position: relative;
+}
+
+.composer-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.composer-field input,
+.composer-field select,
+.composer-field textarea {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.composer-field input:focus,
+.composer-field textarea:focus {
+  outline: none;
+  border-color: #E11B22;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.search-box input {
+  width: 100%;
+  padding-left: 40px;
+}
+
+.clear-user {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  right: 0;
+  background: #0d1117;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  list-style: none;
+  padding: 0;
+}
+
+.search-dropdown li {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s;
+}
+
+.search-dropdown li:hover {
+  background: rgba(225, 27, 34, 0.15);
+}
+
+.user-name {
+  display: block;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.user-id {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.cat-chips {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 5px;
+}
+
+.cat-chip {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s;
+}
+
+.cat-chip.active {
+  border-color: #fff;
+  color: #fff;
+}
+
+.cat-chip.info.active { background: rgba(59, 130, 246, 0.3); }
+.cat-chip.success.active { background: rgba(16, 185, 129, 0.3); }
+.cat-chip.warning.active { background: rgba(225, 27, 34, 0.3); }
+
+.composer-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.priority-check {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.priority-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: #E11B22;
+}
+
+.send-btn {
+  background: #E11B22;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.75rem;
+  border-radius: 8px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.send-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(225, 27, 34, 0.4);
+  background: #b11319;
+}
+
+.composer-status {
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.composer-status.success { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.composer-status.error { background: rgba(225, 27, 34, 0.15); color: #E11B22; }

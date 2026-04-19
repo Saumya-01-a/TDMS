@@ -1,0 +1,230 @@
+/* GLOBAL SECTION STYLES */
+.section {
+  padding: 80px 20px;
+  background-color: #0a192f; /* Deep dark blue for core sections */
+}
+
+.section.color-bg {
+  background-color: #060e1b; /* Slightly darker for alternates */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  position: relative;
+  display: inline-block;
+}
+
+.section-title.centered {
+  display: block;
+  text-align: center;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 60px;
+  height: 4px;
+  background: #E11B22; /* Managed Red */
+}
+
+.section-title.centered::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* HERO */
+.hero {
+  height: 100vh;
+  background-image: url("/src/assets/hero-bg.png");
+  background-size: cover;
+  background-position: center; 
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 60px;
+}
+
+.actions {
+  display: flex;
+  gap: 20px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,0.85) 0%,
+    rgba(0,0,0,0.45) 50%,
+    transparent 100%
+  );
+}
+
+.hero-content {
+  position: relative;
+  max-width: 600px;
+  z-index: 5;
+}
+
+.hero-content h1 {
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+
+.hero-content p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  color: #ccd6f6;
+}
+
+/* ABOUT SECTION */
+.about-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+}
+
+.about-text {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #8892b0;
+  margin-bottom: 30px;
+}
+
+.about-image img {
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* SERVICES SECTION */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.service-card {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 40px 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #E11B22;
+}
+
+.service-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.service-card h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.service-card p {
+  color: #8892b0;
+  line-height: 1.6;
+}
+
+/* CONTACT SECTION */
+.contact-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.contact-card {
+  text-align: center;
+  padding: 30px;
+  background: rgba(10, 25, 47, 0.5);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.contact-card h4 {
+  color: #E11B22;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* ACTIONS / BUTTONS */
+.actions .primary, .btn-action {
+  background: #E11B22; /* Managed Red */
+  color: white;
+  padding: 14px 30px;
+  border-radius: 10px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+}
+
+.actions .secondary {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.8); /* Outline style */
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.actions .secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
+  transform: translateY(-2px);
+}
+
+
+.actions .primary:hover {
+  background: #b9151a;
+  transform: scale(1.05);
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .about-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .services-grid, .contact-info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-content h1 {
+    font-size: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding-left: 20px;
+  }
+}
+

@@ -1,0 +1,576 @@
+/* ============================================
+   STUDENT DASHBOARD CSS
+   Dark Glass Figma-like Theme
+   ============================================ */
+
+:root {
+  --primary-color: #FFD700;
+  --secondary-color: #1a1a1a;
+  --red: #7c0b0b;
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --bg-dark: rgba(15, 18, 24, 0.8);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+/* ============ STUDENT DASHBOARD LAYOUT ============ */
+
+.student-dashboard {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #070a10 0%, #0f1420 50%, #070a10 100%);
+  position: relative;
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* ============ MAIN CONTENT ============ */
+
+.student-main {
+  margin-left: 260px;
+  flex: 1;
+  position: relative;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.dashboard-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(900px 500px at 50% 20%, rgba(30, 70, 120, 0.15), transparent 60%);
+  pointer-events: none;
+}
+
+.student-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  margin-left: 20px;
+}
+
+/* ============ WELCOME BANNER ============ */
+
+.welcome-banner {
+  background: linear-gradient(135deg, rgba(124, 11, 11, 0.4) 0%, rgba(244, 67, 54, 0.25) 100%);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(124, 11, 11, 0.15);
+}
+
+.banner-content h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.banner-content p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.banner-icon {
+  font-size: 3rem;
+  opacity: 0.8;
+}
+
+/* ============ DASHBOARD GRID ============ */
+
+.dashboard-grid {
+  display: grid;
+ 
+  grid-template-columns: 1.5fr 1fr;
+  gap: 2rem;
+}
+
+/* ============ PANELS ============ */
+
+.panel-large,
+.panel-small {
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+.panel-large:hover,
+.panel-small:hover {
+  border-color: rgba(255, 215, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.panel-header h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.payment-count {
+  font-size: 0.9rem;
+  background: rgba(255, 215, 0, 0.1);
+  color: var(--primary-color);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* ============ PAYMENT LEGEND ============ */
+
+.payment-legend {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-dot.pending {
+  background: #f44336;
+}
+
+.legend-dot.paid {
+  background: var(--primary-color);
+}
+
+.legend-dot.due {
+  background: #888;
+}
+
+/* ============ SECTION TITLE ============ */
+
+.section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============ PAYMENTS LIST ============ */
+
+.payments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.payment-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--transition);
+}
+
+.payment-item:hover {
+  background: rgba(255, 215, 0, 0.05);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.payment-info {
+  flex: 1;
+}
+
+.payment-amount {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.payment-date {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.status-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+.status-paid {
+  background: rgba(255, 215, 0, 0.2);
+  color: var(--primary-color);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.status-pending {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.status-due {
+  background: rgba(136, 136, 136, 0.2);
+  color: #888;
+  border: 1px solid rgba(136, 136, 136, 0.3);
+}
+
+/* ============ RIGHT COLUMN ============ */
+
+.panel-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ============ LESSONS LIST ============ */
+
+.lessons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.lesson-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: var(--transition);
+}
+
+.lesson-item:hover {
+  background: rgba(255, 215, 0, 0.05);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.lesson-info {
+  flex: 1;
+}
+
+.lesson-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.lesson-details {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.3rem;
+}
+
+.lesson-instructor {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-reschedule {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.btn-reschedule:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
+/* ============ EXAMS LIST ============ */
+
+.exams-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.exam-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: var(--transition);
+}
+
+.exam-item:hover {
+  background: rgba(255, 215, 0, 0.05);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.exam-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), #ffd24a);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.exam-info {
+  flex: 1;
+}
+
+.exam-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.exam-date {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.exam-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-details {
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  color: var(--primary-color);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.75rem;
+}
+
+.btn-details:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: var(--primary-color);
+}
+
+/* ============ SCROLLBAR ============ */
+
+.student-main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.student-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.student-main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.student-main::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============ RESPONSIVE ============ */
+
+@media (max-width: 1024px) {
+  .student-container {
+    padding: 1.5rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .panel-column {
+    gap: 1.5rem;
+  }
+
+  .welcome-banner {
+    padding: 1.5rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .banner-content h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-main {
+    margin-left: 80px;
+  }
+
+  .student-container {
+    padding: 1rem;
+  }
+
+  .welcome-banner {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .welcome-banner h1 {
+    font-size: 1.3rem;
+  }
+
+  .panel-large,
+  .panel-small {
+    padding: 1.5rem;
+  }
+
+  .panel-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .payment-legend {
+    gap: 1rem;
+  }
+
+  .lesson-item,
+  .exam-item,
+  .payment-item {
+    padding: 0.8rem;
+  }
+
+  .lesson-title,
+  .exam-title,
+  .payment-amount {
+    font-size: 0.95rem;
+  }
+
+  .btn-reschedule,
+  .btn-details {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-main {
+    margin-left: 60px;
+  }
+
+  .student-container {
+    padding: 0.75rem;
+  }
+
+  .welcome-banner {
+    padding: 1rem;
+  }
+
+  .welcome-banner h1 {
+    font-size: 1.1rem;
+  }
+
+  .banner-content p {
+    font-size: 0.8rem;
+  }
+
+  .banner-icon {
+    font-size: 2rem;
+  }
+
+  .panel-large,
+  .panel-small {
+    padding: 1rem;
+  }
+
+  .panel-header h2 {
+    font-size: 1rem;
+  }
+
+  .payment-legend {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .legend-item {
+    font-size: 0.8rem;
+  }
+
+  .section-title {
+    font-size: 0.85rem;
+  }
+
+  .lesson-item,
+  .exam-item,
+  .payment-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.75rem;
+  }
+
+  .status-badge {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+
+  .exam-actions {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .btn-reschedule,
+  .btn-details {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.65rem;
+  }
+}

@@ -1,0 +1,375 @@
+/* ============================================
+   SIDEBAR CSS
+   Dark Theme Sidebar Navigation
+   ============================================ */
+
+:root {
+  --bg-dark: #070a10;
+  --sidebar-bg: rgba(10, 12, 18, 0.9);
+  --panel-bg: rgba(15, 18, 24, 0.75);
+  --border: rgba(255, 255, 255, 0.08);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.65);
+  --red: #E11B22;
+  --dark-red: #8B0000;
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ============ SIDEBAR ============ */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 280px;
+  height: 100vh;
+  background: #0a192f;
+  border-right: 1px solid rgba(225, 27, 34, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+/* Updated Brand Section (shared with instructor) */
+.ins-brand {
+  padding: 2.5rem 1.5rem;
+  border-bottom: 1px solid rgba(225, 27, 34, 0.1);
+}
+
+.ins-brandContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ins-brandIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(225, 27, 34, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: 1px solid rgba(225, 27, 34, 0.2);
+}
+
+.ins-sidebarLogo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ins-brandText {
+  display: flex;
+  flex-direction: column;
+}
+
+.ins-brandName {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #E11B22;
+  line-height: 1;
+}
+
+.ins-brandSubtitle {
+  font-size: 0.7rem;
+  color: #8892b0;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-top: 6px;
+}
+
+/* Menu Items */
+.sidebar-menu {
+  flex: 1;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  overflow-y: auto;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  color: #8892b0;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+  color: #E11B22;
+}
+
+.sidebar .sidebar-menu .menu-item.active {
+  background: rgba(225, 27, 34, 0.1) !important;
+  color: #fff !important;
+  font-weight: 800;
+  border-left: 4px solid #E11B22;
+  box-shadow: none !important; /* Removed glow */
+}
+
+.menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover .menu-icon,
+.menu-item.active .menu-icon {
+  color: #E11B22;
+}
+
+/* User Profile Card (copied from instructor system) */
+.ins-userPanel {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(225, 27, 34, 0.1);
+}
+
+.ins-profileCard {
+  background: rgba(10, 25, 47, 0.4);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(225, 27, 34, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.ins-profileTop {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ins-profileAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(225, 27, 34, 0.1);
+  color: #E11B22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  border: 1px solid rgba(225, 27, 34, 0.2);
+}
+
+.ins-profileInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.ins-profileName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #e6f1ff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ins-profileRole {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #8892b0;
+}
+
+.ins-profileLogout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  border-radius: 8px;
+  background: rgba(225, 27, 34, 0.1);
+  color: #E11B22;
+  border: 1px solid rgba(225, 27, 34, 0.2);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.ins-profileLogout:hover {
+  background: #E11B22;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Skeleton Loading State */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite ease-in-out;
+  border-radius: 4px;
+}
+
+.skeleton-text {
+  height: 0.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.skeleton-name {
+  width: 100px;
+}
+
+.skeleton-role {
+  width: 60px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #E11B22;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: 0.7rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-btn:hover {
+  color: var(--red);
+  transform: scale(1.1);
+}
+
+/* ============ RESPONSIVE DESIGN ============ */
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    width: 260px;
+    height: 100vh;
+    transition: var(--transition);
+    z-index: 1001;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 240px;
+    left: -240px;
+    padding: 1.5rem 1rem;
+  }
+
+  .sidebar-brand {
+    padding-bottom: 1rem;
+  }
+
+  .brand-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+
+  .brand-name {
+    font-size: 0.9rem;
+  }
+
+  .brand-subtitle {
+    font-size: 0.65rem;
+  }
+
+  .menu-item {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .menu-icon {
+    font-size: 1rem;
+  }
+
+  .sidebar-user {
+    padding: 0.75rem;
+  }
+
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+  }
+
+  .user-name {
+    font-size: 0.75rem;
+  }
+
+  .user-role {
+    font-size: 0.65rem;
+  }
+}

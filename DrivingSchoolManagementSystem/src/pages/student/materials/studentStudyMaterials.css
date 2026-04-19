@@ -1,0 +1,406 @@
+.stu-materialsHeader {
+  margin-bottom: 30px;
+}
+
+.stu-materialsHeader h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 8px 0;
+}
+
+.stu-materialsHeader p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+}
+
+/* Search Bar */
+.stu-materialsSearch {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.stu-searchInput {
+  width: 100%;
+  padding: 12px 16px 12px 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  margin-left: 0;
+  background: rgba(15, 18, 24, 0.4);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.stu-searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+  
+}
+
+.stu-searchInput:focus {
+  outline: none;
+  border-color: #FFD700;
+  background: rgba(15, 18, 24, 0.6);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+.stu-searchIcon {
+  position: absolute;
+    left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  opacity: 0.6;
+}
+
+/* Tabs */
+.stu-materialsTabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.stu-tabButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 18, 24, 0.4);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.stu-tabButton:hover {
+  background: rgba(15, 18, 24, 0.6);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.stu-tabButton.active {
+  background: #FFD700;
+  color: #000;
+  border-color: #FFD700;
+  font-weight: 600;
+}
+
+.stu-tabIcon {
+  font-size: 16px;
+}
+
+/* Results Count */
+.stu-materialsCount {
+  margin-bottom: 20px;
+}
+
+.stu-materialsCount p {
+  font-size: 13px;
+  margin: 0;
+}
+
+/* Empty State */
+.stu-emptyState {
+  text-align: center;
+  padding: 80px 40px;
+  border-radius: 16px;
+  background: rgba(15, 18, 24, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  margin-bottom: 40px;
+}
+
+.stu-emptyIcon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.stu-emptyState h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 12px 0;
+}
+
+.stu-emptyState p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+}
+
+/* Materials Grid */
+.stu-materialsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+/* Material Card */
+.stu-materialCard {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(15, 18, 24, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stu-materialCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #FFD700, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stu-materialCard:hover {
+  background: rgba(15, 18, 24, 0.6);
+  border-color: rgba(255, 215, 0, 0.3);
+  transform: translateY(-4px);
+}
+
+.stu-materialCard:hover::before {
+  opacity: 1;
+}
+
+.stu-materialCard.stu-difficulty-easy {
+  border-left: 3px solid #10b981;
+}
+
+.stu-materialCard.stu-difficulty-medium {
+  border-left: 3px solid #FFD700;
+}
+
+.stu-materialCard.stu-difficulty-hard {
+  border-left: 3px solid #EF4444;
+}
+
+/* Material Icon */
+.stu-materialIcon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+/* Material Info */
+.stu-materialInfo {
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.stu-materialCard h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+}
+
+.stu-materialCategory {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Difficulty Badge */
+.stu-materialDifficulty {
+  display: flex;
+  gap: 8px;
+}
+
+.stu-difficultyBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(15, 18, 24, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 6px;
+  text-transform: capitalize;
+}
+
+.stu-difficultyBadge.stu-difficulty-easy {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.stu-difficultyBadge.stu-difficulty-medium {
+  background: rgba(255, 215, 0, 0.15);
+  color: #FFD700;
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.stu-difficultyBadge.stu-difficulty-hard {
+  background: rgba(124, 11, 11, 0.15);
+  color: #EF4444;
+  border-color: rgba(124, 11, 11, 0.3);
+}
+
+/* Progress Bar */
+.stu-materialProgress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stu-progressBar {
+  flex: 1;
+  height: 6px;
+  background: rgba(15, 18, 24, 0.8);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.stu-progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFD700, #FFD700);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.stu-progressText {
+  font-size: 11px;
+  font-weight: 600;
+  color: #FFD700;
+  white-space: nowrap;
+  min-width: 32px;
+}
+
+/* Material Button */
+.stu-materialBtn {
+  padding: 10px 16px;
+  background: #FFD700;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.stu-materialBtn:hover {
+  background: #FFD700;
+  transform: scale(1.02);
+}
+
+.stu-materialBtn:active {
+  transform: scale(0.98);
+}
+
+/* Statistics */
+.stu-materialsStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stu-statBox {
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(15, 18, 24, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.stu-statBox:hover {
+  background: rgba(15, 18, 24, 0.6);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.stu-statNumber {
+  font-size: 28px;
+  font-weight: 700;
+  color: #FFD700;
+  margin-bottom: 8px;
+}
+
+.stu-statLabel {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stu-materialsTabs {
+    gap: 8px;
+  }
+
+  .stu-tabButton {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .stu-materialsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .stu-materialCard {
+    padding: 16px;
+  }
+
+  .stu-materialCard h3 {
+    font-size: 15px;
+  }
+
+  .stu-emptyState {
+    padding: 60px 20px;
+  }
+
+  .stu-materialsStats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stu-materialsHeader h1 {
+    font-size: 24px;
+  }
+
+  .stu-materialsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .stu-materialsStats {
+    grid-template-columns: 1fr;
+  }
+
+  .stu-statNumber {
+    font-size: 24px;
+  }
+
+  .stu-tabButton {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .stu-tabIcon {
+    display: none;
+  }
+}

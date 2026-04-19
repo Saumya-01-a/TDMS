@@ -1,0 +1,285 @@
+/* =====================================================
+   STUDENT ATTENDANCE CSS - STU- PREFIX
+   Dark Glass Theme with White Cards
+   ===================================================== */
+
+.stu-attendancePageWrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 2rem 1.5rem;
+}
+
+.stu-pageTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 2rem;
+}
+
+/* ============ SUMMARY CARDS ============ */
+
+.stu-summaryCardsContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stu-summaryCard {
+  background: white;
+  border-left: 4px solid #22c55e;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.stu-summaryCard:hover {
+  transform: translateY(-2px);
+}
+
+.stu-summaryLabel {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.stu-summaryValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* ============ ATTENDANCE LABEL BAR ============ */
+
+.stu-attendanceLabelBar {
+  background: linear-gradient(135deg, rgba(124, 11, 11, 0.5) 0%, rgba(244, 67, 54, 0.2) 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+/* ============ TABLE CARD ============ */
+
+.stu-attendanceTableCard {
+  background: rgba(15, 18, 24, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.stu-tableHeader {
+  background: linear-gradient(135deg, rgba(124, 11, 11, 0.5) 0%, rgba(244, 67, 54, 0.2) 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+/* ============ TABLE STYLING ============ */
+
+.stu-attendanceTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stu-attendanceTable thead tr {
+  background: rgba(15, 18, 24, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stu-attendanceTable th {
+  color: rgba(255, 255, 255, 0.7);
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.stu-attendanceTable tbody tr {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.2s ease;
+}
+
+.stu-attendanceTable tbody tr:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.stu-attendanceTable td {
+  color: rgba(255, 255, 255, 0.85);
+  padding: 1rem 1.5rem;
+  font-size: 0.95rem;
+}
+
+/* ============ STATUS BADGES ============ */
+
+.stu-statusBadge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.stu-status-present {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.stu-status-absent {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.stu-status-late {
+  background: rgba(234, 179, 8, 0.2);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+/* ============ TABLE FOOTER ============ */
+
+.stu-tableFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: rgba(15, 18, 24, 0.9);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stu-recordsCount {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+/* ============ PAGINATION CONTROLS ============ */
+
+.stu-paginationControls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.stu-paginationBtn {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stu-paginationBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+}
+
+.stu-paginationBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ============ RESPONSIVE DESIGN ============ */
+
+@media (max-width: 1024px) {
+  .stu-attendancePageWrapper {
+    padding: 1.5rem 1rem;
+  }
+
+  .stu-summaryCardsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .stu-attendancePageWrapper {
+    padding: 1.5rem 1rem;
+  }
+
+  .stu-pageTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stu-summaryCardsContainer {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .stu-attendanceLabelBar {
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .stu-tableFooter {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .stu-attendanceTable th,
+  .stu-attendanceTable td {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stu-attendancePageWrapper {
+    padding: 1rem;
+  }
+
+  .stu-pageTitle {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .stu-summaryCard {
+    padding: 1rem;
+  }
+
+  .stu-summaryLabel {
+    font-size: 0.85rem;
+  }
+
+  .stu-summaryValue {
+    font-size: 1.5rem;
+  }
+
+  .stu-attendanceTable {
+    font-size: 0.75rem;
+  }
+
+  .stu-attendanceTable th,
+  .stu-attendanceTable td {
+    padding: 0.5rem;
+  }
+
+  .stu-paginationControls {
+    gap: 0.5rem;
+  }
+
+  .stu-paginationBtn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}

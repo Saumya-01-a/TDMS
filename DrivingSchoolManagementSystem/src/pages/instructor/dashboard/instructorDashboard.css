@@ -1,0 +1,373 @@
+/* ============================================
+   INSTRUCTOR DASHBOARD REFINED CSS
+   ============================================ */
+
+.ins_dash__wrap {
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  background-color: #0a192f;
+}
+
+.ins_dash__container {
+  max-width: 1600px;
+  width: 100%;
+  padding: 0 1rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ins_dash__header_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.ins_dash__title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #e6f1ff 0%, #8892b0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.ins_dash__subtitle {
+  color: #8892b0;
+  font-size: 0.95rem;
+}
+
+/* Global Row: Metrics (Left) & Status (Right) */
+.ins_dash__topRow {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  align-items: stretch;
+}
+
+.ins_dash__metricsGroup {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.ins_dash__statCard {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.ins_dash__statIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.ins_dash__statLabel {
+  font-size: 0.75rem;
+  color: #8892b0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.ins_dash__statValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #e6f1ff;
+  line-height: 1;
+}
+
+/* Duty Management Section (Top-Right) */
+.ins_dash__statusSection {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.ins_dash__statusTitle {
+  font-size: 0.8rem;
+  color: #8892b0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.ins_dash__statusColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ins_dash__statusBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(17, 34, 64, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  color: #8892b0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.ins_dash__statusBtn:hover {
+  background: rgba(17, 34, 64, 0.8);
+  border-color: rgba(225, 27, 34, 0.2);
+  color: #e6f1ff;
+  transform: translateX(4px);
+}
+
+.ins_dash__statusBtn.active {
+  background: rgba(100, 255, 218, 0.05);
+  border-color: #E11B22;
+  color: #e6f1ff;
+  box-shadow: 0 4px 15px rgba(100, 255, 218, 0.1);
+}
+
+/* Unified Professional Weekly Schedule Table */
+.ins_dash__schedulePanel {
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.ins_dash__panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.ins_dash__panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ins_dash__panelTitle h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e6f1ff;
+}
+
+.ins_dash__legend {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #8892b0;
+}
+
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot.booked { background: #B91C1C; box-shadow: 0 0 10px rgba(185, 28, 28, 0.3); }
+.dot.available { background: rgba(255, 255, 255, 0.1); }
+
+/* Table Wrapper with Auto-Scroll Support */
+.ins_dash__scheduleWrapper {
+  border-radius: 16px;
+  border: 1px solid rgba(225, 27, 34, 0.1);
+  background: rgba(10, 25, 47, 0.3);
+  overflow-x: auto; /* Enable horizontal scroll as requested */
+}
+
+/* Scrollbar Customization for Table */
+.ins_dash__scheduleWrapper::-webkit-scrollbar {
+  height: 8px;
+}
+.ins_dash__scheduleWrapper::-webkit-scrollbar-track {
+  background: rgba(2, 12, 27, 0.5);
+}
+.ins_dash__scheduleWrapper::-webkit-scrollbar-thumb {
+  background: rgba(225, 27, 34, 0.3);
+  border-radius: 10px;
+}
+
+.ins_dash__scheduleTableMain {
+  width: 100%;
+  min-width: 1000px; /* Ensure columns have enough breathing room */
+  border-collapse: collapse;
+}
+
+.ins_dash__scheduleTableMain th {
+  padding: 1.25rem 1rem;
+  background: rgba(30, 41, 59, 0.5); /* Unified Admin Glass Header */
+  color: #E11B22;
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-bottom: 2px solid rgba(225, 27, 34, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ins_dash__timeSlot {
+  font-weight: 700;
+  color: #e6f1ff !important; /* Changed from red to light gray/white */
+  background: rgba(100, 255, 218, 0.02) !important;
+  font-size: 0.8rem;
+  text-align: center;
+  width: 180px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ins_dash__cell {
+  height: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle clean border */
+  vertical-align: middle;
+  text-align: center;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.ins_dash__cell.booked {
+  background: rgba(185, 28, 28, 0.05);
+}
+
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+.student-name {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  /* Removed fuzzy shadow/glow as requested */
+}
+
+.session-tag {
+  font-size: 0.65rem;
+  color: #ffffff;
+  background: #B91C1C; /* Solid Red Background */
+  padding: 3px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 800;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.empty-slot {
+  color: rgba(136, 146, 176, 0.2);
+  font-size: 0.9rem;
+}
+
+/* Footer & Global UI Fixes */
+.ins_dash__footer {
+  text-align: center;
+  padding: 3rem 0;
+  color: #495670;
+  font-size: 0.85rem;
+}
+
+/* Responsive Overrides */
+@media (max-width: 1200px) {
+  .ins_dash__topRow {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .ins_dash__statusSection {
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ins_dash__metricsGroup {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* 📋 TRIAL CANDIDATES PANEL CSS */
+.ins_dash__trialPanel {
+  padding: 2.5rem;
+  margin-bottom: 2.5rem;
+  background: rgba(10, 25, 47, 0.4);
+  border: 1px solid rgba(185, 28, 28, 0.15);
+  border-radius: 20px;
+}
+
+.ins_dash__trialList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.trial-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: rgba(2, 12, 27, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trial-card:hover {
+  background: rgba(185, 28, 28, 0.05);
+  border-color: rgba(185, 28, 28, 0.3);
+  transform: translateY(-5px);
+}
+
+.trial-avatar {
+  width: 48px;
+  height: 48px;
+  background: rgba(185, 28, 28, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center; justify-content: center;
+  color: #B91C1C; font-weight: 800; font-size: 1.25rem;
+  border: 2px solid rgba(185, 28, 28, 0.2);
+}
+
+.trial-info { flex: 1; display: flex; flex-direction: column; }
+.trial-name { font-size: 1.1rem; font-weight: 800; color: #fff; }
+.trial-date { font-size: 0.75rem; color: #8892b0; font-weight: 600; }
+
+.trial-status-badge {
+  background: #B91C1C;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.empty-trials {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #4b5563;
+  font-style: italic;
+}

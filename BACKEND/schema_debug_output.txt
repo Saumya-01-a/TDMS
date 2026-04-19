@@ -1,0 +1,7 @@
+NIC Check Details:
+✅ [students] has 'nic'
+
+Full Columns per table:
+[students]: package_id, completion_date, registered_date, progress, student_id, user_id, nic, address, instructor_id, status
+[users]: email_verified, created_date, user_id, first_name, last_name, email, password_hash, role, tel_no, status
+[instructors]: approved_at, created_at, instructor_id, user_id, instructor_name, licence_no, instructor_reg_no, availability_status, approval_status, approved_by, rejected_reason, verification_document

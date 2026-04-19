@@ -1,0 +1,385 @@
+/* ============================================
+   INSTRUCTOR GPS TRACKING REFINED CSS
+   ============================================ */
+
+.ins_gps__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ins_gps__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.ins_gps__title_row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ins_gps__title_row h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #e6f1ff 0%, #8892b0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ins_gps__controls {
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.ins_gps__select_box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ins_gps__select_box label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #8892b0;
+  letter-spacing: 1px;
+}
+
+.ins_gps__trip_btn {
+  padding: 0.75rem 2rem;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: none;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+}
+
+.ins_gps__trip_btn.start {
+  background: linear-gradient(135deg, #E11B22 0%, #48c9b0 100%);
+  color: #020c1b;
+  box-shadow: 0 4px 15px rgba(100, 255, 218, 0.2);
+}
+
+.ins_gps__trip_btn.stop {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+}
+
+.ins_gps__trip_btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Main Grid */
+.ins_gps__main_grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.ins_gps__map_panel {
+  height: 600px;
+  overflow: hidden;
+  padding: 0.5rem;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ins_gps__map_panel.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2000;
+  border-radius: 0;
+  padding: 0;
+}
+
+.map-toolbar {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+}
+
+.map-toolbar button {
+  background: rgba(10, 25, 47, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(100, 255, 218, 0.2);
+  color: #E11B22;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.map-toolbar button:hover {
+  background: #E11B22;
+  color: #020c1b;
+}
+
+.ins_gps__plan_tools {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.plan-toggle {
+  background: rgba(136, 146, 176, 0.1);
+  color: #8892b0;
+  border: 1px solid rgba(136, 146, 176, 0.2);
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.plan-toggle.active {
+  background: rgba(100, 255, 218, 0.1);
+  color: #E11B22;
+  border-color: #E11B22;
+}
+
+.plan-actions {
+  display: flex;
+  gap: 0.5rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.plan-actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #8892b0;
+}
+
+.plan-actions .save-btn {
+  background: #E11B22;
+  color: #020c1b;
+  border: none;
+}
+
+/* Vehicle Marker Label */
+.v-marker-label {
+  text-align: center;
+  color: #e6f1ff;
+}
+
+.v-id {
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: #fcc419;
+  letter-spacing: 0.5px;
+}
+
+.v-ins {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+
+.v-speed {
+  font-weight: 800;
+  color: #E11B22;
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+/* History Cleanup */
+.ins_gps__history_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.h-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.clear-hist-btn {
+  background: rgba(239, 68, 68, 0.05);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-hist-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.ins_gps__metrics_panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ins_gps__metric_card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.ins_gps__metric_label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #8892b0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.ins_gps__metric_value {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #fcc419;
+}
+
+.ins_gps__metric_value span {
+  font-size: 1rem;
+  color: #8892b0;
+  margin-left: 0.5rem;
+}
+
+.ins_gps__metric_coord {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.25rem;
+  color: #E11B22;
+  font-weight: 700;
+}
+
+/* History Section */
+.ins_gps__history {
+  padding: 2rem;
+}
+
+.badge-success {
+  background: rgba(100, 255, 218, 0.1);
+  color: #E11B22;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Modal Styling Overrides (Shared) */
+.marking-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 12, 27, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.marking-modal {
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 450px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.modal-header h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #e6f1ff;
+  margin: 0;
+}
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.modal-btn {
+  padding: 1rem;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: #8892b0;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+/* Responsive Overrides */
+@media (max-width: 1024px) {
+  .ins_gps__main_grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .ins_gps__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .ins_gps__controls {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

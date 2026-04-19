@@ -1,0 +1,32 @@
+.adm-notifications-page {
+  padding: 2rem;
+  background: transparent;
+  min-height: 100vh;
+}
+
+.adm-notifications-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .adm-notifications-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adm-composer-section {
+  position: sticky;
+  top: 2rem;
+}
+
+.adm-center-section {
+  background: rgba(13, 17, 23, 0.4);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}

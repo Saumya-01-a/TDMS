@@ -1,0 +1,5 @@
+--- DATABASE CONSTRAINT REPORT ---
+
+[instructors]: user_id (FOREIGN KEY), instructor_id (PRIMARY KEY), nic (UNIQUE)
+[students]: user_id (FOREIGN KEY), instructor_id (FOREIGN KEY), package_id (FOREIGN KEY), student_id (PRIMARY KEY), nic (UNIQUE)
+[users]: user_id (PRIMARY KEY), email (UNIQUE)

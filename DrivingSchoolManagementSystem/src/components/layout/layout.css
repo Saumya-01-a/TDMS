@@ -1,0 +1,278 @@
+/* ============================================
+   LAYOUT CSS - Shared Navbar and Footer Styles
+   Dark Modern Theme for Driving School
+   ============================================ */
+
+:root {
+  --primary-color: #E11B22;
+  --primary-dark: #b9151a;
+  --secondary-color: #1a1a1a;
+  --tertiary-color: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --border-color: #404040;
+  --hover-bg: #333333;
+  --success: #4CAF50;
+  --error: #f44336;
+  --transition: all 0.3s ease;
+  scroll-behavior: smooth;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Legacy Navbar Styles - Refactored to Tailwind */
+/*
+header.navbar {
+  background: rgba(10, 25, 47, 0.95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 2px solid rgba(225, 27, 34, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+*/
+
+
+/* Legacy Footer Container - Refactored to Tailwind */
+/*
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  width: 100%;
+}
+*/
+
+.social-links {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.social-links a {
+  color: #cbd5e1; /* Slate-300 */
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-links a:hover {
+  color: var(--primary-color); /* Managed Red #E11B22 */
+  transform: translateY(-3px);
+}
+
+/*
+.navbar-logo { ... }
+.navbar-links { ... }
+.navbar-auth { ... }
+*/
+
+/* Mobile menu toggle button */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.menu-toggle span {
+  width: 25px;
+  height: 3px;
+  background-color: var(--primary-color);
+  display: block;
+  transition: var(--transition);
+}
+
+/* ============ FOOTER STYLES ============ */
+
+footer.footer {
+  background-color: var(--secondary-color);
+  border-top: 2px solid var(--border-color);
+  margin-top: 3rem;
+  padding: 0;
+  color: var(--text-secondary);
+}
+
+/*
+.footer-container { ... }
+*/
+
+.footer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer-section h3 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-section ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.footer-section ul li, 
+.footer-section p {
+  color: #cbd5e1; /* Slate-300 */
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.footer-section ul li a {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.footer-section ul li a:hover {
+  color: var(--primary-color);
+  padding-left: 5px;
+}
+
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.footer-icon {
+  color: var(--primary-color); /* Managed Red #E11B22 */
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.branch-label {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.85rem;
+  margin-bottom: 2px;
+}
+
+.footer-bottom {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  margin-top: 3rem;
+}
+
+.footer-bottom p {
+  color: #94a3b8; /* Slate-400 */
+  font-size: 0.85rem;
+}
+
+.footer-bottom .divider {
+  color: var(--border-color);
+  margin: 0 0.5rem;
+}
+
+/* ============ RESPONSIVE DESIGN ============ */
+
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .navbar-logo {
+    font-size: 1.25rem;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .navbar-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--tertiary-color);
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    width: 100%;
+  }
+
+  .navbar-links.active {
+    display: flex;
+  }
+
+  .navbar-auth {
+    display: none;
+  }
+
+  .navbar-auth.active {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .footer-container {
+    grid-template-columns: 1fr;
+    padding: 2rem 1rem;
+  }
+
+  .footer-bottom {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0.75rem;
+  }
+
+  .navbar-logo {
+    font-size: 1rem;
+  }
+
+  .navbar-links {
+    gap: 0.5rem;
+  }
+
+  .footer-section h3 {
+    font-size: 0.9rem;
+  }
+
+  .footer-section ul li a {
+    font-size: 0.85rem;
+  }
+}

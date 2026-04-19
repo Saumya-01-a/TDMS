@@ -1,0 +1,3 @@
+STUDENTS: student_id, user_id, nic, address, registered_date, instructor_id, progress, status, package_id, completion_date
+INSTRUCTORS: instructor_id, user_id, instructor_name, licence_no, instructor_reg_no, availability_status, approval_status, approved_by, approved_at, rejected_reason, created_at, verification_document, nic, specialization, profile_image_url
+ATTENDANCE: id, student_id, instructor_id, attendance_date, status, session_number, time_slot, created_at

@@ -1,0 +1,441 @@
+/* =====================================================
+   STUDENT SCHEDULE CSS - STU- PREFIX
+   Dark Glass Theme with Glassmorphism
+   ===================================================== */
+
+:root {
+  --stu-yellow: #FFD700;
+  --stu-text: rgba(255, 255, 255, 0.92);
+  --stu-muted: rgba(255, 255, 255, 0.5);
+  --stu-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ============ SCHEDULE PAGE WRAPPER ============ */
+
+.stu-schedulePageWrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* ============ PAGE TITLE ============ */
+
+.stu-schedulePageTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--stu-text);
+  margin: 0 0 2rem 0;
+}
+
+/* ============ HEADER CARD - RED GRADIENT ============ */
+
+.stu-scheduleHeaderCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(124, 11, 11, 0.5) 0%, rgba(244, 67, 54, 0.2) 100%);
+  border-radius: 12px;
+  margin-bottom: 2.5rem;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.stu-headerContent {
+  flex: 1;
+}
+
+.stu-headerTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.5rem 0;
+}
+
+.stu-headerSubtitle {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+/* ============ BOOK APPOINTMENT BUTTON ============ */
+
+.stu-bookAppointmentBtn {
+  padding: 0.75rem 1.5rem;
+  background: var(--stu-yellow);
+  color: #1a1a2e;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.stu-bookAppointmentBtn:hover {
+  background: #f0b000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 194, 26, 0.3);
+}
+
+/* ============ SCHEDULE CARDS CONTAINER ============ */
+
+.stu-scheduleCardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ============ SCHEDULE CARD ============ */
+
+.stu-scheduleCard {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(15, 18, 24, 0.7);
+  border: 1px solid var(--stu-border);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.stu-scheduleCard:hover {
+  background: rgba(15, 18, 24, 0.9);
+  border-color: rgba(244, 194, 26, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ============ CARD LEFT SECTION - DATE/TIME ============ */
+
+.stu-cardLeftSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-width: 200px;
+}
+
+.stu-dateTimeBlock {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  color: var(--stu-text);
+}
+
+.stu-dateTimeBlock .stu-icon {
+  font-size: 1.2rem;
+}
+
+.stu-dateTimeBlock .stu-text {
+  font-weight: 500;
+}
+
+/* ============ CARD MIDDLE SECTION - 3 INFO COLUMNS ============ */
+
+.stu-cardMiddleSection {
+  flex: 1;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.stu-infoColumn {
+  display: flex;
+  gap: 0.6rem;
+  min-width: 150px;
+}
+
+.stu-infoColumn .stu-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.stu-infoText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.stu-infoLabel {
+  font-size: 0.8rem;
+  color: var(--stu-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stu-infoValue {
+  font-size: 0.95rem;
+  color: var(--stu-text);
+  font-weight: 500;
+}
+
+/* ============ CARD RIGHT SECTION - STATUS & ACTION ============ */
+
+.stu-cardRightSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: flex-end;
+  min-width: 140px;
+}
+
+/* ============ VEHICLE TYPE PILL ============ */
+
+.stu-vehicleTypePill {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: rgba(99, 102, 241, 0.15);
+  color: #6366f1;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.stu-vehicleTypePill.van {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.stu-vehicleTypePill.car {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.stu-vehicleTypePill.motorcycle {
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+}
+
+.stu-vehicleTypePill.three-wheeler {
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+}
+
+/* ============ STATUS PILL ============ */
+
+.stu-statusPill {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.stu-statusPill.scheduled {
+  background: rgba(220, 38, 38, 0.15);
+  color: #dc2626;
+}
+
+.stu-statusPill.completed {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+/* ============ RESCHEDULE LINK ============ */
+
+.stu-rescheduleLink {
+  color: var(--stu-yellow);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stu-rescheduleLink:hover {
+  color: #f0b000;
+  text-decoration: underline;
+}
+
+/* ============ RESPONSIVE DESIGN ============ */
+
+@media (max-width: 1024px) {
+  .stu-schedulePageWrapper {
+    padding: 1.5rem 1rem;
+  }
+
+  .stu-schedulePageTitle {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stu-scheduleHeaderCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .stu-headerContent {
+    width: 100%;
+  }
+
+  .stu-bookAppointmentBtn {
+    align-self: flex-start;
+  }
+
+  .stu-scheduleCard {
+    gap: 1.2rem;
+    padding: 1.2rem;
+  }
+
+  .stu-cardMiddleSection {
+    gap: 1.5rem;
+  }
+
+  .stu-infoColumn {
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stu-schedulePageWrapper {
+    padding: 1.5rem 1rem;
+  }
+
+  .stu-schedulePageTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .stu-scheduleHeaderCard {
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stu-headerTitle {
+    font-size: 1.3rem;
+  }
+
+  .stu-headerSubtitle {
+    font-size: 0.9rem;
+  }
+
+  .stu-bookAppointmentBtn {
+    padding: 0.65rem 1.2rem;
+    font-size: 0.85rem;
+    width: 100%;
+  }
+
+  .stu-scheduleCard {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .stu-cardLeftSection {
+    min-width: auto;
+  }
+
+  .stu-dateTimeBlock {
+    font-size: 0.9rem;
+  }
+
+  .stu-cardMiddleSection {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .stu-infoColumn {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .stu-cardRightSection {
+    flex-direction: row;
+    gap: 0.8rem;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-width: auto;
+  }
+
+  .stu-vehicleTypePill,
+  .stu-statusPill {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .stu-rescheduleLink {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stu-schedulePageWrapper {
+    padding: 1rem;
+  }
+
+  .stu-schedulePageTitle {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .stu-scheduleHeaderCard {
+    padding: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .stu-headerTitle {
+    font-size: 1.1rem;
+  }
+
+  .stu-headerSubtitle {
+    font-size: 0.85rem;
+  }
+
+  .stu-bookAppointmentBtn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .stu-scheduleCard {
+    padding: 0.8rem;
+  }
+
+  .stu-cardLeftSection {
+    gap: 0.6rem;
+  }
+
+  .stu-dateTimeBlock {
+    font-size: 0.85rem;
+  }
+
+  .stu-dateTimeBlock .stu-icon {
+    font-size: 1rem;
+  }
+
+  .stu-infoLabel {
+    font-size: 0.75rem;
+  }
+
+  .stu-infoValue {
+    font-size: 0.9rem;
+  }
+
+  .stu-cardMiddleSection {
+    gap: 0.8rem;
+  }
+
+  .stu-infoColumn .stu-icon {
+    font-size: 1rem;
+  }
+
+  .stu-vehicleTypePill,
+  .stu-statusPill {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .stu-rescheduleLink {
+    font-size: 0.8rem;
+  }
+}

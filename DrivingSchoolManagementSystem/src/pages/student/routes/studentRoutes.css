@@ -1,0 +1,291 @@
+/* page title */
+.stu-routesTitle{
+  margin: 0 0 14px;
+  color: rgba(255,255,255,0.95);
+  font-size: 28px;
+  font-weight: 800;
+}
+
+/* shared panel look */
+.stu-routesPanel{
+  border-radius: 14px;
+  background: rgba(15,18,24,0.75);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+  overflow: hidden;
+}
+
+.stu-routesPanelHead{
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.stu-routesPanelLeft{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stu-routesPin{
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.stu-routesPanelName{
+  color: rgba(255,255,255,0.92);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.stu-routesPanelSub{
+  color: rgba(255,255,255,0.55);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.stu-routesPanelActions{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stu-routesSelectWrap{
+  position: relative;
+}
+
+.stu-routesSelect{
+  appearance: none;
+  padding: 10px 38px 10px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.9);
+  outline: none;
+  min-width: 240px;
+}
+
+.stu-routesChevron{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.7);
+  pointer-events: none;
+}
+
+.stu-routesLiveBtn{
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+  background: #FFD700;
+  color: #000;
+  font-weight: 800;
+}
+
+.stu-routesLiveBtn:hover{
+  filter: brightness(0.95);
+}
+
+/* map */
+.stu-routesMapWrap{
+  padding: 0;
+  background: rgba(0,0,0,0.25);
+}
+
+.stu-routesMap{
+  width: 100%;
+  height: 460px;
+  border: 0;
+  display: block;
+  filter: saturate(0.9) contrast(1.05);
+}
+
+/* history card */
+.stu-routesHistory{
+  margin-top: 16px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(15,18,24,0.75);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+}
+
+.stu-routesHistoryHead{
+  padding: 16px 18px;
+  background: linear-gradient(90deg, #4c0b0b, #7c0b0b);
+}
+
+.stu-routesHistoryHead h2{
+  margin: 0;
+  color: rgba(255,255,255,0.95);
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.stu-routesTableWrap{
+  padding: 10px 12px 14px;
+}
+
+.stu-routesTable{
+  width: 100%;
+  border-collapse: collapse;
+  color: rgba(255,255,255,0.9);
+  overflow: hidden;
+}
+
+.stu-routesTable thead th{
+  text-align: left;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.65);
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.stu-routesTable tbody td{
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.stu-routesTable tbody tr:hover{
+  background: rgba(255,255,255,0.03);
+}
+
+.stu-thRight,
+.stu-tdRight{
+  text-align: right;
+}
+
+.stu-routesLinkBtn{
+  background: transparent;
+  border: 0;
+  color: #FFD700;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.stu-routesLinkBtn:hover{
+  text-decoration: underline;
+}
+
+/* responsive */
+@media (max-width: 900px){
+  .stu-routesMap{ height: 360px; }
+  .stu-routesSelect{ min-width: 180px; }
+}
+
+@media (max-width: 700px){
+  .stu-routesPanelHead{
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .stu-routesPanelActions{
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* Student Marker Popup Styles */
+.stu-marker-popup {
+  text-align: center;
+  padding: 2px;
+}
+
+.stu-v-reg {
+  font-weight: 900;
+  color: #fcc419;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.stu-v-ins {
+  font-size: 0.7rem;
+  color: #8892b0;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.stu-v-speed {
+  font-weight: 800;
+  color: #E11B22;
+  font-size: 0.75rem;
+}
+
+/* Animations */
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+.text-gold {
+  color: #fcc419;
+}
+
+.stu-routesPanelHead {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stu-routesPanelLeft {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.stu-routesPanelName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #e6f1ff;
+}
+
+.stu-routesPanelSub {
+  font-size: 0.85rem;
+  color: #8892b0;
+  margin-top: 0.25rem;
+}
+
+.stu-routesMapWrap {
+  padding: 1rem;
+}
+
+/* Dark mode overrides for Leaflet */
+.leaflet-container {
+  background: #020c1b !important;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: rgba(10, 25, 47, 0.9) !important;
+  backdrop-filter: blur(8px);
+  color: #e6f1ff !important;
+  border: 1px solid rgba(100, 255, 218, 0.2);
+}

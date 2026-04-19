@@ -1,0 +1,650 @@
+/* ============================================
+   STUDENT DASHBOARD CSS
+   Dark Glass Figma-like Theme - STDDASH__ PREFIX
+   ============================================ */
+
+:root {
+  --stdDash__primary: #FFD700;
+  --stdDash__secondary: #1a1a1a;
+  --stdDash__red: #7c0b0b;
+  --stdDash__text-primary: rgba(255, 255, 255, 0.92);
+  --stdDash__text-secondary: rgba(255, 255, 255, 0.65);
+  --stdDash__border: rgba(255, 255, 255, 0.1);
+  --stdDash__bg-dark: rgba(15, 18, 24, 0.8);
+  --stdDash__transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ============ STUDENT DASHBOARD LAYOUT ============ */
+
+.stdDash__dashboardWrap {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #070a10 0%, #0f1420 50%, #070a10 100%);
+  position: relative;
+  color: var(--stdDash__text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* ============ MAIN CONTENT ============ */
+
+.stdDash__main {
+  margin-left: 260px;
+  flex: 1;
+  position: relative;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.stdDash__bgGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(900px 500px at 50% 20%, rgba(30, 70, 120, 0.15), transparent 60%);
+  pointer-events: none;
+}
+
+.stdDash__container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ============ DASHBOARD TITLE ============ */
+
+.stdDash__dashboardTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--stdDash__text-primary);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* ============ WELCOME BANNER ============ */
+
+.stdDash__banner {
+  background: linear-gradient(135deg, rgba(124, 11, 11, 0.4) 0%, rgba(244, 67, 54, 0.25) 100%);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(124, 11, 11, 0.15);
+}
+
+.stdDash__bannerContent h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--stdDash__text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.stdDash__bannerContent p {
+  font-size: 0.95rem;
+  color: var(--stdDash__text-secondary);
+}
+
+.stdDash__bannerIcon {
+  font-size: 3rem;
+  opacity: 0.8;
+}
+
+/* ============ DASHBOARD GRID ============ */
+
+.stdDash__grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 2rem;
+}
+
+/* ============ PANELS ============ */
+
+.stdDash__panelLarge,
+.stdDash__panelSmall {
+  background: var(--stdDash__bg-dark);
+  border: 1px solid var(--stdDash__border);
+  border-radius: 12px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  transition: var(--stdDash__transition);
+}
+
+.stdDash__panelLarge:hover,
+.stdDash__panelSmall:hover {
+  border-color: rgba(255, 215, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.stdDash__panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--stdDash__border);
+}
+
+.stdDash__panelHeader h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--stdDash__text-primary);
+  margin: 0;
+}
+
+.stdDash__paymentCount {
+  font-size: 0.9rem;
+  background: rgba(255, 215, 0, 0.1);
+  color: var(--stdDash__primary);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* ============ PAYMENT LEGEND ============ */
+
+.stdDash__legend {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
+}
+
+.stdDash__legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--stdDash__text-secondary);
+}
+
+.stdDash__legendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.stdDash__legendDot.stdDash__pending {
+  background: #f44336;
+}
+
+.stdDash__legendDot.stdDash__paid {
+  background: var(--stdDash__primary);
+}
+
+.stdDash__legendDot.stdDash__due {
+  background: #888;
+}
+
+/* ============ SECTION TITLE ============ */
+
+.stdDash__sectionTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--stdDash__text-primary);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============ PAYMENTS LIST ============ */
+
+.stdDash__paymentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.stdDash__paymentItem {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--stdDash__border);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--stdDash__transition);
+}
+
+.stdDash__paymentItem:hover {
+  background: rgba(255, 215, 0, 0.05);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.stdDash__paymentInfo {
+  flex: 1;
+}
+
+.stdDash__paymentAmount {
+  font-weight: 600;
+  color: var(--stdDash__text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.stdDash__paymentDate {
+  font-size: 0.85rem;
+  color: var(--stdDash__text-secondary);
+}
+
+.stdDash__statusBadge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+.stdDash__status-paid {
+  background: rgba(255, 215, 0, 0.2);
+  color: var(--stdDash__primary);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.stdDash__status-pending {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.stdDash__status-due {
+  background: rgba(136, 136, 136, 0.2);
+  color: #888;
+  border: 1px solid rgba(136, 136, 136, 0.3);
+}
+
+/* ============ RIGHT COLUMN ============ */
+
+.stdDash__panelColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ============ LESSONS LIST ============ */
+
+.stdDash__lessonsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stdDash__lessonItem {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--stdDash__border);
+  border-left: 4px solid var(--stdDash__primary);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: var(--stdDash__transition);
+}
+
+.stdDash__lessonItem:hover {
+  background: rgba(255, 215, 0, 0.05);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.stdDash__lessonInfo {
+  flex: 1;
+}
+
+.stdDash__lessonTitle {
+  font-weight: 600;
+  color: var(--stdDash__text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.stdDash__lessonDetails {
+  font-size: 0.85rem;
+  color: var(--stdDash__text-secondary);
+  margin-bottom: 0.3rem;
+}
+
+.stdDash__lessonInstructor {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.stdDash__btnReschedule {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--stdDash__transition);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.stdDash__btnReschedule:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
+/* ============ EXAMS LIST ============ */
+
+.stdDash__examsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stdDash__examItem {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--stdDash__border);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: var(--stdDash__transition);
+}
+
+.stdDash__examItem:hover {
+  background: rgba(255, 215, 0, 0.05);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.stdDash__examNumber {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--stdDash__primary), #ffd24a);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.stdDash__examInfo {
+  flex: 1;
+}
+
+.stdDash__examTitle {
+  font-weight: 600;
+  color: var(--stdDash__text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.stdDash__examDate {
+  font-size: 0.85rem;
+  color: var(--stdDash__text-secondary);
+}
+
+.stdDash__examActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.stdDash__btnDetails {
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  color: var(--stdDash__primary);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--stdDash__transition);
+  font-size: 0.75rem;
+}
+
+.stdDash__btnDetails:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: var(--stdDash__primary);
+}
+
+/* ============ SCROLLBAR ============ */
+
+.stdDash__main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.stdDash__main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.stdDash__main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.stdDash__main::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============ RESPONSIVE ============ */
+
+@media (max-width: 1024px) {
+  .stdDash__container {
+    padding: 1.5rem;
+  }
+
+  .stdDash__grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .stdDash__panelColumn {
+    gap: 1.5rem;
+  }
+
+  .stdDash__banner {
+    padding: 1.5rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .stdDash__bannerContent h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .stdDash__main {
+    margin-left: 80px;
+  }
+
+  .stdDash__container {
+    padding: 1rem;
+  }
+
+  .stdDash__banner {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stdDash__banner h1 {
+    font-size: 1.3rem;
+  }
+
+  .stdDash__panelLarge,
+  .stdDash__panelSmall {
+    padding: 1.5rem;
+  }
+
+  .stdDash__panelHeader h2 {
+    font-size: 1.1rem;
+  }
+
+  .stdDash__legend {
+    gap: 1rem;
+  }
+
+  .stdDash__lessonItem,
+  .stdDash__examItem,
+  .stdDash__paymentItem {
+    padding: 0.8rem;
+  }
+
+  .stdDash__lessonTitle,
+  .stdDash__examTitle,
+  .stdDash__paymentAmount {
+    font-size: 0.95rem;
+  }
+
+  .stdDash__btnReschedule,
+  .stdDash__btnDetails {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stdDash__main {
+    margin-left: 60px;
+  }
+
+  .stdDash__container {
+    padding: 0.75rem;
+  }
+
+  .stdDash__banner {
+    padding: 1rem;
+  }
+
+  .stdDash__banner h1 {
+    font-size: 1.1rem;
+  }
+
+  .stdDash__bannerContent p {
+    font-size: 0.8rem;
+  }
+
+  .stdDash__bannerIcon {
+    font-size: 2rem;
+  }
+
+  .stdDash__panelLarge,
+  .stdDash__panelSmall {
+    padding: 1rem;
+  }
+
+  .stdDash__panelHeader h2 {
+    font-size: 1rem;
+  }
+
+  .stdDash__legend {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .stdDash__legendItem {
+    font-size: 0.8rem;
+  }
+
+  .stdDash__sectionTitle {
+    font-size: 0.85rem;
+  }
+
+  .stdDash__lessonItem,
+  .stdDash__examItem,
+  .stdDash__paymentItem {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.75rem;
+  }
+
+  .stdDash__statusBadge {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+
+  .stdDash__examActions {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .stdDash__btnReschedule,
+  .stdDash__btnDetails {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.65rem;
+  }
+}
+
+.stdDash__topHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(225, 27, 34, 0.2);
+}
+
+.stdDash__banner-progress-container {
+  margin-top: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.stdDash__banner-progress-label {
+  display: block;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.stdDash__banner-progress-bar {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stdDash__banner-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #E11B22 0%, #ff4d4d 100%);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(225, 27, 34, 0.5);
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.text-brand-red {
+  color: #E11B22;
+}
+
+.empty-msg {
+  color: var(--stdDash__text-secondary);
+  font-style: italic;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.stdDash__lessonStatus {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.stdDash__lessonStatus.scheduled {
+  background: rgba(255, 215, 0, 0.1);
+  color: var(--stdDash__primary);
+}
+
+.stdDash__lessonStatus.completed {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}

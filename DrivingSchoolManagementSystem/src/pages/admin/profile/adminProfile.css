@@ -1,0 +1,200 @@
+/* ============================================
+   ADMIN PROFILE CSS - SCOPED THEME
+   ============================================ */
+
+.adm-dashboard {
+  --adm-primary: #FFD700;
+  --adm-secondary: #1a1a1a;
+  --adm-red: #7c0b0b;
+  --adm-text-primary: rgba(255, 255, 255, 0.92);
+  --adm-text-secondary: rgba(255, 255, 255, 0.65);
+  --adm-border: rgba(255, 255, 255, 0.1);
+  --adm-bg-dark: rgba(15, 18, 24, 0.8);
+  --adm-transition: all 0.3s ease;
+}
+
+/* ============ CONTAINER ============ */
+
+.adm-dashboard .adm-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ============ TITLE ============ */
+
+.adm-dashboard .adm-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--adm-text-primary);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* ============ PROFILE BANNER ============ */
+
+.adm-dashboard .adm-profile-banner {
+  background: linear-gradient(135deg, rgba(124, 11, 11, 0.4) 0%, rgba(244, 67, 54, 0.25) 100%);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.adm-dashboard .adm-profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--adm-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.adm-dashboard .adm-profile-info {
+  flex: 1;
+}
+
+.adm-dashboard .adm-profile-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--adm-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.adm-dashboard .adm-profile-role {
+  font-size: 1rem;
+  color: var(--adm-text-secondary);
+  margin: 0;
+}
+
+/* ============ CONTENT CARD ============ */
+
+.adm-dashboard .adm-content-card {
+  background: var(--adm-bg-dark);
+  border: 1px solid var(--adm-border);
+  border-radius: 12px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.adm-dashboard .adm-section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--adm-text-primary);
+  margin: 0 0 2rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--adm-border);
+}
+
+/* ============ PROFILE FORM ============ */
+
+.adm-dashboard .adm-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.adm-dashboard .adm-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.adm-dashboard .adm-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.adm-dashboard .adm-form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--adm-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.adm-dashboard .adm-form-input {
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--adm-border);
+  border-radius: 8px;
+  color: var(--adm-text-primary);
+  font-size: 0.9rem;
+  transition: var(--adm-transition);
+}
+
+.adm-dashboard .adm-form-input:focus {
+  outline: none;
+  border-color: var(--adm-primary);
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1);
+}
+
+.adm-dashboard .adm-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.adm-dashboard .adm-secondary-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--adm-border);
+  color: var(--adm-text-secondary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--adm-transition);
+}
+
+.adm-dashboard .adm-secondary-btn:hover {
+  border-color: rgba(255, 215, 0, 0.3);
+  color: var(--adm-text-primary);
+}
+
+.adm-dashboard .adm-primary-btn {
+  background: var(--adm-primary);
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--adm-transition);
+}
+
+.adm-dashboard .adm-primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+/* ============ RESPONSIVE ============ */
+
+@media (max-width: 768px) {
+  .adm-dashboard .adm-container {
+    padding: 1rem;
+  }
+
+  .adm-dashboard .adm-title {
+    font-size: 1.75rem;
+  }
+
+  .adm-dashboard .adm-profile-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .adm-dashboard .adm-form-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,87 @@
+.global-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.global-logo-container.layout-vertical {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.global-logo-circle {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  background-color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  border: 2px solid #E11B22;
+  box-sizing: border-box;
+  padding: 0; /* Clear any accidental padding */
+}
+
+
+.global-logo-container.layout-vertical .global-logo-circle {
+  width: 120px;
+  height: 120px;
+  min-width: 120px;
+  min-height: 120px;
+}
+
+.global-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  image-rendering: high-quality;
+}
+
+
+.global-logo-text-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.global-logo-text-title {
+  font-weight: 800;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+}
+
+.global-logo-container.layout-vertical .global-logo-text-title {
+  font-size: 1.5rem; /* 24px */
+}
+
+.global-logo-text-subtitle {
+  font-weight: 600;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+}
+
+.global-logo-container.layout-vertical .global-logo-text-subtitle {
+  font-size: 1rem;
+}
+
+/* Red text utility mapped to index.css variable if possible, or fallback */
+.text-brand-red {
+  color: #E11B22;
+}
+
+/* Sidebar specific overrides can use these */
+@media (max-width: 1024px) {
+  .global-logo-container.hide-text-desktop .global-logo-text-wrapper {
+    display: none;
+  }
+}

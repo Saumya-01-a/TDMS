@@ -1,0 +1,279 @@
+/* ============ PACKAGES PAGE ============ */
+
+.stu-packagesPage {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.stu-packagesPageHeader {
+  margin-bottom: 0.5rem;
+}
+
+.stu-packagesPageHeader h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0;
+}
+
+/* ============ HEADER CARD ============ */
+
+.stu-packagesHeaderCard {
+  width: 100%;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(124, 11, 11, 0.5) 0%, rgba(244, 67, 54, 0.2) 100%);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  margin-bottom: 2rem;
+}
+
+.stu-packagesHeaderCard h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 0.5rem 0;
+}
+
+.stu-packagesHeaderCard p {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+}
+
+/* ============ PACKAGES CONTAINER ============ */
+
+.stu-packagesContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+}
+
+/* ============ PACKAGE CARD ============ */
+
+.stu-packageCard {
+  position: relative;
+  padding: 1.5rem;
+  background: rgba(15, 18, 24, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.stu-packageCard:hover {
+  background: rgba(15, 18, 24, 0.6);
+  border-color: rgba(244, 194, 26, 0.3);
+  transform: translateY(-4px);
+}
+
+.stu-newBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.4rem 0.8rem;
+  background: #FFD700;
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============ ICON TILE ============ */
+
+.stu-packageIconTile {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFD700;
+  border-radius: 8px;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #000;
+}
+
+/* ============ PRICE SECTION ============ */
+
+.stu-packagePrice {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.stu-currency {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.stu-amount {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ============ PACKAGE NAME & DESC ============ */
+
+.stu-packageName {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 0.4rem 0;
+}
+
+.stu-packageDesc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 1rem 0;
+}
+
+/* ============ DETAILED INFORMATION ============ */
+
+.stu-detailedInfo {
+  margin: 1.5rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stu-sectionHeading {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 0.8rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stu-sectionSubheading {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stu-sessionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.stu-sessionItem {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.stu-sessionTick {
+  color: #FFD700;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stu-sessionName {
+  flex: 1;
+}
+
+/* ============ SELECT BUTTON ============ */
+
+.stu-selectBtn {
+  padding: 0.9rem 1.5rem;
+  background: #FFD700;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.stu-selectBtn:hover {
+  background: #ffd700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 194, 26, 0.3);
+}
+
+.stu-btnIcon {
+  font-size: 1rem;
+}
+
+/* ============ RESPONSIVE ============ */
+
+@media (max-width: 1024px) {
+  .stu-packagesContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .stu-packagesContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .stu-packagesHeaderCard {
+    padding: 1.5rem;
+  }
+
+  .stu-packagesHeaderCard h2 {
+    font-size: 1.5rem;
+  }
+
+  .stu-packageCard {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stu-packagesPageHeader h1 {
+    font-size: 1.5rem;
+  }
+
+  .stu-packagesHeaderCard {
+    padding: 1rem;
+  }
+
+  .stu-packagesHeaderCard h2 {
+    font-size: 1.2rem;
+  }
+
+  .stu-packagesHeaderCard p {
+    font-size: 0.85rem;
+  }
+
+  .stu-packageCard {
+    padding: 1rem;
+  }
+
+  .stu-packageName {
+    font-size: 1.1rem;
+  }
+
+  .stu-amount {
+    font-size: 1.5rem;
+  }
+
+  .stu-selectBtn {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+

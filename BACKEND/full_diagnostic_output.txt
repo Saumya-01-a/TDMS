@@ -1,0 +1,14 @@
+--- FULL DIAGNOSTIC REPORT ---
+
+1. Supabase Check:
+✅ Actual Buckets: 
+ℹ️ Configured Bucket (from .env): thisara_driving_school
+
+2. Database NIC Check:
+✅ [students] has 'nic'
+✅ [instructors] has 'nic'
+
+3. Detailed Table Schema:
+[instructors]: approval_status, approved_at, approved_by, availability_status, created_at, instructor_id, instructor_name, instructor_reg_no, licence_no, nic, rejected_reason, user_id, verification_document
+[students]: address, completion_date, instructor_id, nic, package_id, progress, registered_date, status, student_id, user_id
+[users]: created_date, email, email_verified, first_name, last_name, password_hash, role, status, tel_no, user_id

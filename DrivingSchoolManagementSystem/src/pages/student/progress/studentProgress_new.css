@@ -1,0 +1,433 @@
+/* =====================================================
+   STUDENT PROGRESS CSS - STU- PREFIX
+   Dark Glass Theme with Progress Cards
+   ===================================================== */
+
+/* ============ STUDENT PROGRESS WRAPPER ============ */
+
+.stu-progressWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* ============ PROGRESS HEADER BANNER ============ */
+
+.stu-progressHeaderBanner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(124, 11, 11, 0.5) 0%, rgba(244, 67, 54, 0.2) 100%);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.stu-bannerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stu-bannerTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.stu-bannerProgressBar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stu-progressFill {
+  height: 100%;
+  background: #facc15;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.stu-bannerPercentage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stu-percentageValue {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+.stu-percentageLabel {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ============ PROGRESS CARDS CONTAINER ============ */
+
+.stu-progressCardsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stu-progressCard {
+  padding: 1.5rem;
+  background: rgba(15, 18, 24, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.stu-progressCard:hover {
+  border-color: rgba(255, 215, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.stu-cardTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stu-cardProgressItems {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.stu-progressItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.stu-itemLabelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stu-itemLabel {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.stu-itemPercentage {
+  font-size: 0.9rem;
+  color: #facc15;
+  font-weight: 700;
+}
+
+.stu-itemProgressBar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.stu-itemProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #facc15, #ffd700);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* ============ BOTTOM SECTION ============ */
+
+.stu-progressBottomSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.stu-recentActivitiesSection,
+.stu-upcomingMilestonesSection {
+  padding: 1.5rem;
+  background: rgba(15, 18, 24, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.stu-recentActivitiesSection:hover,
+.stu-upcomingMilestonesSection:hover {
+  border-color: rgba(255, 215, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.stu-sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stu-activitiesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stu-activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.stu-activityItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(250, 204, 21, 0.3);
+}
+
+.stu-activityIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  background: rgba(250, 204, 21, 0.1);
+  border-radius: 8px;
+}
+
+.stu-activityContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.stu-activityTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.stu-activityDate {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.stu-milestonesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stu-milestoneItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.stu-milestoneItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(250, 204, 21, 0.3);
+}
+
+.stu-milestoneLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.stu-milestoneTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.stu-milestoneDate {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.stu-milestoneBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: rgba(250, 204, 21, 0.1);
+  color: #facc15;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.stu-milestoneBadge-deadline {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* ============ RESPONSIVE DESIGN ============ */
+
+@media (max-width: 1024px) {
+  .stu-progressHeaderBanner {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .stu-progressCardsContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .stu-progressBottomSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .stu-progressWrapper {
+    padding: 1.5rem 1rem;
+  }
+
+  .stu-progressHeaderBanner {
+    padding: 1.5rem;
+  }
+
+  .stu-bannerTitle {
+    font-size: 1.5rem;
+  }
+
+  .stu-bannerProgressBar {
+    height: 6px;
+  }
+
+  .stu-percentageValue {
+    font-size: 2rem;
+  }
+
+  .stu-cardTitle,
+  .stu-sectionTitle {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .stu-progressItem {
+    gap: 0.5rem;
+  }
+
+  .stu-activityItem,
+  .stu-milestoneItem {
+    padding: 0.8rem;
+    gap: 0.8rem;
+  }
+
+  .stu-activityTitle,
+  .stu-milestoneTitle {
+    font-size: 0.9rem;
+  }
+
+  .stu-activityDate,
+  .stu-milestoneDate {
+    font-size: 0.75rem;
+  }
+
+  .stu-milestoneBadge {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stu-progressWrapper {
+    padding: 1rem;
+  }
+
+  .stu-progressHeaderBanner {
+    padding: 1.2rem;
+    gap: 1rem;
+  }
+
+  .stu-bannerTitle {
+    font-size: 1.3rem;
+  }
+
+  .stu-bannerProgressBar {
+    height: 5px;
+  }
+
+  .stu-percentageValue {
+    font-size: 1.8rem;
+  }
+
+  .stu-percentageLabel {
+    font-size: 0.8rem;
+  }
+
+  .stu-progressCard {
+    padding: 1.2rem;
+  }
+
+  .stu-cardTitle,
+  .stu-sectionTitle {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .stu-cardProgressItems,
+  .stu-activitiesList,
+  .stu-milestonesList {
+    gap: 0.8rem;
+  }
+
+  .stu-activityItem,
+  .stu-milestoneItem {
+    padding: 0.7rem;
+  }
+
+  .stu-activityTitle,
+  .stu-milestoneTitle {
+    font-size: 0.85rem;
+  }
+
+  .stu-activityDate,
+  .stu-milestoneDate {
+    font-size: 0.7rem;
+  }
+
+  .stu-milestoneBadge {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.7rem;
+  }
+}

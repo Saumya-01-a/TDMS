@@ -1,0 +1,337 @@
+/* ============================================
+   STUDENT LAYOUT CSS - STU_LAYOUT__ PREFIX
+   Dark Glass Figma-like Theme
+   ============================================ */
+
+:root {
+  --stu_layout__bg1: #070a10;
+  --stu_layout__bg2: #081a33;
+  --stu_layout__panel: rgba(15, 18, 24, 0.75);
+  --stu_layout__border: rgba(255, 255, 255, 0.08);
+  --stu_layout__text: rgba(255, 255, 255, 0.92);
+  --stu_layout__muted: rgba(255, 255, 255, 0.65);
+  --stu_layout__yellow: #f4c21a;
+  --stu_layout__red: #7c0b0b;
+  --stu_layout__transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+/* ============ STUDENT SHELL (Main Layout) ============ */
+
+.stu_layout__shell {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--stu_layout__bg1) 0%, var(--stu_layout__bg2) 50%, var(--stu_layout__bg1) 100%);
+  position: relative;
+  color: var(--stu_layout__text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* ============ MAIN CONTENT AREA ============ */
+
+.stu_layout__main {
+  margin-left: 260px;
+  flex: 1;
+  position: relative;
+  min-height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.stu_layout__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(900px 500px at 50% 20%, rgba(30, 70, 120, 0.15), transparent 60%);
+  pointer-events: none;
+}
+
+.stu_layout__page {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ============ UTILITY CLASSES ============ */
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+.panel:hover {
+  border-color: rgba(255, 215, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.banner {
+  background: linear-gradient(135deg, rgba(124, 11, 11, 0.4) 0%, rgba(244, 67, 54, 0.25) 100%);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(124, 11, 11, 0.15);
+}
+
+.banner h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.banner p {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+/* ============ STATUS BADGES ============ */
+
+.badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-paid {
+  background: rgba(255, 215, 0, 0.2);
+  color: var(--yellow);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.badge-pending {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.badge-completed {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.badge-new {
+  background: rgba(33, 150, 243, 0.2);
+  color: #2196F3;
+  border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+/* ============ BUTTONS ============ */
+
+.btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--yellow), #ffd24a);
+  color: #000;
+  border: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.btn-red {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  color: white;
+  border: none;
+}
+
+.btn-red:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+/* ============ INPUTS ============ */
+
+.input-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.input-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.input-field label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.input-field input,
+.input-field select,
+.input-field textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+.input-field input::placeholder,
+.input-field select::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.input-field input:focus,
+.input-field select:focus,
+.input-field textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--yellow);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+.input-field input:disabled {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+/* ============ SCROLLBAR ============ */
+
+.stu_layout__main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.stu_layout__main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.stu_layout__main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.stu_layout__main::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============ RESPONSIVE ============ */
+
+@media (max-width: 1024px) {
+  .stu_layout__page {
+    padding: 1.5rem;
+  }
+
+  .panel {
+    padding: 1.5rem;
+  }
+
+  .banner {
+    padding: 1.5rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .stu_layout__main {
+    margin-left: 80px;
+  }
+
+  .stu_layout__page {
+    padding: 1rem;
+  }
+
+  .panel,
+  .banner {
+    padding: 1rem;
+  }
+
+  .panel h2,
+  .banner h2 {
+    font-size: 1.2rem;
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+
+  .input-field {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .stu_layout__main {
+    margin-left: 60px;
+  }
+
+  .stu_layout__page {
+    padding: 0.75rem;
+  }
+
+  .panel,
+  .banner {
+    padding: 0.75rem;
+  }
+
+  .panel h2,
+  .banner h2 {
+    font-size: 1rem;
+  }
+
+  .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+
+}

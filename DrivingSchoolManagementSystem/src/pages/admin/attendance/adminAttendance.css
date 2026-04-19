@@ -1,0 +1,303 @@
+/* 
+   ============================================
+   ADMIN ATTENDANCE - TERMINAL STICKY CALIBRATION
+   ============================================ 
+*/
+
+.adm-attendance-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important; 
+  animation: fadeIn 0.4s ease-out;
+  padding: 2rem;
+  padding-bottom: 5rem;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.adm-header-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2.5rem;
+  margin-bottom: 2rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(225, 27, 34, 0.1);
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.adm-banner-left h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.adm-banner-left p {
+  color: #8892b0;
+  margin-top: 0.2rem;
+  font-size: 0.85rem;
+}
+
+.danger-purge {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.danger-purge:hover { background: #ef4444; color: #fff; }
+
+/* 🚀 Controls Row Alignment Row */
+.adm-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  margin-bottom: 2.5rem;
+  background: rgba(10, 25, 47, 0.4);
+  border: 1px solid rgba(225, 27, 34, 0.1);
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 1.5rem;
+}
+
+.adm-month-nav-compact {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-shrink: 0;
+}
+
+.adm-nav-btn-sm {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(185, 28, 28, 0.2);
+  color: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.adm-current-view {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #e6f1ff;
+}
+
+.adm-search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(2, 12, 27, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  flex-grow: 1;
+  max-width: 600px;
+}
+
+.adm-search-box input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.9rem;
+  width: 100%;
+  outline: none;
+}
+
+.adm-actions-group {
+  display: flex;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.adm-btn-action {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ccd6f6;
+  border: 1px solid rgba(225, 27, 34, 0.2);
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.adm-btn-action:hover { border-color: #E11B22; color: #fff; background: rgba(225, 27, 34, 0.05); }
+.adm-btn-action.primary-red { background: #E11B22; color: #fff; border: none; }
+
+/* ❄️ THE "STRICT BOX" SCROLLABLE GRID CONTAINER */
+.adm-grid-matrix-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: visible !important; /* ENSURE NO CLIPPING AT CARD LEVEL */
+}
+
+.adm-table-scroll-container {
+  display: block !important;
+  max-width: 100% !important;
+  max-height: 500px !important;
+  overflow: auto !important;
+  position: relative !important;
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbar for Contained Area - Match Theme */
+.adm-table-scroll-container::-webkit-scrollbar { 
+  height: 8px; /* Thickness of the horizontal scrollbar */
+  width: 8px; 
+}
+.adm-table-scroll-container::-webkit-scrollbar-track { 
+  background: rgba(30, 41, 59, 0.5); /* Dark track */
+  border-radius: 10px; 
+}
+.adm-table-scroll-container::-webkit-scrollbar-thumb { 
+  background: #ff4d4d; /* Managed Red thumb */
+  border-radius: 10px; 
+}
+
+.adm-grid-table {
+  width: max-content !important; 
+  min-width: 2000px !important; /* FORCING OVERFLOW TO TRIGGER SCROLLBAR */
+  border-collapse: separate !important; /* CRITICAL FOR STICKY PILLARS */
+  border-spacing: 0;
+}
+
+.adm-grid-table th {
+  background: #111827 !important; /* EXACT HEX REQUESTED FOR STICKY HEADERS */
+  padding: 1.25rem 0.5rem;
+  color: #E11B22;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-align: center;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 50 !important; /* HIGHEST Z-INDEX */
+  border-bottom: 2px solid rgba(225, 27, 34, 0.3);
+}
+
+/* Ensure every header has a physical width to avoid squashing */
+.day-header { 
+  min-width: 60px !important; 
+  width: 60px !important; 
+  flex-shrink: 0 !important;
+}
+
+.adm-grid-table td {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  text-align: center;
+  color: #ffffff;
+  font-weight: 900;
+}
+
+/* ⚓ ABSOLUTE STICKY PILLARS - IDENTITY COLUMN */
+.adm-grid-table th:first-child,
+.adm-grid-table td:first-child {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 40 !important; /* HIGHER THAN CELLS */
+  background: #111827 !important; /* SOLID BACKGROUND TO PREVENT TEXT OVERLAP */
+  width: 280px;
+  min-width: 280px;
+  text-align: left;
+  padding-left: 2rem;
+  border-right: 3px solid rgba(225, 27, 34, 0.5);
+  white-space: nowrap;
+}
+
+/* Intersection of sticky col and sticky header */
+.adm-grid-table th:first-child { 
+  z-index: 60 !important; /* TOP PRIORITY INTERSECTION PILLAR */
+}
+
+.adm-audit-dot {
+  width: 24px;
+  height: 24px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.adm-audit-dot.dot-present { background: #10b981; }
+.adm-audit-dot.dot-absent { background: #ef4444; }
+.adm-audit-dot.dot-late { background: #fcc419; }
+
+.diag-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 12, 27, 0.95);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.diag-modal-popup { width: 100%; max-width: 550px; padding: 3rem; text-align: center; position: relative; }
+
+.diag-dismiss-btn {
+  width: 100%;
+  padding: 1.25rem;
+  background: #E11B22;
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+
+.adm-matrix-legend {
+  padding: 1rem 2rem;
+  display: flex;
+  gap: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8rem;
+  color: #8892b0;
+  font-weight: 600;
+}
+
+.legend-item { display: flex; align-items: center; gap: 8px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
