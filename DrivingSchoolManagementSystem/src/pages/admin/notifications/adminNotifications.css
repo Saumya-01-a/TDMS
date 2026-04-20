@@ -1,32 +1,88 @@
-.adm-notifications-page {
-  padding: 2rem;
-  background: transparent;
+/* Admin Communications Premium Layout */
+.adm-notif__main {
+  display: flex;
   min-height: 100vh;
+  background: var(--bg-deep, #070a10);
 }
 
-.adm-notifications-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 2rem;
-  align-items: start;
+.adm-notif__container {
+  flex: 1;
+  margin-left: 280px; /* Sidebar Width */
+  padding: 4rem 2rem;
+  max-width: 1400px;
+  margin-right: auto;
+  margin-left: calc(280px + (100% - 1400px - 280px) / 2);
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
 }
 
-@media (max-width: 1024px) {
-  .adm-notifications-grid {
-    grid-template-columns: 1fr;
+/* For users with ultra-wide screens, ensure centering relative to sidebar */
+@media (min-width: 1700px) {
+  .adm-notif__container {
+    margin-left: calc(280px + (100% - 1400px - 280px) / 2);
   }
 }
 
-.adm-composer-section {
-  position: sticky;
-  top: 2rem;
+.adm-notif__header {
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 2rem;
 }
 
-.adm-center-section {
-  background: rgba(13, 17, 23, 0.4);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+.adm-notif__title {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(to right, #fff, #8892b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1.5px;
+  margin-bottom: 0.5rem;
+}
+
+.adm-notif__subtitle {
+  color: #8892b0;
+  font-size: 1.1rem;
+}
+
+.adm-notif__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr; /* Composer on left, Inbox on right */
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Glass Panels */
+.glass-panel {
+  background: rgba(15, 18, 24, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.adm-section__title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .adm-notif__container {
+    margin-left: 280px;
+    margin-right: 2rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .adm-notif__grid {
+    grid-template-columns: 1fr;
+  }
 }

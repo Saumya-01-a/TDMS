@@ -32,6 +32,9 @@ export default function AdminFleet() {
   const [showAttentionAdd, setShowAttentionAdd] = useState(false);
   
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [instructors, setInstructors] = useState([]);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [selectedInstructorId, setSelectedInstructorId] = useState("");
   const [latestLocation, setLatestLocation] = useState(null);
   const [mapLoading, setMapLoading] = useState(false);
 
@@ -45,7 +48,18 @@ export default function AdminFleet() {
 
   useEffect(() => {
     fetchVehicles();
+    fetchInstructors();
   }, []);
+
+  const fetchInstructors = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/admin/all-instructors');
+      const data = await res.json();
+      if (data.ok) setInstructors(data.instructors);
+    } catch (err) {
+      console.error("Fetch Instructors Error:", err);
+    }
+  };
 
   const fetchVehicles = async () => {
     setLoading(true);
@@ -121,7 +135,32 @@ export default function AdminFleet() {
     }
   };
 
+  const handleAssignInstructor = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const res = await fetch('http://localhost:3000/admin/assign-vehicle-instructor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vehicleId: selectedVehicle.vehicle_id,
+          instructorId: selectedInstructorId
+        })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setShowAssignModal(false);
+        fetchVehicles();
+      } else alert(data.message);
+    } catch (err) {
+      alert("Failed to assign instructor");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const openLocationModal = async (vehicle) => {
+    if (vehicle.status !== 'Available') return;
     setSelectedVehicle(vehicle);
     setShowLocationModal(true);
     setLatestLocation(null);
@@ -276,13 +315,32 @@ export default function AdminFleet() {
                   </span>
                 </td>
                 <td>
-                  <span style={{ color: v.instructor_name ? '#ccd6f6' : '#555e7d' }}>
-                    {v.instructor_name || 'Unassigned / Depot'}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ color: v.instructor_name ? '#ccd6f6' : '#555e7d' }}>
+                      {v.instructor_name || 'Unassigned / Depot'}
+                    </span>
+                    <button 
+                      className="text-brand-red" 
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                      title="Assign New Handler"
+                      onClick={() => {
+                        setSelectedVehicle(v);
+                        setSelectedInstructorId(v.assigned_instructor_id || "");
+                        setShowAssignModal(true);
+                      }}
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
                 </td>
                 <td>
                   <div className="action-btns">
-                    <button className="action-icon-btn location" title="Live Tracking" onClick={() => openLocationModal(v)}>
+                    <button 
+                      className={`action-icon-btn location ${v.status !== 'Available' ? 'disabled-btn' : ''}`} 
+                      title={v.status !== 'Available' ? 'Tracking disabled - non-active state' : 'Live Tracking'} 
+                      onClick={() => openLocationModal(v)}
+                      disabled={v.status !== 'Available'}
+                    >
                       <MapPin size={18} />
                     </button>
                     <button className="action-icon-btn edit" onClick={() => {
@@ -449,45 +507,54 @@ export default function AdminFleet() {
               </div>
               <button onClick={() => setShowLocationModal(false)}><X size={20} /></button>
             </div>
-            <div className="payout-body">
-              <div className="adm-stats-row" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '1rem' }}>
-                <div className="adm-stat-card glass-card" style={{ padding: '0.75rem' }}>
-                   <div className="stat-info">
-                     <h2>{latestLocation ? `${latestLocation.speed} km/h` : 'N/A'}</h2>
-                     <p>Current Speed</p>
-                   </div>
-                </div>
-                <div className="adm-stat-card glass-card" style={{ padding: '0.75rem' }}>
-                   <div className="stat-info">
-                     <p style={{ fontSize: '0.75rem', lineHeight: '1.2' }}>{latestLocation ? new Date(latestLocation.created_at).toLocaleString() : 'No Signal'}</p>
-                     <p>Last Signal</p>
-                   </div>
-                </div>
-                <div className="adm-stat-card glass-card" style={{ padding: '0.75rem' }}>
-                   <div className="stat-info">
-                     <p style={{ fontSize: '0.75rem', lineHeight: '1.2' }}>{selectedVehicle.instructor_name || 'Depot Assignment'}</p>
-                     <p>Operator</p>
-                   </div>
-                </div>
-              </div>
-              
-              <div className="fleet-map-container">
-                {mapLoading ? <Loader2 className="spin" size={32} /> : (
-                  latestLocation ? (
-                    <div id="leaflet-map-fleet"></div>
-                  ) : (
-                    <div style={{ textAlign: 'center' }}>
-                      <AlertCircle size={40} color="#ef4444" style={{ marginBottom: '1rem' }} />
-                      <p>Hardware Signal Missing</p>
-                      <span style={{ fontSize: '0.8rem', color: '#555e7d' }}>No historical logs found for this vehicle.</span>
-                    </div>
-                  )
-                )}
-              </div>
+            
+            <div className="modal-body p-0" style={{ height: '400px', background: '#0a192f', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+               {mapLoading && <div className="map-overlay"><Loader2 className="spin" /></div>}
+               {!mapLoading && !latestLocation && (
+                 <div style={{ textAlign: 'center', color: '#8892b0' }}>
+                    <AlertCircle size={48} style={{ marginBottom: '1rem', opacity: 0.5 }} />
+                    <p>No real-time coordinates received recently.</p>
+                 </div>
+               )}
+               <div id="leaflet-map-fleet" style={{ width: '100%', height: '100%' }}></div>
             </div>
             <div className="modal-footer">
               <button className="btn-secondary" onClick={() => setShowLocationModal(false)}>Close Feed</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- ASSIGN INSTRUCTOR MODAL --- */}
+      {showAssignModal && (
+        <div className="modal-overlay">
+          <div className="modal-card glass-card" style={{ maxWidth: '400px' }}>
+            <div className="modal-header">
+              <h3>Assign Handler: {selectedVehicle.model}</h3>
+              <button onClick={() => setShowAssignModal(false)}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleAssignInstructor}>
+              <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                <label>Select Primary Instructor</label>
+                <select 
+                  className="adm-filter-select" 
+                  style={{ width: '100%', background: 'rgba(2,12,27,0.5)', color: '#fff' }}
+                  value={selectedInstructorId}
+                  onChange={e => setSelectedInstructorId(e.target.value)}
+                >
+                  <option value="">Unassign / No Instructor</option>
+                  {instructors.map(ins => (
+                    <option key={ins.instructor_id} value={ins.instructor_id}>
+                      {ins.first_name} {ins.last_name} ({ins.specialization || 'General'})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn-secondary" onClick={() => setShowAssignModal(false)}>Cancel</button>
+                <button type="submit" className="btn-primary" disabled={submitting}>Assign Handler</button>
+              </div>
+            </form>
           </div>
         </div>
       )}

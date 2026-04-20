@@ -61,6 +61,24 @@ async function verifySupabase() {
     }
 
 
+    // --- DB Test ---
+    console.log("🧪 Attempting a DB query (packages table)...");
+    const { data: packages, error: dbError } = await supabase
+      .from('packages')
+      .select('*')
+      .limit(1);
+
+    if (dbError) {
+      console.error(`❌ DB Query failed: ${dbError.message}`);
+      if (dbError.hint) console.error(`Hint: ${dbError.hint}`);
+      if (dbError.message.includes("No API key found")) {
+        console.log("🚨 WARNING: The current key format might be incompatible with the Database API.");
+      }
+    } else {
+      console.log("✅ DB Query successful!");
+    }
+
+
   } catch (err) {
     console.error("❌ Supabase Verification Failed:", err.message);
   } finally {

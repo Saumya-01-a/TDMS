@@ -1,7 +1,7 @@
-const supabase = require('../config/supabaseClient');
 const pool = require('../config/db');
 const fs = require('fs');
-const { broadcastInstructorStatus } = require('../socket');
+const { broadcastInstructorStatus, broadcastStudentUpdate, sendNotificationToUser } = require('../socket');
+const supabase = require('../config/supabaseClient');
 
 exports.uploadMaterial = async (req, res) => {
   const { title, instructorId, category, description } = req.body;
@@ -13,11 +13,11 @@ exports.uploadMaterial = async (req, res) => {
 
   // 1. Enforce strict categorization
   const validCategories = ['Road Signs', 'Traffic Rules', 'Vehicle Operation', 'Past Papers'];
-  const finalCategory = validCategories.includes(category) ? category : 'General';
+  const finalCategory = validCategories.includes(category) ? category : 'Past Papers'; // Default to something useful
 
   try {
     const fileBuffer = file.buffer;
-    const fileName = `${Date.now()}-${file.originalname}`;
+    const fileName = `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
     
     // 2. Upload to Supabase Storage
     const { data: uploadData, error: uploadError } = await supabase.storage
@@ -37,12 +37,12 @@ exports.uploadMaterial = async (req, res) => {
     // 4. Save to Database
     await pool.query(
       `INSERT INTO materials (title, file_url, instructor_id, category, description) VALUES ($1, $2, $3, $4, $5)`,
-      [title, publicUrl, instructorId, finalCategory, description || '']
+      [title, publicUrl, instructorId, finalCategory, description || 'Study resource for driving school students.']
     );
 
-    res.json({ ok: true, message: "Material uploaded successfully", url: publicUrl });
+    res.json({ ok: true, message: "Material published successfully!", url: publicUrl });
   } catch (err) {
-    console.error("Supabase Upload Error:", err);
+    console.error("🏁 MATERIAL UPLOAD FAILURE:", err);
     res.status(500).json({ ok: false, message: err.message });
   }
 };
@@ -55,7 +55,12 @@ exports.deleteMaterial = async (req, res) => {
     if (materialRes.rowCount === 0) return res.status(404).json({ ok: false, message: "Material not found" });
 
     const fileUrl = materialRes.rows[0].file_url;
-    const fileName = fileUrl.split('/').pop();
+    // Extract properly even if query params are present
+    const urlParts = fileUrl.split('/');
+    const fileNameWithQuery = urlParts.pop();
+    const fileName = fileNameWithQuery.split('?')[0];
+
+    console.log(`🗑️ ATTEMPTING PURGE: materials/${fileName} from ${process.env.SUPABASE_BUCKET}`);
 
     // 2. Delete from Supabase Storage
     const { error: deleteError } = await supabase.storage
@@ -86,14 +91,23 @@ exports.getDashboardStats = async (req, res) => {
   const { instructorId } = req.params;
 
   try {
+    // 🔍 Resolve ID: Find instructor_id if a user_id (UUID) was provided
+    let finalId = instructorId;
+    if (!instructorId.startsWith('I')) {
+       const insLookup = await pool.query("SELECT instructor_id FROM instructors WHERE user_id = $1", [instructorId]);
+       if (insLookup.rowCount > 0) finalId = insLookup.rows[0].instructor_id;
+    }
+
     const totalStudentsData = await pool.query("SELECT COUNT(*) FROM students");
     const yourStudentsData = await pool.query(
-      "SELECT COUNT(*) FROM students WHERE instructor_id = $1",
-      [instructorId]
+      "SELECT COUNT(*) FROM students WHERE instructor_id = $1 OR user_id = $1",
+      [finalId]
     );
+    
+    // Use lessons table instead of sessions
     const todaySessionsData = await pool.query(
-      "SELECT COUNT(*) FROM sessions WHERE instructor_id = $1 AND session_date = CURRENT_DATE",
-      [instructorId]
+      "SELECT COUNT(*) FROM lessons WHERE (instructor_id = $1) AND lesson_date = CURRENT_DATE",
+      [finalId]
     );
 
     res.json({
@@ -113,17 +127,24 @@ exports.getWeeklySchedule = async (req, res) => {
   const { instructorId } = req.params;
 
   try {
-    // Get current week range (Sunday to Saturday)
+    // 🔍 Resolve ID: Find instructor_id if a user_id (UUID) was provided
+    let finalId = instructorId;
+    if (!instructorId.startsWith('I') && instructorId !== 'INST-DEFAULT') {
+       const insLookup = await pool.query("SELECT instructor_id FROM instructors WHERE user_id = $1", [instructorId]);
+       if (insLookup.rowCount > 0) finalId = insLookup.rows[0].instructor_id;
+    }
+
+    // Use lessons table and expand range to full month for "April 2026" visibility
     const result = await pool.query(
-      `SELECT s.*, st.user_id as student_user_id, u.first_name, u.last_name 
-       FROM sessions s
-       LEFT JOIN students st ON s.student_id = st.student_id
-       LEFT JOIN users u ON st.user_id = u.user_id
-       WHERE s.instructor_id = $1 
-       AND s.session_date >= date_trunc('week', CURRENT_DATE) 
-       AND s.session_date < date_trunc('week', CURRENT_DATE) + interval '7 days'
-       ORDER BY s.session_date, s.slot_number`,
-      [instructorId]
+      `SELECT l.*, u.first_name, u.last_name 
+       FROM lessons l
+       JOIN students s ON l.student_id = s.student_id
+       JOIN users u ON s.user_id = u.user_id
+       WHERE l.instructor_id = $1 
+       AND l.lesson_date >= date_trunc('month', CURRENT_DATE) 
+       AND l.lesson_date < date_trunc('month', CURRENT_DATE) + interval '1 month'
+       ORDER BY l.lesson_date, l.session_number`,
+      [finalId]
     );
     
     res.json({ ok: true, schedule: result.rows });
@@ -162,14 +183,21 @@ exports.getInstructorStudents = async (req, res) => {
   const { instructorId } = req.params;
 
   try {
+    // 🔍 Resolve ID: Find instructor_id if a user_id (UUID) was provided
+    let finalId = instructorId;
+    if (!instructorId.startsWith('I')) {
+       const insLookup = await pool.query("SELECT instructor_id FROM instructors WHERE user_id = $1", [instructorId]);
+       if (insLookup.rowCount > 0) finalId = insLookup.rows[0].instructor_id;
+    }
+
     const result = await pool.query(
       `SELECT s.*, u.first_name, u.last_name, u.email, u.tel_no, p.name as package_name
        FROM students s
        JOIN users u ON s.user_id = u.user_id
        LEFT JOIN packages p ON s.package_id = p.id
-       WHERE s.instructor_id = $1
+       WHERE s.instructor_id = $1 OR s.user_id = $1
        ORDER BY s.registered_date DESC`,
-      [instructorId]
+      [finalId]
     );
     res.json({ ok: true, students: result.rows });
   } catch (err) {
@@ -182,10 +210,17 @@ exports.getInstructorStudentStats = async (req, res) => {
   const { instructorId } = req.params;
 
   try {
-    const total = await pool.query("SELECT COUNT(*) FROM students WHERE instructor_id = $1", [instructorId]);
-    const learning = await pool.query("SELECT COUNT(*) FROM students WHERE instructor_id = $1 AND status = 'Learning'", [instructorId]);
-    const inactive = await pool.query("SELECT COUNT(*) FROM students WHERE instructor_id = $1 AND status = 'Inactive'", [instructorId]);
-    const completed = await pool.query("SELECT COUNT(*) FROM students WHERE instructor_id = $1 AND status = 'Completed'", [instructorId]);
+    // 🔍 Resolve ID: Find instructor_id if a user_id (UUID) was provided
+    let finalId = instructorId;
+    if (!instructorId.startsWith('I')) {
+       const insLookup = await pool.query("SELECT instructor_id FROM instructors WHERE user_id = $1", [instructorId]);
+       if (insLookup.rowCount > 0) finalId = insLookup.rows[0].instructor_id;
+    }
+
+    const total = await pool.query("SELECT COUNT(*) FROM students WHERE instructor_id = $1", [finalId]);
+    const learning = await pool.query("SELECT COUNT(*) FROM students WHERE instructor_id = $1 AND status = 'Learning'", [finalId]);
+    const inactive = await pool.query("SELECT COUNT(*) FROM students WHERE instructor_id = $1 AND status = 'Inactive'", [finalId]);
+    const completed = await pool.query("SELECT COUNT(*) FROM students WHERE instructor_id = $1 AND status = 'Completed'", [finalId]);
 
     res.json({
       ok: true,
@@ -211,6 +246,84 @@ exports.getPackages = async (req, res) => {
   }
 };
 
+/**
+ * Update student progress (Instructor Context)
+ * Verifies student is assigned to this instructor.
+ */
+exports.updateStudentProgressInstructor = async (req, res) => {
+  const { studentId } = req.params;
+  const { progress, instructorId } = req.body;
+
+  if (progress === undefined || progress < 0 || progress > 100) {
+    return res.status(400).json({ ok: false, message: "Valid progress (0-100) required" });
+  }
+
+  try {
+     // 🔍 Resolve ID
+     let finalInsId = instructorId;
+     if (!instructorId.startsWith('I')) {
+        const insLookup = await pool.query("SELECT instructor_id FROM instructors WHERE user_id = $1", [instructorId]);
+        if (insLookup.rowCount > 0) finalInsId = insLookup.rows[0].instructor_id;
+     }
+
+    // Verify assignment
+    const check = await pool.query("SELECT * FROM students WHERE student_id = $1 AND instructor_id = $2", [studentId, finalInsId]);
+    if (check.rowCount === 0) return res.status(403).json({ ok: false, message: "Unauthorized. Student not assigned to you." });
+
+    const status = progress === 100 ? 'Completed' : 'Learning';
+    await pool.query(
+      "UPDATE students SET progress = $1, status = $2 WHERE student_id = $3",
+      [progress, status, studentId]
+    );
+    
+    broadcastStudentUpdate();
+    res.json({ ok: true, message: "Progress updated successfully" });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
+/**
+ * Mark student as Completed (Instructor Context)
+ */
+exports.completeLicenseInstructor = async (req, res) => {
+  const { studentId } = req.params;
+  const { instructorId } = req.body;
+
+  try {
+     // 🔍 Resolve ID
+     let finalInsId = instructorId;
+     if (!instructorId.startsWith('I')) {
+        const insLookup = await pool.query("SELECT instructor_id FROM instructors WHERE user_id = $1", [instructorId]);
+        if (insLookup.rowCount > 0) finalInsId = insLookup.rows[0].instructor_id;
+     }
+
+    const check = await pool.query("SELECT user_id FROM students WHERE student_id = $1 AND instructor_id = $2", [studentId, finalInsId]);
+    if (check.rowCount === 0) return res.status(403).json({ ok: false, message: "Unauthorized. Student not assigned to you." });
+
+    const studentUserId = check.rows[0].user_id;
+
+    await pool.query(
+      "UPDATE students SET status = 'Completed', progress = 100, completion_date = CURRENT_TIMESTAMP WHERE student_id = $1",
+      [studentId]
+    );
+
+    // Create Notification using standard system admin ID or system context
+    const msg = "Congratulations! Your instructor has marked your training as Completed.";
+    const notifId = 'NOTIF-' + Date.now();
+    await pool.query(
+      `INSERT INTO notifications (notification_id, recipient_id, sender_id, subject, message, category, priority, status)
+       VALUES ($1, $2, 'SYSTEM', 'Course Completed', $3, 'success', 'high', 'unread')`,
+      [notifId, studentUserId, msg]
+    );
+
+    broadcastStudentUpdate();
+    res.json({ ok: true, message: "Student marked as completed. Records synchronized." });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
 // --- Attendance Management ---
 
 // Fetch monthly attendance for the register grid
@@ -220,16 +333,23 @@ exports.getMonthlyAttendance = async (req, res) => {
   const endDate = new Date(year, month, 0).toISOString().split('T')[0]; // last day of month
 
   try {
+    // 🔍 Resolve ID: Find instructor_id if a user_id (UUID) was provided
+    let finalId = instructorId;
+    if (!instructorId.startsWith('I')) {
+       const insLookup = await pool.query("SELECT instructor_id FROM instructors WHERE user_id = $1", [instructorId]);
+       if (insLookup.rowCount > 0) finalId = insLookup.rows[0].instructor_id;
+    }
+
     const result = await pool.query(
       `SELECT a.*, u.first_name, u.last_name
        FROM attendance a
        JOIN students s ON a.student_id = s.student_id
        JOIN users u ON s.user_id = u.user_id
-       WHERE a.instructor_id = $1 
+       WHERE (a.instructor_id = $1 OR a.instructor_id = 'INST-DEFAULT')
          AND a.attendance_date >= $2 
          AND a.attendance_date <= $3
        ORDER BY a.attendance_date ASC`,
-      [instructorId, startDate, endDate]
+      [finalId, startDate, endDate]
     );
     res.json({ ok: true, attendance: result.rows });
   } catch (err) {
@@ -286,15 +406,22 @@ exports.getAttendanceHistory = async (req, res) => {
   const { instructorId } = req.params;
 
   try {
+    // 🔍 Resolve ID
+    let finalId = instructorId;
+    if (!instructorId.startsWith('I') && instructorId !== 'INST-DEFAULT') {
+       const insLookup = await pool.query("SELECT instructor_id FROM instructors WHERE user_id = $1", [instructorId]);
+       if (insLookup.rowCount > 0) finalId = insLookup.rows[0].instructor_id;
+    }
+
     const result = await pool.query(
       `SELECT a.*, u.first_name, u.last_name
        FROM attendance a
        JOIN students s ON a.student_id = s.student_id
        JOIN users u ON s.user_id = u.user_id
-       WHERE a.instructor_id = $1
+       WHERE a.instructor_id = $1 OR a.instructor_id = 'INST-DEFAULT'
        ORDER BY a.attendance_date DESC, a.created_at DESC
        LIMIT 50`,
-      [instructorId]
+      [finalId]
     );
     res.json({ ok: true, history: result.rows });
   } catch (err) {
@@ -307,6 +434,13 @@ exports.getInstructorLessons = async (req, res) => {
   const { instructorId } = req.params;
 
   try {
+    // 🔍 Resolve ID: Find instructor_id if a user_id (UUID) was provided
+    let finalId = instructorId;
+    if (!instructorId.startsWith('I') && instructorId !== 'INST-DEFAULT') {
+       const insLookup = await pool.query("SELECT instructor_id FROM instructors WHERE user_id = $1", [instructorId]);
+       if (insLookup.rowCount > 0) finalId = insLookup.rows[0].instructor_id;
+    }
+
     const result = await pool.query(
       `SELECT l.*, 
               u.first_name as student_fname, u.last_name as student_lname,
@@ -315,11 +449,44 @@ exports.getInstructorLessons = async (req, res) => {
        JOIN students s ON l.student_id = s.student_id
        JOIN users u ON s.user_id = u.user_id
        JOIN vehicles v ON l.vehicle_id = v.vehicle_id
-       WHERE l.instructor_id = $1
+       WHERE l.instructor_id = $1 OR l.instructor_id = 'INST-DEFAULT'
        ORDER BY l.lesson_date DESC, l.session_number ASC`,
-      [instructorId]
+      [finalId]
     );
     res.json({ ok: true, lessons: result.rows });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
+/**
+ * Update lesson status (Instructor Context: Mark Completed/Cancelled)
+ */
+exports.updateLessonStatusInstructor = async (req, res) => {
+  const { lessonId } = req.params;
+  const { status, instructorId } = req.body;
+
+  if (!status) return res.status(400).json({ ok: false, message: "Status is required" });
+
+  try {
+    // 🔍 Resolve ID
+    let finalId = instructorId;
+    if (instructorId && !instructorId.startsWith('I') && instructorId !== 'INST-DEFAULT') {
+       const insLookup = await pool.query("SELECT instructor_id FROM instructors WHERE user_id = $1", [instructorId]);
+       if (insLookup.rowCount > 0) finalId = insLookup.rows[0].instructor_id;
+    }
+
+    // Update
+    const result = await pool.query(
+      "UPDATE lessons SET status = $1 WHERE id = $2 RETURNING *",
+      [status, lessonId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ ok: false, message: "Lesson not found" });
+    }
+
+    res.json({ ok: true, message: `Lesson marked as ${status}`, lesson: result.rows[0] });
   } catch (err) {
     res.status(500).json({ ok: false, message: err.message });
   }
@@ -546,6 +713,46 @@ exports.getAllInstructorsForAdmin = async (req, res) => {
        ORDER BY u.first_name ASC`
     );
     res.json({ ok: true, instructors: result.rows });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
+/**
+ * Fetch all vehicles with instructor mapping for Instructor View
+ */
+exports.getVehiclesInstructor = async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT v.*, u.first_name || ' ' || u.last_name as instructor_name,
+              iv.instructor_id as assigned_instructor_id,
+              (SELECT created_at FROM gps_logs WHERE vehicle_id = v.vehicle_id ORDER BY created_at DESC LIMIT 1) as last_seen
+       FROM vehicles v
+       LEFT JOIN instructor_vehicles iv ON v.vehicle_id = iv.vehicle_id
+       LEFT JOIN instructors i ON iv.instructor_id = i.instructor_id
+       LEFT JOIN users u ON i.user_id = u.user_id
+       ORDER BY v.vehicle_id ASC`
+    );
+    res.json({ ok: true, vehicles: result.rows });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
+/**
+ * Get Latest Vehicle Location for Instructor View
+ */
+exports.getVehicleLocationInstructor = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      "SELECT lat, lng, speed, created_at FROM gps_logs WHERE vehicle_id = $1 ORDER BY created_at DESC LIMIT 1",
+      [id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ ok: false, message: "Vehicle not currently broadcasting location data" });
+    }
+    res.json({ ok: true, location: result.rows[0] });
   } catch (err) {
     res.status(500).json({ ok: false, message: err.message });
   }

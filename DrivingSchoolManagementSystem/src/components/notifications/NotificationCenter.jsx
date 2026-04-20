@@ -24,7 +24,7 @@ export default function NotificationCenter({ userId, role }) {
   useEffect(() => {
     fetchNotifications();
     
-    // 🔥 Listen for real-time notifications (Assuming socket is globally available or via custom event)
+    // 🔥 Listen for real-time notifications
     const handleNewNotification = (event) => {
       const newNotif = event.detail;
       setNotifications(prev => [newNotif, ...prev]);
@@ -36,7 +36,8 @@ export default function NotificationCenter({ userId, role }) {
 
   const fetchNotifications = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/notifications/${userId}`);
+      // 🌐 Standardized to 127.0.0.1
+      const res = await fetch(`http://127.0.0.1:3000/notifications/${userId}`);
       const data = await res.json();
       if (data.ok) setNotifications(data.notifications);
     } catch (err) {
@@ -65,7 +66,7 @@ export default function NotificationCenter({ userId, role }) {
     if (!window.confirm(`Delete ${selectedIds.length} selected notifications?`)) return;
 
     try {
-      const res = await fetch("http://localhost:3000/notifications/bulk", {
+      const res = await fetch("http://127.0.0.1:3000/notifications/bulk", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: selectedIds }),
@@ -82,19 +83,43 @@ export default function NotificationCenter({ userId, role }) {
   const handleBulkRead = async () => {
     if (!selectedIds.length) return;
     try {
-      const res = await fetch("http://localhost:3000/notifications/bulk-read", {
+      const res = await fetch("http://127.0.0.1:3000/notifications/bulk-read", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: selectedIds }),
       });
-      if (res.ok) {
+      const data = await res.json();
+      if (data.ok) {
         setNotifications(prev => prev.map(n => 
-          selectedIds.includes(n.notification_id) ? { ...n, is_read: true } : n
+          selectedIds.includes(n.notification_id) ? { ...n, status: 'read' } : n
         ));
         setSelectedIds([]);
       }
     } catch (err) {
       console.error("Bulk read failed:", err);
+    }
+  };
+
+  const markSingleAsRead = async (id) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:3000/notifications/read/${id}`, { method: "PUT" });
+      if (res.ok) {
+        setNotifications(prev => prev.map(n => n.notification_id === id ? { ...n, status: 'read' } : n));
+      }
+    } catch (err) {
+      console.error("Mark as read failed:", err);
+    }
+  };
+
+  const deleteSingle = async (id) => {
+    if (!window.confirm("Delete this notification?")) return;
+    try {
+      const res = await fetch(`http://127.0.0.1:3000/notifications/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setNotifications(prev => prev.filter(n => n.notification_id !== id));
+      }
+    } catch (err) {
+      console.error("Delete failed:", err);
     }
   };
 
@@ -107,10 +132,10 @@ export default function NotificationCenter({ userId, role }) {
     }
   };
 
-  if (loading) return <div className="loading">Loading notifications...</div>;
+  if (loading) return <div className="loading">Synchronizing Inbox...</div>;
 
   return (
-    <div className="notif-container">
+    <div className="notif-container" id="id_notification_center">
       <header className="notif-header">
         <div className="notif-header-left">
           <GlobalLogo className="notif-logo" />
@@ -118,23 +143,23 @@ export default function NotificationCenter({ userId, role }) {
             <Bell size={24} color="#E11B22" />
             Inbox
             <span style={{ fontSize: '0.9rem', fontWeight: 400, opacity: 0.6, marginLeft: '10px' }}>
-              ({notifications.filter(n => !n.is_read).length} Unread)
+              ({notifications.filter(n => n.status !== 'read').length} Unread)
             </span>
           </h2>
         </div>
 
         <div className="notif-actions">
-          <button className="bulk-btn btn-read" onClick={toggleSelectAll}>
-            {selectedIds.length === notifications.length ? <CheckSquare size={18} /> : <Square size={18} />}
-            {selectedIds.length === notifications.length ? 'Deselect All' : 'Select All'}
+          <button className="bulk-btn btn-read" id="btn_notif_select_all" onClick={toggleSelectAll}>
+            {selectedIds.length === notifications.length && notifications.length > 0 ? <CheckSquare size={18} /> : <Square size={18} />}
+            {selectedIds.length === notifications.length && notifications.length > 0 ? 'Deselect All' : 'Select All'}
           </button>
           
           {selectedIds.length > 0 && (
             <>
-              <button className="bulk-btn btn-read" onClick={handleBulkRead}>
+              <button className="bulk-btn btn-read" id="btn_notif_mark_read" onClick={handleBulkRead}>
                 <CheckCircle size={18} /> Mark Read
               </button>
-              <button className="bulk-btn btn-delete" onClick={handleBulkDelete}>
+              <button className="bulk-btn btn-delete" id="btn_notif_delete" onClick={handleBulkDelete}>
                 <Trash2 size={18} /> Delete
               </button>
             </>
@@ -146,13 +171,13 @@ export default function NotificationCenter({ userId, role }) {
         {notifications.length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">📭</div>
-            <p>Your inbox is clear! No notifications found.</p>
+            <p>Your inbox is clear! No system alerts found.</p>
           </div>
         ) : (
           notifications.map(notif => (
             <div 
               key={notif.notification_id} 
-              className={`notif-item ${!notif.is_read ? 'unread' : ''} cat-${notif.category || 'info'}`}
+              className={`notif-item ${notif.status !== 'read' ? 'unread' : ''} cat-${notif.category || 'info'}`}
             >
               <input 
                 type="checkbox" 
@@ -168,16 +193,16 @@ export default function NotificationCenter({ userId, role }) {
               <div className="notif-inner">
                 <div className="notif-row">
                   <div className="notif-subject-row">
-                    <span className="notif-subject">{notif.subject || 'System Notification'}</span>
+                    <span className="notif-subject">{notif.subject || 'Administrative Update'}</span>
                     {notif.priority === 'urgent' && (
                       <span className="priority-tag tag-urgent">
-                        High Priority
+                        Critical Alert
                       </span>
                     )}
                   </div>
                   <span className="notif-time">
                     <Clock size={12} style={{ marginRight: 4 }} />
-                    {formatDistanceToNow(new Date(notif.created_at), { addSuffix: true })}
+                    {notif.date_sent ? formatDistanceToNow(new Date(notif.date_sent), { addSuffix: true }) : 'Recent'}
                   </span>
                 </div>
                 
@@ -189,6 +214,25 @@ export default function NotificationCenter({ userId, role }) {
                 )}
 
                 <p className="notif-msg">{notif.message}</p>
+                
+                <div className="notif-item-actions">
+                  {notif.status !== 'read' && (
+                    <button 
+                      className="notif-action-btn read" 
+                      title="Mark as Read" 
+                      onClick={() => markSingleAsRead(notif.notification_id)}
+                    >
+                      <CheckCircle size={14} />
+                    </button>
+                  )}
+                  <button 
+                    className="notif-action-btn delete" 
+                    title="Delete" 
+                    onClick={() => deleteSingle(notif.notification_id)}
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
               </div>
             </div>
           ))

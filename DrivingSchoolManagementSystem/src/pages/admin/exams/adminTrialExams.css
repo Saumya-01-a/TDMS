@@ -242,9 +242,10 @@
 .a-avatar { width: 38px; height: 38px; background: rgba(185, 28, 28, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #B91C1C; font-weight: 900; }
 .a-meta { display: flex; flex-direction: column; }
 .a-name { font-size: 0.9rem; font-weight: 800; color: #fff; }
-.a-pkg { font-size: 0.7rem; color: #8892b0; font-weight: 600; }
-.a-remove { background: transparent; border: none; color: #ef4444; opacity: 0.6; cursor: pointer; transition: 0.2s; }
-.a-remove:hover { opacity: 1; transform: scale(1.1); }
+.a-pkg { font-size: 0.7rem; color: #B91C1C; font-weight: 800; text-transform: uppercase; margin-top: 2px; }
+.a-assigned-date { font-size: 0.65rem; color: #8892b0; font-weight: 600; margin-top: 4px; display: block; }
+.a-remove { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+.a-remove:hover { background: #ef4444; color: #fff; transform: scale(1.05); }
 
 .empty-assignments { text-align: center; padding: 3rem 1rem; color: #4b5563; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 

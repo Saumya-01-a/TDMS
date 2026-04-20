@@ -1,14 +1,14 @@
 const pool = require('./config/db');
 
-async function checkSchema() {
+async function check() {
   try {
-    const res = await pool.query(`
-      SELECT table_name, column_name, data_type 
-      FROM information_schema.columns 
-      WHERE table_name IN ('gps_logs', 'instructors', 'vehicles')
-      ORDER BY table_name, column_name;
-    `);
-    console.log(JSON.stringify(res.rows, null, 2));
+    const tables = ['users', 'students', 'trial_exams', 'trial_exam_assignments'];
+    const results = {};
+    for (const table of tables) {
+      const res = await pool.query("SELECT column_name FROM information_schema.columns WHERE table_name = $1", [table]);
+      results[table] = res.rows.map(r => r.column_name);
+    }
+    console.log(JSON.stringify(results, null, 2));
   } catch (err) {
     console.error(err);
   } finally {
@@ -16,4 +16,4 @@ async function checkSchema() {
   }
 }
 
-checkSchema();
+check();

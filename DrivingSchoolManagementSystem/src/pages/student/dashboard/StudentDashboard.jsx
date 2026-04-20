@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import StudentSidebar from '../../../components/student/StudentSidebar';
 import InstructorInfoCard from '../../../components/student/InstructorInfoCard';
+import { useNavigate } from 'react-router-dom';
 import GlobalLogo from '../../../components/common/GlobalLogo';
 import './studentDashboard.css';
 
 export default function StudentDashboard() {
+  const navigate = useNavigate();
   const [student, setStudent] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,12 +16,7 @@ export default function StudentDashboard() {
   const userId = user.userId || user.user_id;
   const token = sessionStorage.getItem("token") || localStorage.getItem("token") || "";
 
-  const [payments] = useState([
-    { id: 1, amount: 'LKR 25,000', date: '2026-01-15', status: 'paid' },
-    { id: 2, amount: 'LKR 15,000', date: '2026-01-10', status: 'pending' },
-    { id: 3, amount: 'LKR 20,000', date: '2025-12-28', status: 'paid' },
-  ]);
-
+  const [payments, setPayments] = useState([]);
   const [exams, setExams] = useState([]);
   const [trialAssignment, setTrialAssignment] = useState(null);
 
@@ -32,13 +29,15 @@ export default function StudentDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://localhost:3000/student/dashboard/${userId}`, {
+      // 🌐 Standardized to 127.0.0.1
+      const res = await fetch(`http://127.0.0.1:3000/student/dashboard/${userId}`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
       if (data.ok) {
         setStudent(data.student);
         setLessons(data.lessons);
+        setPayments(data.payments || []);
         if (data.trial) setTrialAssignment(data.trial);
       }
     } catch (err) {
@@ -49,8 +48,10 @@ export default function StudentDashboard() {
   };
 
   const getStatusBadgeClass = (status) => {
-    switch (status) {
-      case 'paid': return 'stdDash__status-paid';
+    const s = (status || '').toLowerCase();
+    switch (s) {
+      case 'paid':
+      case 'completed': return 'stdDash__status-paid';
       case 'pending': return 'stdDash__status-pending';
       case 'due': return 'stdDash__status-due';
       default: return '';
@@ -58,8 +59,10 @@ export default function StudentDashboard() {
   };
 
   const getStatusText = (status) => {
-    switch (status) {
-      case 'paid': return '✓ Paid';
+    const s = (status || '').toLowerCase();
+    switch (s) {
+      case 'paid':
+      case 'completed': return '✓ Paid';
       case 'pending': return '⏳ Pending';
       case 'due': return '⚠ Due';
       default: return status;
@@ -77,15 +80,18 @@ export default function StudentDashboard() {
         <div className="stdDash__bgGlow"></div>
 
         <div className="stdDash__container">
-          {/* Header with Branding */}
+          {/* Header with Branding - Centered */}
           <div className="stdDash__topHeader">
-            <GlobalLogo layout="horizontal" />
+            <div className="stdDash__headerSide">
+              <GlobalLogo layout="horizontal" />
+            </div>
             <h1 className="stdDash__dashboardTitle">Student Dashboard</h1>
+            <div className="stdDash__headerSide"></div>
           </div>
 
-          {/* Welcome Banner */}
+          {/* Welcome Banner - Centered content */}
           <div className="stdDash__banner">
-            <div className="stdDash__bannerContent">
+            <div className="stdDash__bannerContent" style={{ textAlign: 'center', margin: '0 auto' }}>
               <h1>Welcome back, {student?.first_name || 'Student'}</h1>
               <p>Your current status: <span className="text-brand-red font-bold">{student?.status || 'Learning'}</span></p>
               <div className="stdDash__banner-progress-container">
@@ -126,17 +132,19 @@ export default function StudentDashboard() {
               {/* Recent Payments */}
               <div className="stdDash__sectionTitle">Recent Payments</div>
               <div className="stdDash__paymentsList">
-                {payments.map((payment) => (
-                  <div key={payment.id} className="stdDash__paymentItem">
+                {payments.length > 0 ? payments.map((payment, idx) => (
+                  <div key={idx} className="stdDash__paymentItem">
                     <div className="stdDash__paymentInfo">
-                      <div className="stdDash__paymentAmount">{payment.amount}</div>
-                      <div className="stdDash__paymentDate">{payment.date}</div>
+                      <div className="stdDash__paymentAmount">LKR {parseFloat(payment.amount).toLocaleString()}</div>
+                      <div className="stdDash__paymentDate">{new Date(payment.payment_date).toLocaleDateString()} · {payment.payment_method}</div>
                     </div>
                     <div className={`stdDash__statusBadge ${getStatusBadgeClass(payment.status)}`}>
                       {getStatusText(payment.status)}
                     </div>
                   </div>
-                ))}
+                )) : (
+                  <p className="empty-msg">No payment records found.</p>
+                )}
               </div>
             </div>
 
@@ -164,8 +172,18 @@ export default function StudentDashboard() {
                         </div>
                         <div className="stdDash__lessonInstructor">Instructor: {lesson.instructor_fname} {lesson.instructor_lname}</div>
                       </div>
-                      <div className={`stdDash__lessonStatus ${lesson.status.toLowerCase()}`}>
-                        {lesson.status}
+                      <div className="stdDash__lessonStatus-wrap" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                        <div className={`stdDash__lessonStatus ${lesson.status.toLowerCase()}`}>
+                          {lesson.status}
+                        </div>
+                        {lesson.status === 'Scheduled' && (
+                          <button 
+                            className="stdDash__btnReschedule"
+                            onClick={() => navigate('/student/schedule')}
+                          >
+                            Reschedule
+                          </button>
+                        )}
                       </div>
                     </div>
                   )) : (
@@ -192,7 +210,12 @@ export default function StudentDashboard() {
                         <div className="stdDash__statusBadge stdDash__status-pending">
                            ⏳ Confirmed
                         </div>
-                        <button className="stdDash__btnDetails">View Map</button>
+                        <button 
+                          className="stdDash__btnDetails"
+                          onClick={() => navigate('/student/routes')}
+                        >
+                          View Map
+                        </button>
                       </div>
                     </div>
                   ) : (

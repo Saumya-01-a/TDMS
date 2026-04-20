@@ -40,7 +40,10 @@ export default function InstructorAttendance() {
   const [clearing, setClearing] = useState(false);
   const [exporting, setExporting] = useState(false);
 
-  const instructorId = localStorage.getItem('instructorId') || 'INST-DEFAULT';
+  // Standardized Identity Resolution (Matches Dashboard)
+  const stored = localStorage.getItem('user') || sessionStorage.getItem('user') || '{}';
+  const user = JSON.parse(stored);
+  const instructorId = user.user_id || user.userId || user.instructor_id || 'INST-DEFAULT';
 
   // 🗓️ Dynamic Day Calculation
   const daysInMonth = useMemo(() => new Date(currentYear, currentMonth, 0).getDate(), [currentMonth, currentYear]);
@@ -54,9 +57,9 @@ export default function InstructorAttendance() {
     setLoading(true);
     try {
       const [studentsRes, attendRes, historyRes] = await Promise.all([
-        fetch(`http://localhost:3000/instructor/students/${instructorId}`),
-        fetch(`http://localhost:3000/instructor/attendance/${instructorId}/${currentYear}/${currentMonth.toString().padStart(2, '0')}`),
-        fetch(`http://localhost:3000/instructor/attendance-history/${instructorId}`)
+        fetch(`http://127.0.0.1:3000/instructor/students/${instructorId}`),
+        fetch(`http://127.0.0.1:3000/instructor/attendance/${instructorId}/${currentYear}/${currentMonth.toString().padStart(2, '0')}`),
+        fetch(`http://127.0.0.1:3000/instructor/attendance-history/${instructorId}`)
       ]);
 
       const studentsData = await studentsRes.json();
@@ -127,7 +130,7 @@ export default function InstructorAttendance() {
     if (recordsToSave.length === 0) return alert("No new marks to save.");
 
     try {
-      const res = await fetch('http://localhost:3000/instructor/attendance/save', {
+      const res = await fetch('http://127.0.0.1:3000/instructor/attendance/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ records: recordsToSave })
@@ -145,7 +148,7 @@ export default function InstructorAttendance() {
   const handleClearLogs = async () => {
     setClearing(true);
     try {
-      const res = await fetch(`http://localhost:3000/instructor/attendance-history/${instructorId}`, {
+      const res = await fetch(`http://127.0.0.1:3000/instructor/attendance-history/${instructorId}`, {
         method: 'DELETE'
       });
       const data = await res.json();
@@ -164,7 +167,7 @@ export default function InstructorAttendance() {
   const handleDownloadReport = async () => {
     setExporting(true);
     try {
-      const response = await fetch(`http://localhost:3000/instructor/attendance-export/${instructorId}/${currentYear}/${currentMonth.toString().padStart(2, '0')}`);
+      const response = await fetch(`http://127.0.0.1:3000/instructor/attendance-export/${instructorId}/${currentYear}/${currentMonth.toString().padStart(2, '0')}`);
       if (!response.ok) throw new Error('Export failed');
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -366,10 +369,9 @@ export default function InstructorAttendance() {
                       key={session.id} 
                       className={`session-opt ${selection.session === session.id ? 'active' : ''}`}
                       onClick={() => setSelection(prev => ({ ...prev, session: session.id }))}
-                      style={{ padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}
                     >
-                      <div style={{ color: '#E11B22', fontWeight: 900, fontSize: '0.85rem' }}>{session.name}</div>
-                      <div style={{ color: '#8892b0', fontSize: '0.7rem' }}>{session.time}</div>
+                      <div className="session-name">{session.name}</div>
+                      <div className="session-time">{session.time}</div>
                     </div>
                   ))}
                 </div>

@@ -1,262 +1,255 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import StudentSidebar from '../../../components/student/StudentSidebar';
 import './studentProfile.css';
 
 export default function StudentProfile() {
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(null);
+  const [formData, setFormData] = useState({
+    email: '',
+    phone: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: ''
+  });
 
-  const profileData = {
-    name: 'Kamal Perera',
-    studentId: 'SL-22587',
-    memberSince: 'January 15, 2024',
-    personalInfo: {
-      fullName: 'Kamal Perera',
-      email: 'kamal.perera@example.com',
-      phone: '+94 (070) 123-4567',
-      dateOfBirth: '1998-05-20',
-      nic: '985432156V',
-      licenseType: 'Car'
-    },
-    address: {
-      street: '456 Palm Tree Lane, Colombo District',
-      city: 'Colombo',
-      postalCode: '00600'
-    },
-    emergencyContact: {
-      name: 'Sunil Perera',
-      phone: '+94 (070) 987-6543'
-    },
-    instructor: {
-      name: 'Sanath Jayasuriya',
-      instructorId: 'INS-2015-0234',
-      rating: 4.8,
-      specialization: 'Car, Van',
-      experience: '8 years',
-      phone: '+94 (070) 555-1234',
-      email: 'sanath.jayasuriya@school.com',
-      license: 'IRL-2015-0234'
+  const stored = localStorage.getItem('user') || sessionStorage.getItem('user') || '{}';
+  const user = JSON.parse(stored);
+  const userId = user.user_id || user.userId;
+
+  useEffect(() => {
+    if (userId) fetchProfile();
+  }, [userId]);
+
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`http://127.0.0.1:3000/student/profile/${userId}`);
+      const data = await res.json();
+      if (data.ok) {
+        setProfile(data.profile);
+        setFormData({
+          email: data.profile.email,
+          phone: data.profile.tel_no,
+          addressLine1: data.profile.address_line_1,
+          addressLine2: data.profile.address_line_2,
+          city: data.profile.city
+        });
+      }
+    } catch (err) {
+      console.error("Profile sync failure:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const res = await fetch(`http://127.0.0.1:3000/student/profile/update/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setIsEditing(false);
+        fetchProfile();
+        alert("Master profile synchronized successfully.");
+      }
+    } catch (err) {
+      alert("Database link failed. Check connectivity.");
+    }
+  };
+
+  if (loading) return <div className="stu-profile__loading">Synchronizing Master Profile...</div>;
+  if (!profile) return <div className="stu-profile__error">Profile Record Unavailable.</div>;
+
   return (
-    <div className="stu-profileContainer">
-      {/* Header Card */}
-      <div className="stu-profileHeaderCard">
-        <div className="stu-profileHeaderContent">
-          <div className="stu-profilePhotoSection">
-            <div className="stu-profilePhotoWrapper">
-              <img 
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop" 
-                alt={profileData.name}
-                className="stu-profilePhoto"
-              />
-              <div className="stu-profilePhotoCamera">
-                <span>📷</span>
+    <div className="stu-profile__main" id="id_stu_profile_main">
+      <StudentSidebar active="My Profile" />
+
+      <div className="stu-profile__container">
+        {/* Header Card */}
+        <div className="stu-profileHeaderCard glass-panel">
+          <div className="stu-profileHeaderContent">
+            <div className="stu-profilePhotoSection">
+              <div className="stu-profilePhotoWrapper">
+                <div className="stu-profilePhotoPlaceholder">
+                  {profile.first_name[0]}{profile.last_name[0]}
+                </div>
+                {isEditing && (
+                  <div className="stu-profilePhotoCamera">
+                    <span>📷</span>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-          
-          <div className="stu-profileInfoSection">
-            <h1 className="stu-profileName">{profileData.name}</h1>
-            <p className="stu-profileStudentId">Student ID: <span>{profileData.studentId}</span></p>
-            <p className="stu-profileMemberSince">Member since {profileData.memberSince}</p>
-          </div>
-        </div>
-
-        <button className="stu-btnEditProfile" onClick={() => setIsEditing(!isEditing)}>
-          <span>✏️</span> Edit Profile
-        </button>
-      </div>
-
-      {/* Personal Information Section */}
-      <div className="stu-profileSection">
-        <h2 className="stu-sectionTitle">Personal Information</h2>
-        
-        <div className="stu-formGrid2col">
-          <div className="stu-formGroup">
-            <label>Full Name</label>
-            <input 
-              type="text" 
-              value={profileData.personalInfo.fullName}
-              disabled={!isEditing}
-              readOnly={!isEditing}
-            />
-          </div>
-
-          <div className="stu-formGroup">
-            <label>
-              <span className="stu-inputIcon">✉️</span>
-              Email Address
-            </label>
-            <input 
-              type="email" 
-              value={profileData.personalInfo.email}
-              disabled={!isEditing}
-              readOnly={!isEditing}
-            />
-          </div>
-
-          <div className="stu-formGroup">
-            <label>
-              <span className="stu-inputIcon">📱</span>
-              Phone Number
-            </label>
-            <input 
-              type="tel" 
-              value={profileData.personalInfo.phone}
-              disabled={!isEditing}
-              readOnly={!isEditing}
-            />
-          </div>
-
-          <div className="stu-formGroup">
-            <label>
-              <span className="stu-inputIcon">📅</span>
-              Date of Birth
-            </label>
-            <input 
-              type="date" 
-              value={profileData.personalInfo.dateOfBirth}
-              disabled={!isEditing}
-              readOnly={!isEditing}
-            />
-          </div>
-
-          <div className="stu-formGroup">
-            <label>NIC Number</label>
-            <input 
-              type="text" 
-              value={profileData.personalInfo.nic}
-              disabled={!isEditing}
-              readOnly={!isEditing}
-            />
-          </div>
-
-          <div className="stu-formGroup">
-            <label>License Type</label>
-            <input 
-              type="text" 
-              value={profileData.personalInfo.licenseType}
-              disabled={!isEditing}
-              readOnly={!isEditing}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Address Information Section */}
-      <div className="stu-profileSection">
-        <h2 className="stu-sectionTitle">Address Information</h2>
-        
-        <div className="stu-formGroupFull">
-          <label>
-            <span className="stu-inputIcon">📍</span>
-            Street Address
-          </label>
-          <input 
-            type="text" 
-            value={profileData.address.street}
-            disabled={!isEditing}
-            readOnly={!isEditing}
-          />
-        </div>
-
-        <div className="stu-formGrid2col">
-          <div className="stu-formGroup">
-            <label>City</label>
-            <input 
-              type="text" 
-              value={profileData.address.city}
-              disabled={!isEditing}
-              readOnly={!isEditing}
-            />
-          </div>
-
-          <div className="stu-formGroup">
-            <label>Postal Code</label>
-            <input 
-              type="text" 
-              value={profileData.address.postalCode}
-              disabled={!isEditing}
-              readOnly={!isEditing}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Emergency Contact Section */}
-      <div className="stu-profileSection">
-        <h2 className="stu-sectionTitle">Emergency Contact</h2>
-        
-        <div className="stu-formGrid2col">
-          <div className="stu-formGroup">
-            <label>Contact Name</label>
-            <input 
-              type="text" 
-              value={profileData.emergencyContact.name}
-              disabled={!isEditing}
-              readOnly={!isEditing}
-            />
-          </div>
-
-          <div className="stu-formGroup">
-            <label>
-              <span className="stu-inputIcon">📱</span>
-              Contact Phone
-            </label>
-            <input 
-              type="tel" 
-              value={profileData.emergencyContact.phone}
-              disabled={!isEditing}
-              readOnly={!isEditing}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* My Instructor Section */}
-      <div className="stu-instructorCard">
-        <div className="stu-instructorContent">
-          <div className="stu-instructorPhotoSection">
-            <div className="stu-instructorPhotoWrapper">
-              <img 
-                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop" 
-                alt={profileData.instructor.name}
-                className="stu-instructorPhoto"
-              />
-            </div>
-          </div>
-
-          <div className="stu-instructorDetails">
-            <h3 className="stu-instructorName">{profileData.instructor.name}</h3>
-            <p className="stu-instructorId">Instructor ID: <span>{profileData.instructor.instructorId}</span></p>
             
-            <div className="stu-instructorRating">
-              <span className="stu-ratingStars">⭐</span>
-              <span className="stu-ratingValue">{profileData.instructor.rating}/5</span>
+            <div className="stu-profileInfoSection">
+              <h1 className="stu-profileName">{profile.first_name} {profile.last_name}</h1>
+              <p className="stu-profileStudentId">Trainee Index: <span>{profile.student_id}</span></p>
+              <p className="stu-profileMemberSince">Registered {new Date(profile.registered_date).toLocaleDateString()}</p>
+            </div>
+          </div>
+
+          <div className="stu-profileHeaderActions">
+            {isEditing ? (
+              <>
+                <button className="stu-btnSaveProfile" onClick={handleSave}>Sync Changes</button>
+                <button className="stu-btnCancelProfile" onClick={() => setIsEditing(false)}>Discard</button>
+              </>
+            ) : (
+              <button className="stu-btnEditProfile" onClick={() => setIsEditing(true)}>
+                <span>✏️</span> Update Details
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="stu-profileGrid">
+          <div className="stu-profileLeft">
+            {/* Personal Information Section */}
+            <div className="stu-profileSection glass-panel">
+              <h2 className="stu-sectionTitle">Identity & Contact</h2>
+              
+              <div className="stu-formGrid2col">
+                <div className="stu-formGroup">
+                  <label>Legal Name</label>
+                  <input 
+                    type="text" 
+                    value={`${profile.first_name} ${profile.last_name}`}
+                    disabled
+                  />
+                </div>
+
+                <div className="stu-formGroup">
+                  <label>NIC Identity</label>
+                  <input 
+                    type="text" 
+                    value={profile.nic || 'N/A'}
+                    disabled
+                  />
+                </div>
+
+                <div className="stu-formGroup">
+                  <label>
+                    <span className="stu-inputIcon">✉️</span>
+                    Primary Email
+                  </label>
+                  <input 
+                    type="email" 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="stu-formGroup">
+                  <label>
+                    <span className="stu-inputIcon">📱</span>
+                    Contact Mode
+                  </label>
+                  <input 
+                    type="tel" 
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="stu-instructorInfoGrid">
-              <div className="stu-infoItem">
-                <span className="stu-infoLabel">Specialization</span>
-                <span className="stu-infoValue">{profileData.instructor.specialization}</span>
+            {/* Address Information Section */}
+            <div className="stu-profileSection glass-panel">
+              <h2 className="stu-sectionTitle">Residential Metadata</h2>
+              
+              <div className="stu-formGroup">
+                <label>
+                  <span className="stu-inputIcon">📍</span>
+                  Street Address
+                </label>
+                <input 
+                  type="text" 
+                  name="addressLine1"
+                  value={formData.addressLine1}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                />
               </div>
-              <div className="stu-infoItem">
-                <span className="stu-infoLabel">Experience</span>
-                <span className="stu-infoValue">{profileData.instructor.experience}</span>
-              </div>
-              <div className="stu-infoItem">
-                <span className="stu-infoLabel">Phone</span>
-                <span className="stu-infoValue">{profileData.instructor.phone}</span>
-              </div>
-              <div className="stu-infoItem">
-                <span className="stu-infoLabel">Email</span>
-                <span className="stu-infoValue">{profileData.instructor.email}</span>
-              </div>
-              <div className="stu-infoItem">
-                <span className="stu-infoLabel">License</span>
-                <span className="stu-infoValue">{profileData.instructor.license}</span>
+
+              <div className="stu-formGrid2col mt-4">
+                <div className="stu-formGroup">
+                  <label>Locality</label>
+                  <input 
+                    type="text" 
+                    name="addressLine2"
+                    value={formData.addressLine2}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="stu-formGroup">
+                  <label>Postal City</label>
+                  <input 
+                    type="text" 
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                  />
+                </div>
               </div>
             </div>
+          </div>
+
+          <div className="stu-profileRight">
+            {/* Training Metadata */}
+            <div className="stu-profileSection glass-panel highlight-section">
+              <h2 className="stu-sectionTitle">Academic Status</h2>
+              <div className="stu-statusRow">
+                <div className="stu-statusItem">
+                  <span className="stu-statusLabel">Enrollment</span>
+                  <span className={`stu-statusValue status-${profile.status.toLowerCase()}`}>{profile.status}</span>
+                </div>
+                <div className="stu-statusItem">
+                  <span className="stu-statusLabel">Curriculum</span>
+                  <span className="stu-statusValue">{profile.package_name || 'Individual'}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* My Instructor Section */}
+            {profile.instructor_id && (
+              <div className="stu-instructorCard glass-panel">
+                <h2 className="stu-sectionTitle">Assigned Mentor</h2>
+                <div className="stu-instructorContent">
+                  <div className="stu-instructorDetails">
+                    <h3 className="stu-instructorName">{profile.ins_fname} {profile.ins_lname}</h3>
+                    <p className="stu-instructorId">License Identity: <span>{profile.instructor_id}</span></p>
+                    
+                    <div className="stu-instructorInfoGrid mt-4">
+                      <div className="stu-infoItem">
+                        <span className="stu-infoLabel">Role</span>
+                        <span className="stu-infoValue">Senior Instructor</span>
+                      </div>
+                      <div className="stu-infoItem">
+                        <span className="stu-infoLabel">Status</span>
+                        <span className="stu-infoValue text-success">Professional Active</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

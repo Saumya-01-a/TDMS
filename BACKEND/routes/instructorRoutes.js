@@ -20,6 +20,8 @@ router.get("/trial-candidates/:instructorId", studentController.getInstructorTri
 router.get("/students/:instructorId", instructorController.getInstructorStudents);
 router.get("/student-stats/:instructorId", instructorController.getInstructorStudentStats);
 router.get("/packages", instructorController.getPackages);
+router.patch("/student/progress/:studentId", instructorController.updateStudentProgressInstructor);
+router.patch("/student/complete/:studentId", instructorController.completeLicenseInstructor);
 
 // --- Attendance Management ---
 router.get("/attendance/:instructorId/:year/:month", instructorController.getMonthlyAttendance);
@@ -28,9 +30,12 @@ router.get("/attendance-history/:instructorId", instructorController.getAttendan
 router.delete("/attendance-history/:instructorId", instructorController.clearAttendanceHistory);
 router.get("/attendance-export/:instructorId/:year/:month", instructorController.exportAttendanceCSV);
 router.get("/lessons/:instructorId", instructorController.getInstructorLessons);
+router.patch("/lesson/status/:lessonId", instructorController.updateLessonStatusInstructor);
 
 // --- Profile & UI Refinement ---
 router.get("/profile-minimal/:userId", instructorController.getInstructorMinimalProfile);
+router.get("/all-vehicles", instructorController.getVehiclesInstructor);
+router.get("/vehicle-location/:id", instructorController.getVehicleLocationInstructor);
 router.get("/profile-full/:userId", instructorController.getInstructorFullProfile);
 router.patch("/profile-update/:userId", instructorController.updateInstructorProfile);
 router.patch("/profile-image/:userId", upload.single("profileImage"), instructorController.updateInstructorProfileImage);

@@ -43,7 +43,7 @@ export default function AdminTrialExams() {
 
   // Socket for real-time updates
   useEffect(() => {
-    const socket = io('http://localhost:3000');
+    const socket = io('http://127.0.0.1:3000');
     socket.on('trial_update', () => fetchTrialDates());
     return () => socket.disconnect();
   }, []);
@@ -55,7 +55,7 @@ export default function AdminTrialExams() {
 
   const fetchTrialDates = async () => {
     try {
-      const res = await fetch('http://localhost:3000/trials/dates');
+      const res = await fetch('http://127.0.0.1:3000/trials/dates');
       const data = await res.json();
       if (data.ok) setTrialDates(data.trials);
     } catch (err) { console.error("Fetch trial dates error:", err); }
@@ -63,7 +63,7 @@ export default function AdminTrialExams() {
 
   const fetchAllStudents = async () => {
     try {
-      const res = await fetch('http://localhost:3000/student/all');
+      const res = await fetch('http://127.0.0.1:3000/student/all');
       const data = await res.json();
       setAllStudents(data || []);
     } catch (err) { console.error("Fetch students error:", err); }
@@ -73,7 +73,7 @@ export default function AdminTrialExams() {
     if (!trialId) return;
     setLoadingAssigned(true);
     try {
-      const res = await fetch(`http://localhost:3000/trials/students/${trialId}`);
+      const res = await fetch(`http://127.0.0.1:3000/trials/students/${trialId}`);
       const data = await res.json();
       if (data.ok) setAssignedStudents(data.students);
     } catch (err) { 
@@ -98,7 +98,7 @@ export default function AdminTrialExams() {
     } else {
       if (window.confirm(`Mark ${format(date, 'PPP')} as a Trial Examination Date?`)) {
         try {
-          const res = await fetch('http://localhost:3000/trials/toggle', {
+          const res = await fetch('http://127.0.0.1:3000/trials/toggle', {
             method: 'POST', 
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ trial_date: formattedDate })
@@ -123,7 +123,7 @@ export default function AdminTrialExams() {
 
       setLoadingAssigned(true);
       try {
-        const res = await fetch('http://localhost:3000/trials/assign', {
+        const res = await fetch('http://127.0.0.1:3000/trials/assign', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ 
@@ -154,10 +154,19 @@ export default function AdminTrialExams() {
     }
   };
 
+  const safeFormatTime = (dateStr, fmt) => {
+    try {
+      if (!dateStr) return 'N/A';
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return 'N/A';
+      return format(d, fmt);
+    } catch { return 'N/A'; }
+  };
+
   const removeStudent = async (assignmentId, name) => {
     if (window.confirm(`Are you sure you want to remove ${name} from this Trial session?`)) {
       try {
-        const res = await fetch(`http://localhost:3000/trials/remove/${assignmentId}`, { method: 'DELETE' });
+        const res = await fetch(`http://127.0.0.1:3000/trials/remove/${assignmentId}`, { method: 'DELETE' });
         const data = await res.json();
         if (data.ok) fetchAssignedStudents(selectedDate.id);
       } catch (err) { console.error(err); }
@@ -295,18 +304,19 @@ export default function AdminTrialExams() {
              </div>
            ) : (
              <>
-               {assignedStudents.map(s => (
-                 <div key={s.id} className="assigned-item glass-card">
-                    <div className="a-user">
-                       <div className="a-avatar">{s.first_name[0]}</div>
-                       <div className="a-meta">
-                          <span className="a-name">{s.first_name} {s.last_name}</span>
-                          <span className="a-pkg">{s.package_name || "Standard Package"}</span>
-                       </div>
-                    </div>
-                    <button className="a-remove" onClick={() => removeStudent(s.id, s.first_name)}><Trash2 size={16} /></button>
-                 </div>
-               ))}
+                {assignedStudents.map(s => (
+                  <div key={s.id} className="assigned-item glass-card">
+                     <div className="a-user">
+                        <div className="a-avatar">{s.first_name[0]}</div>
+                        <div className="a-meta">
+                           <span className="a-name">{s.first_name} {s.last_name}</span>
+                           <span className="a-pkg">{s.package_name || "Standard Package"}</span>
+                           <span className="a-assigned-date">Assigned: {safeFormatTime(s.assigned_at, 'MMM dd, hh:mm a')}</span>
+                        </div>
+                     </div>
+                     <button className="a-remove" title="Remove Candidate" onClick={() => removeStudent(s.id, s.first_name)}><Trash2 size={16} /></button>
+                  </div>
+                ))}
                {assignedStudents.length === 0 && (
                  <div className="empty-assignments">
                     <AlertTriangle size={32} />

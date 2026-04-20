@@ -19,7 +19,8 @@ import {
   Mail,
   Phone,
   FileText,
-  User
+  User,
+  AlertCircle
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import { useStudentContext } from '../../../context/StudentContext';
@@ -99,12 +100,17 @@ export default function AdminStudents() {
         body: JSON.stringify(formData)
       });
       const data = await res.json();
+      
       if (data.ok) {
         setShowAttentionAdd(false);
         setShowAddModal(false);
         setFormData({ firstName: '', lastName: '', email: '', phone: '', nic: '', address: '', packageId: '', status: 'Learning', progress: 0 });
+        
+        // Refresh the list from the database immediately after successful registration
         fetchInitialData();
-      } else alert(data.message);
+      } else {
+        alert(data.message);
+      }
     } catch (err) {
       alert("Failed to add student");
     } finally {
@@ -322,7 +328,8 @@ export default function AdminStudents() {
                       setFormData({
                         firstName: student.first_name, lastName: student.last_name, 
                         email: student.email, phone: student.tel_no, nic: student.nic, 
-                        address: student.address || '', status: student.status, progress: student.progress
+                        address: student.address || '', status: student.status, progress: student.progress,
+                        packageId: student.package_id || ''
                       });
                       setShowEditModal(true);
                     }}>
@@ -372,15 +379,20 @@ export default function AdminStudents() {
                   <label>NIC Number</label>
                   <input type="text" required value={formData.nic} onChange={e => setFormData({...formData, nic: e.target.value})} />
                 </div>
-                <div className="form-group">
-                  <label>Address</label>
+                <div className="form-group" style={{ gridColumn: 'span 2' }}>
+                  <label>Home Address</label>
                   <input type="text" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
                 </div>
                 <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                  <label>Training Package</label>
-                  <select required value={formData.packageId} onChange={e => setFormData({...formData, packageId: e.target.value})}>
-                    <option value="">-- Select Package --</option>
-                    {packages.map(p => <option key={p.id} value={p.id}>{p.name} - Rs. {p.price}</option>)}
+                  <label>Initial Training Package</label>
+                  <select 
+                    value={formData.packageId} 
+                    onChange={e => setFormData({...formData, packageId: e.target.value})}
+                  >
+                    <option value="">-- Select Package (Optional) --</option>
+                    {packages.map(pkg => (
+                      <option key={pkg.id} value={pkg.id}>{pkg.name} - LKR {pkg.price}</option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -447,8 +459,20 @@ export default function AdminStudents() {
                   <label>Progress (%)</label>
                   <input type="number" min="0" max="100" value={formData.progress} onChange={e => setFormData({...formData, progress: e.target.value})} />
                 </div>
+                <div className="form-group">
+                  <label>Training Package</label>
+                  <select 
+                    value={formData.packageId} 
+                    onChange={e => setFormData({...formData, packageId: e.target.value})}
+                  >
+                    <option value="">-- No Package --</option>
+                    {packages.map(pkg => (
+                      <option key={pkg.id} value={pkg.id}>{pkg.name}</option>
+                    ))}
+                  </select>
+                </div>
                 <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                  <label>Address</label>
+                  <label>Home Address</label>
                   <textarea rows="2" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
                 </div>
               </div>

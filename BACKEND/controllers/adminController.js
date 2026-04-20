@@ -1,6 +1,12 @@
 const pool = require("../config/db");
+const bcrypt = require('bcrypt');
 const emailService = require("../services/emailService");
-const { sendNotificationToUser, broadcastFinancialUpdate, broadcastStudentUpdate } = require("../socket");
+const { 
+  sendNotificationToUser, 
+  broadcastFinancialUpdate, 
+  broadcastStudentUpdate,
+  broadcastPackageUpdate
+} = require("../socket");
 
 exports.getPendingInstructors = async (req, res) => {
   try {
@@ -226,11 +232,10 @@ exports.exportStudents = async (req, res) => {
     const result = await pool.query(
       `SELECT u.first_name, u.last_name, s.student_id, p.name as package_name, 
               s.registered_date, s.completion_date, i.instructor_name
-       FROM students s
-       JOIN users u ON s.user_id = u.user_id
-       LEFT JOIN packages p ON s.package_id = p.id
-       LEFT JOIN instructors i ON s.instructor_id = i.instructor_id
-       WHERE s.status IN ('Completed', 'Inactive')`
+        FROM students s
+        JOIN users u ON s.user_id = u.user_id
+        LEFT JOIN packages p ON s.package_id = p.id
+        LEFT JOIN instructors i ON s.instructor_id = i.instructor_id`
     );
 
     // Simple CSV conversion
@@ -304,7 +309,7 @@ exports.bulkCleanup = async (req, res) => {
 exports.getAllStudents = async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT s.*, u.first_name, u.last_name, u.email, u.tel_no, u.nic, u.address_line_1 as address,
+      `SELECT s.*, u.first_name, u.last_name, u.email, u.tel_no, u.address_line_1 as address,
               i.instructor_name, p.name as package_name
        FROM students s
        JOIN users u ON s.user_id = u.user_id
@@ -321,25 +326,29 @@ exports.getAllStudents = async (req, res) => {
 // Manually register a new student (Admin Only)
 exports.addStudent = async (req, res) => {
   const { firstName, lastName, email, phone, nic, address, packageId, password } = req.body;
-  if (!firstName || !email || !nic || !packageId) {
+  if (!firstName || !email || !nic) {
     return res.status(400).json({ ok: false, message: "Missing required student data" });
   }
 
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
+    const bcrypt = require('bcrypt');
+    const passwordHash = await bcrypt.hash(password || '123456', 10);
+    const userId = `U${Date.now()}`;
+    const studentId = `S${Date.now()}`;
+
     // 1. Create User
-    const userRes = await client.query(
-      `INSERT INTO users (first_name, last_name, email, password, role, tel_no, nic, address_line_1, status)
-       VALUES ($1, $2, $3, $4, 'student', $5, $6, $7, 'active') RETURNING user_id`,
-      [firstName, lastName, email, password || '123456', phone, nic, address]
+    await client.query(
+      `INSERT INTO users (user_id, first_name, last_name, email, password_hash, role, tel_no, address_line_1, status, email_verified, created_date)
+       VALUES ($1, $2, $3, $4, $5, 'Student', $6, $7, 'active', true, CURRENT_DATE)`,
+      [userId, firstName, lastName, email, passwordHash, phone, address]
     );
-    const userId = userRes.rows[0].user_id;
 
     // 2. Create Student profile
     await client.query(
-      "INSERT INTO students (user_id, package_id, status) VALUES ($1, $2, 'Learning')",
-      [userId, packageId]
+      "INSERT INTO students (student_id, user_id, package_id, status, nic, address, registered_date) VALUES ($1, $2, $3, 'Learning', $4, $5, CURRENT_DATE)",
+      [studentId, userId, (packageId && packageId !== '') ? packageId : null, nic, address]
     );
 
     await client.query("COMMIT");
@@ -377,8 +386,8 @@ exports.editStudent = async (req, res) => {
 
       // Update Student
       await client.query(
-        "UPDATE students SET status = $1, progress = $2 WHERE student_id = $3",
-        [status, progress, id]
+        "UPDATE students SET status = $1, progress = $2, package_id = $3, address = $4 WHERE student_id = $5",
+        [status, progress, (packageId && packageId !== '') ? packageId : null, address, id]
       );
 
       await client.query("COMMIT");
@@ -411,6 +420,7 @@ exports.deleteStudent = async (req, res) => {
       await client.query("DELETE FROM reviews WHERE student_id = $1", [id]);
       await client.query("DELETE FROM sessions WHERE student_id = $1", [id]);
       await client.query("DELETE FROM attendance WHERE student_id = $1", [id]);
+      await client.query("DELETE FROM payments WHERE student_id = $1", [id]);
       await client.query("DELETE FROM students WHERE student_id = $1", [id]);
       await client.query("DELETE FROM users WHERE user_id = $1", [userId]);
 
@@ -485,7 +495,7 @@ exports.getScheduleFormData = async (req, res) => {
        ORDER BY u.first_name ASC`
     );
     const vehiclesRes = await pool.query(
-      `SELECT vehicle_id, registration_number as reg_no, type FROM vehicles WHERE status = 'available' ORDER BY type ASC`
+      `SELECT vehicle_id, registration_number as reg_no, type FROM vehicles WHERE status ILIKE 'available' ORDER BY type ASC`
     );
 
     res.json({
@@ -576,7 +586,7 @@ exports.deleteLesson = async (req, res) => {
 exports.getAllInstructors = async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT i.*, u.email, u.tel_no, u.first_name, u.last_name, u.address_line_1, u.address_line_2, u.city, u.nic
+      `SELECT i.*, u.email, u.tel_no, u.first_name, u.last_name, u.address_line_1
        FROM instructors i
        JOIN users u ON i.user_id = u.user_id
        ORDER BY u.first_name ASC`
@@ -589,6 +599,7 @@ exports.getAllInstructors = async (req, res) => {
 
 // Manually register a new instructor (Admin Only)
 exports.addInstructor = async (req, res) => {
+  const bcrypt = require('bcrypt');
   const { firstName, lastName, email, phone, nic, address, licenseNo, special, regNo, password } = req.body;
   if (!firstName || !email || !nic || !regNo) {
     return res.status(400).json({ ok: false, message: "Missing required instructor data" });
@@ -597,25 +608,30 @@ exports.addInstructor = async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
+    
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password || '123456', 10);
+    const userId = `U${Date.now()}`;
+    const instructorId = `I${Date.now()}`;
+
     // 1. Create User
-    const userRes = await client.query(
-      `INSERT INTO users (first_name, last_name, email, password, role, tel_no, nic, address_line_1, status)
-       VALUES ($1, $2, $3, $4, 'instructor', $5, $6, $7, 'active') RETURNING user_id`,
-      [firstName, lastName, email, password || '123456', phone, nic, address]
+    await client.query(
+      `INSERT INTO users (user_id, first_name, last_name, email, password_hash, role, tel_no, address_line_1, status, email_verified, created_date)
+       VALUES ($1, $2, $3, $4, $5, 'Instructor', $6, $7, 'active', true, CURRENT_DATE)`,
+      [userId, firstName, lastName, email, hashedPassword, phone, address]
     );
-    const userId = userRes.rows[0].user_id;
 
     // 2. Create Instructor profile
     await client.query(
-      `INSERT INTO instructors (user_id, instructor_reg_no, licence_no, specialization, approval_status, instructor_name) 
-       VALUES ($1, $2, $3, $4, 'approved', $5)`,
-      [userId, regNo, licenseNo, special, `${firstName} ${lastName}`]
+      `INSERT INTO instructors (instructor_id, user_id, instructor_reg_no, licence_no, specialization, approval_status, instructor_name, nic) 
+       VALUES ($1, $2, $3, $4, $5, 'approved', $6, $7)`,
+      [instructorId, userId, regNo, licenseNo, special, `${firstName} ${lastName}`, nic]
     );
 
     await client.query("COMMIT");
     res.status(201).json({ ok: true, message: "Instructor registered successfully (Role: Instructor)" });
   } catch (err) {
-    await client.query("ROLLBACK");
+    if (client) await client.query("ROLLBACK");
     res.status(500).json({ ok: false, message: err.message });
   } finally {
     client.release();
@@ -645,9 +661,9 @@ exports.editInstructor = async (req, res) => {
 
       // Update Instructor
       await client.query(
-        `UPDATE instructors SET specialization = $1, instructor_reg_no = $2, licence_no = $3, approval_status = $4, instructor_name = $5
-         WHERE instructor_id = $6`,
-        [special, regNo, licenseNo, status, `${firstName} ${lastName}`, id]
+        `UPDATE instructors SET specialization = $1, instructor_reg_no = $2, licence_no = $3, approval_status = $4, instructor_name = $5, nic = $6
+         WHERE instructor_id = $7`,
+        [special, regNo, licenseNo, status, `${firstName} ${lastName}`, nic, id]
       );
 
       await client.query("COMMIT");
@@ -675,11 +691,14 @@ exports.deleteInstructor = async (req, res) => {
       if (insRes.rowCount === 0) return res.status(404).json({ ok: false, message: "Instructor not found" });
       const userId = insRes.rows[0].user_id;
 
-      // Cascading deletion (Sessions, lessons, payouts)
+      // Cascading deletion (Sessions, lessons, payouts, materials, etc.)
       await client.query("DELETE FROM sessions WHERE instructor_id = $1", [id]);
       await client.query("DELETE FROM lessons WHERE instructor_id = $1", [id]);
       await client.query("DELETE FROM attendance WHERE instructor_id = $1", [id]);
       await client.query("DELETE FROM instructor_payouts WHERE instructor_id = $1", [id]);
+      await client.query("DELETE FROM instructor_vehicles WHERE instructor_id = $1", [id]);
+      await client.query("DELETE FROM materials WHERE instructor_id = $1", [id]);
+      await client.query("DELETE FROM notifications WHERE instructor_id = $1", [id]);
       await client.query("DELETE FROM instructors WHERE instructor_id = $1", [id]);
       await client.query("DELETE FROM users WHERE user_id = $1", [userId]);
 
@@ -829,14 +848,16 @@ exports.recordInstructorPayout = async (req, res) => {
  * --- Fleet Management (Vehicles) ---
  */
 
-// Fetch all vehicles with instructor mapping
+// Fetch all vehicles with instructor mapping through join table
 exports.getAllVehicles = async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT v.*, u.first_name || ' ' || u.last_name as instructor_name,
+              iv.instructor_id as assigned_instructor_id,
               (SELECT created_at FROM gps_logs WHERE vehicle_id = v.vehicle_id ORDER BY created_at DESC LIMIT 1) as last_seen
        FROM vehicles v
-       LEFT JOIN instructors i ON v.vehicle_id = i.vehicle_id
+       LEFT JOIN instructor_vehicles iv ON v.vehicle_id = iv.vehicle_id
+       LEFT JOIN instructors i ON iv.instructor_id = i.instructor_id
        LEFT JOIN users u ON i.user_id = u.user_id
        ORDER BY v.vehicle_id ASC`
     );
@@ -890,9 +911,10 @@ exports.deleteVehicle = async (req, res) => {
     const client = await pool.connect();
     try {
       await client.query("BEGIN");
+      await client.query("DELETE FROM lessons WHERE vehicle_id = $1", [id]);
       await client.query("DELETE FROM gps_logs WHERE vehicle_id = $1", [id]);
       await client.query("DELETE FROM gps_routes WHERE vehicle_id = $1", [id]);
-      await client.query("UPDATE instructors SET vehicle_id = NULL WHERE vehicle_id = $1", [id]);
+      await client.query("DELETE FROM instructor_vehicles WHERE vehicle_id = $1", [id]);
       await client.query("DELETE FROM vehicles WHERE vehicle_id = $1", [id]);
       await client.query("COMMIT");
       res.json({ ok: true, message: "Vehicle and all historical logs permanently removed" });
@@ -916,9 +938,53 @@ exports.getLatestVehicleLocation = async (req, res) => {
       [id]
     );
     if (result.rowCount === 0) {
-      return res.status(404).json({ ok: false, message: "No location history available for this vehicle" });
+      // 404 is handled by frontend to show "Not Deployed" state
+      return res.status(404).json({ ok: false, message: "Vehicle not currently broadcasting location data" });
     }
     res.json({ ok: true, location: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
+// Assign/Reassign an instructor to a vehicle
+exports.assignVehicleInstructor = async (req, res) => {
+  const { vehicleId, instructorId } = req.body;
+
+  if (!vehicleId) {
+    return res.status(400).json({ ok: false, message: "Missing vehicleId" });
+  }
+
+  try {
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+
+      // 1. Remove any current assignment for this vehicle (Primary assignment logic)
+      await client.query("DELETE FROM instructor_vehicles WHERE vehicle_id = $1", [vehicleId]);
+
+      // 2. Insert new assignment if instructorId is provided (allows unassigning if null)
+      if (instructorId) {
+        await client.query(
+          "INSERT INTO instructor_vehicles (vehicle_id, instructor_id) VALUES ($1, $2)",
+          [vehicleId, instructorId]
+        );
+      }
+
+      // 3. Log Activity
+      await client.query(
+        "INSERT INTO activity_logs (message, type) VALUES ($1, 'system')",
+        [`Fleet assignment updated for vehicle ID: ${vehicleId}. Instructor: ${instructorId || 'None'}`, 'system']
+      );
+
+      await client.query("COMMIT");
+      res.json({ ok: true, message: "Vehicle instructor assignment updated successfully" });
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
   } catch (err) {
     res.status(500).json({ ok: false, message: err.message });
   }
@@ -931,37 +997,56 @@ exports.getLatestVehicleLocation = async (req, res) => {
 // Fetch all attendance logs with joined names
 exports.getAllAttendanceLogs = async (req, res) => {
   try {
+// Fetch All Attendance Logs (Flattened for Audit Table)
+exports.getAllAttendanceLogs = async (req, res) => {
+  try {
     const result = await pool.query(
       `SELECT a.*, 
-              us.first_name || ' ' || us.last_name as student_name,
-              ui.first_name || ' ' || ui.last_name as instructor_name
+              us.first_name, us.last_name,
+              ui.first_name as instructor_fname, ui.last_name as instructor_lname
        FROM attendance a
        JOIN students s ON a.student_id = s.student_id
        JOIN users us ON s.user_id = us.user_id
-       JOIN instructors i ON a.instructor_id = i.instructor_id
-       JOIN users ui ON i.user_id = ui.user_id
-       ORDER BY a.attendance_date DESC, a.created_at DESC`
+       LEFT JOIN instructors i ON a.instructor_id = i.instructor_id
+       LEFT JOIN users ui ON i.user_id = ui.user_id
+       ORDER BY a.attendance_date DESC, a.created_at DESC
+       LIMIT 100`
     );
-    res.json({ ok: true, logs: result.rows });
+    res.json({ ok: true, logs: result.rows, history: result.rows }); // history alias for frontend compatibility
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
   } catch (err) {
     res.status(500).json({ ok: false, message: err.message });
   }
 };
 
-// Get Attendance Live Stats
+// Get Attendance Live Stats (Monthly Summary)
 exports.getAttendanceStats = async (req, res) => {
+  const { month, year } = req.query;
   try {
-    const today = new Date().toISOString().split('T')[0];
-    const totalRes = await pool.query("SELECT COUNT(*) FROM attendance");
-    const todayRes = await pool.query("SELECT COUNT(*) FROM attendance WHERE attendance_date = $1", [today]);
-    const absentRes = await pool.query("SELECT COUNT(*) FROM attendance WHERE status = 'Absent'");
+    const m = month || new Date().getMonth() + 1;
+    const y = year || new Date().getFullYear();
+
+    const statsRes = await pool.query(
+      `SELECT 
+        COUNT(*) FILTER (WHERE status = 'Present') as present,
+        COUNT(*) FILTER (WHERE status = 'Late') as late,
+        COUNT(*) FILTER (WHERE status = 'Absent') as absent
+       FROM attendance
+       WHERE EXTRACT(MONTH FROM attendance_date) = $1 
+         AND EXTRACT(YEAR FROM attendance_date) = $2`,
+      [m, y]
+    );
     
+    const s = statsRes.rows[0];
     res.json({
       ok: true,
       stats: {
-        totalAttendance: totalRes.rows[0].count,
-        todayAttendance: todayRes.rows[0].count,
-        absentCount: absentRes.rows[0].count
+        present: parseInt(s.present) || 0,
+        late: parseInt(s.late) || 0,
+        absent: parseInt(s.absent) || 0
       }
     });
   } catch (err) {
@@ -969,27 +1054,76 @@ exports.getAttendanceStats = async (req, res) => {
   }
 };
 
-// Get Monthly Attendance Grid data
+// Get Monthly Attendance Grid data (Global View)
 exports.getMonthlyAttendanceGrid = async (req, res) => {
-  const { month, year } = req.query; // e.g., 4, 2026
+  const { month, year } = req.query;
   try {
-    const result = await pool.query(
-      `SELECT a.*, 
-              us.first_name || ' ' || us.last_name as student_name,
-              ui.first_name || ' ' || ui.last_name as instructor_name
+    // 1. Fetch Students
+    const studentsRes = await pool.query(
+      `SELECT s.student_id, u.first_name, u.last_name 
+       FROM students s JOIN users u ON s.user_id = u.user_id 
+       ORDER BY u.first_name ASC`
+    );
+
+    // 2. Fetch Logs
+    const attendanceRes = await pool.query(
+      `SELECT a.*, us.first_name, us.last_name
        FROM attendance a
        JOIN students s ON a.student_id = s.student_id
        JOIN users us ON s.user_id = us.user_id
-       LEFT JOIN instructors i ON a.instructor_id = i.instructor_id
-       LEFT JOIN users ui ON i.user_id = ui.user_id
        WHERE EXTRACT(MONTH FROM a.attendance_date) = $1 
-         AND EXTRACT(YEAR FROM a.attendance_date) = $2
-       ORDER BY us.first_name, a.attendance_date`,
+         AND EXTRACT(YEAR FROM a.attendance_date) = $2`,
       [month, year]
     );
-    res.json({ ok: true, logs: result.rows });
+
+    res.json({ 
+      ok: true, 
+      students: studentsRes.rows,
+      attendance: attendanceRes.rows,
+      logs: attendanceRes.rows // alias for backward compatibility
+    });
   } catch (err) {
     res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
+// Admin Mark Attendance
+exports.saveAttendance = async (req, res) => {
+  const { records } = req.body;
+  if (!records || !Array.isArray(records)) return res.status(400).json({ ok: false, message: "Invalid records" });
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    for (const rec of records) {
+      // Use UPSERT on student_id + attendance_date + session_number (unique constraint check)
+      // For simplicity, we'll just check if exists then update or insert
+      const exists = await client.query(
+        "SELECT id FROM attendance WHERE student_id = $1 AND attendance_date = $2 AND session_number = $3",
+        [rec.student_id, rec.attendance_date, rec.session_number]
+      );
+
+      if (exists.rowCount > 0) {
+        await client.query(
+          `UPDATE attendance SET status = $1, time_slot = $2, instructor_id = $3 
+           WHERE id = $4`,
+          [rec.status, rec.time_slot, rec.instructor_id, exists.rows[0].id]
+        );
+      } else {
+        await client.query(
+          `INSERT INTO attendance (student_id, instructor_id, attendance_date, status, session_number, time_slot)
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          [rec.student_id, rec.instructor_id, rec.attendance_date, rec.status, rec.session_number, rec.time_slot]
+        );
+      }
+    }
+    await client.query("COMMIT");
+    res.json({ ok: true, message: "Attendance synchronized successfully" });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    res.status(500).json({ ok: false, message: err.message });
+  } finally {
+    client.release();
   }
 };
 
@@ -1029,11 +1163,10 @@ exports.addPackage = async (req, res) => {
   try {
     const result = await pool.query(
       "INSERT INTO packages (name, price, description, status) VALUES ($1, $2, $3, $4) RETURNING *",
-      [name, price, description, status || 'Active']
+      [name, parseFloat(price), description, status || 'Active']
     );
     
     // Notify all clients (Home page dynamic updates)
-    const { broadcastPackageUpdate } = require("../socket");
     broadcastPackageUpdate();
 
     res.status(201).json({ ok: true, package: result.rows[0], message: "Package added successfully" });
@@ -1051,14 +1184,13 @@ exports.editPackage = async (req, res) => {
     const result = await pool.query(
       `UPDATE packages SET name = $1, price = $2, description = $3, status = $4
        WHERE id = $5 RETURNING *`,
-      [name, price, description, status, id]
+      [name, parseFloat(price), description, status, id]
     );
 
     if (result.rowCount === 0) {
       return res.status(404).json({ ok: false, message: "Package not found" });
     }
 
-    const { broadcastPackageUpdate } = require("../socket");
     broadcastPackageUpdate();
 
     res.json({ ok: true, package: result.rows[0], message: "Package updated successfully" });
@@ -1083,7 +1215,6 @@ exports.deletePackage = async (req, res) => {
 
     await pool.query("DELETE FROM packages WHERE id = $1", [id]);
     
-    const { broadcastPackageUpdate } = require("../socket");
     broadcastPackageUpdate();
 
     res.json({ ok: true, message: "Package deleted successfully" });
@@ -1091,3 +1222,224 @@ exports.deletePackage = async (req, res) => {
     res.status(500).json({ ok: false, message: err.message });
   }
 };
+
+// Database Sync function for Student Seeding
+exports.syncDatabaseStudents = async (req, res) => {
+  const REAL_STUDENTS = [
+      { firstName: "Uthpala", lastName: "Sahan" },
+      { firstName: "Sithija", lastName: "Nimsara" },
+      { firstName: "Ahsan", lastName: "Madushanka" },
+      { firstName: "Nimna", lastName: "Perera" },
+      { firstName: "Kavindu", lastName: "Chamod" },
+      { firstName: "Nisal", lastName: "Anuhas" },
+      { firstName: "Gayesha", lastName: "Nirman" },
+      { firstName: "Sumudu", lastName: "Dias" },
+      { firstName: "Pasindu", lastName: "Ninada" },
+      { firstName: "Dilshan", lastName: "Pawithra" }
+  ];
+
+  const client = await pool.connect();
+  try {
+      await client.query('BEGIN');
+
+      console.log("🧹 DB: Wiping dummy student data...");
+      
+      const stdUserIdsRes = await client.query("SELECT user_id FROM users WHERE role ILIKE 'Student'");
+      const stdUserIds = stdUserIdsRes.rows.map(r => r.user_id);
+      
+      if (stdUserIds.length > 0) {
+          const stdIdsRes = await client.query("SELECT student_id FROM students WHERE user_id = ANY($1)", [stdUserIds]);
+          const stdIds = stdIdsRes.rows.map(r => r.student_id);
+
+          if (stdIds.length > 0) {
+              await client.query("DELETE FROM attendance WHERE student_id = ANY($1)", [stdIds]);
+              await client.query("DELETE FROM sessions WHERE student_id = ANY($1)", [stdIds]);
+              await client.query("DELETE FROM reviews WHERE student_id = ANY($1)", [stdIds]);
+              await client.query("DELETE FROM payments WHERE student_id = ANY($1)", [stdIds]);
+              await client.query("DELETE FROM students WHERE student_id = ANY($1)", [stdIds]);
+          }
+          await client.query("DELETE FROM users WHERE user_id = ANY($1)", [stdUserIds]);
+      }
+
+      console.log("✅ DB: Wiped dummy data. Inserting 10 real students...");
+      
+      // Dynamically find a valid instructor and package to avoid FK crashes
+      const fallbackPkgRes = await client.query("SELECT id FROM packages LIMIT 1");
+      const fallbackInsRes = await client.query("SELECT instructor_id FROM instructors WHERE approval_status = 'approved' LIMIT 1");
+      
+      const packageId = fallbackPkgRes.rows[0]?.id || null; 
+      const instructorId = fallbackInsRes.rows[0]?.instructor_id || null; 
+      const passwordHash = await bcrypt.hash('123456', 10);
+
+      for (let i = 0; i < REAL_STUDENTS.length; i++) {
+          const student = REAL_STUDENTS[i];
+          const email = `${student.firstName.toLowerCase()}.${student.lastName.toLowerCase()}${i}@example.com`;
+          const nic = `2000${(10000000 + i).toString().substring(1)}V`;
+          const phone = `077${(1000000 + i).toString().substring(1)}`;
+          const address = `Colombo, Sri Lanka`;
+          
+          const userId = `U${Date.now()}${i}`; // Unique generator
+          const studentId = `S${Date.now()}${i}`;
+
+          await client.query(
+              `INSERT INTO users (user_id, first_name, last_name, email, password_hash, role, tel_no, status, address_line_1, email_verified, created_date)
+               VALUES ($1, $2, $3, $4, $5, 'Student', $6, 'active', $7, true, now())`,
+              [userId, student.firstName, student.lastName, email, passwordHash, phone, address]
+          );
+
+          await client.query(
+              `INSERT INTO students (student_id, user_id, package_id, instructor_id, status, progress, nic, address, registered_date)
+               VALUES ($1, $2, $3, $4, 'Learning', $5, $6, $7, CURRENT_DATE)`,
+              [studentId, userId, packageId, instructorId, Math.floor(Math.random() * 40) + 10, nic, address]
+          );
+      }
+
+      await client.query('COMMIT');
+      
+      const { broadcastStudentUpdate } = require("../socket");
+      broadcastStudentUpdate();
+      
+      res.json({ ok: true, message: "Successfully synchronized 10 real students" });
+  } catch (err) {
+      await client.query('ROLLBACK');
+      console.error("❌ DB Migration failed:", err.message);
+      res.status(500).json({ ok: false, message: err.message });
+  } finally {
+      client.release();
+  }
+};
+
+// --- Financial & Profile Features (New) ---
+
+// Get all student payments & balances
+exports.getAdminPayments = async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        s.student_id, 
+        u.first_name || ' ' || u.last_name as student_name,
+        p.name as package_name,
+        p.price as package_price,
+        COALESCE(pmt.total_paid, 0) as amount_paid,
+        (p.price - COALESCE(pmt.total_paid, 0)) as balance,
+        s.status
+      FROM students s
+      JOIN users u ON s.user_id = u.user_id
+      JOIN packages p ON s.package_id = p.id
+      LEFT JOIN (
+        SELECT student_id, SUM(amount) as total_paid 
+        FROM payments 
+        GROUP BY student_id
+      ) pmt ON s.student_id = pmt.student_id
+      ORDER BY s.registered_date DESC
+    `);
+
+    // Financial Summary Logic
+    let totalPotential = 0;
+    let totalCollected = 0;
+    
+    result.rows.forEach(p => {
+      totalPotential += parseFloat(p.package_price || 0);
+      totalCollected += parseFloat(p.amount_paid || 0);
+    });
+
+    res.json({ 
+      ok: true, 
+      payments: result.rows,
+      summary: {
+        totalPotential,
+        totalCollected,
+        totalBalance: totalPotential - totalCollected
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
+// Record a new payment manually
+exports.recordStudentPayment = async (req, res) => {
+  const { student_id, amount, payment_method } = req.body;
+  
+  if (!student_id || !amount) {
+    return res.status(400).json({ ok: false, message: "Missing student_id or amount" });
+  }
+
+  try {
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+
+      // 0. Fetch student's package_id and price to check balance
+      const stdInfo = await client.query(`
+        SELECT s.package_id, p.price, COALESCE(pmt.total_paid, 0) as total_paid
+        FROM students s
+        JOIN packages p ON s.package_id = p.id
+        LEFT JOIN (
+           SELECT student_id, SUM(amount) as total_paid FROM payments GROUP BY student_id
+        ) pmt ON s.student_id = pmt.student_id
+        WHERE s.student_id = $1
+      `, [student_id]);
+
+      if (stdInfo.rowCount === 0) throw new Error("Student or associated package not found");
+      const { package_id, price, total_paid } = stdInfo.rows[0];
+      
+      const newTotalPaid = parseFloat(total_paid) + parseFloat(amount);
+      const paymentId = `PMT${Date.now()}`;
+
+      // 1. Insert Payment using the correct schema
+      await client.query(
+        `INSERT INTO payments (payment_id, student_id, package_id, amount, payment_method, status, payment_date, payment_time) 
+         VALUES ($1, $2, $3, $4, $5, 'Completed', now(), now())`,
+        [paymentId, student_id, package_id, amount, payment_method || 'Manual Admin Entry']
+      );
+
+      // 2. Auto-status update (Trigger 'Paid' if balance reached)
+      if (newTotalPaid >= parseFloat(price)) {
+        await client.query(
+          "UPDATE students SET status = 'Paid' WHERE student_id = $1",
+          [student_id]
+        );
+      }
+
+      // 3. Log Activity
+      await client.query(
+        "INSERT INTO activity_logs (message, type) VALUES ($1, 'payment')",
+        [`Payment of Rs. ${amount} recorded for Student ID: ${student_id}. ${newTotalPaid >= price ? 'Account cleared.' : ''}`, 'payment']
+      );
+
+      await client.query("COMMIT");
+      
+      broadcastFinancialUpdate();
+
+      res.json({ ok: true, message: "Payment recorded successfully" });
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
+// Update Admin Profile Details
+exports.updateAdminProfile = async (req, res) => {
+  const { userId } = req.params;
+  const { firstName, lastName, email, phone, address1, address2, city } = req.body;
+
+  try {
+    await pool.query(
+      `UPDATE users SET first_name = $1, last_name = $2, email = $3, tel_no = $4,
+       address_line_1 = $5, address_line_2 = $6, city = $7
+       WHERE user_id = $8`,
+      [firstName, lastName, email, phone, address1, address2, city, userId]
+    );
+    res.json({ ok: true, message: "Profile updated successfully" });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
+

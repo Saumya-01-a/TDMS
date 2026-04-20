@@ -12,7 +12,8 @@ router.post("/login", authenticationController.login);
 // Email Verification
 router.get("/verify-email/:token", authenticationController.verifyEmail);
 
-// Password Reset
+// Passwords & Profile
 router.post("/forgot-password", authenticationController.forgotPassword);
+router.get("/profile/:userId", authenticationController.getUserProfile);
 
 module.exports = router;

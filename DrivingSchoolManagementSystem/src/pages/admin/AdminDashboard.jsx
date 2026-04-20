@@ -44,7 +44,6 @@ export default function AdminDashboard() {
   const [activities, setActivities] = useState([]);
   const [financialData, setFinancialData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { studentCount } = useStudentContext();
   
   // Modal states
   const [confirmModal, setConfirmModal] = useState({ show: false, type: '', data: null });
@@ -53,8 +52,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchDashboardData();
 
-    // Setup Socket.io Listener
-    const socket = io('http://localhost:3000');
+    // Setup Socket.io Listener (Standardized to 127.0.0.1)
+    const socket = io('http://127.0.0.1:3000');
     socket.on("financial_update", () => {
       console.log("📈 Real-time Financial Update Received");
       fetchDashboardData();
@@ -72,11 +71,11 @@ export default function AdminDashboard() {
     try {
       setLoading(true);
       const [statsRes, pendingRes, activityRes, financialRes, trialRes] = await Promise.all([
-        fetch('http://localhost:3000/admin/dashboard-stats'),
-        fetch('http://localhost:3000/admin/pending-instructors'),
-        fetch('http://localhost:3000/admin/recent-activity'),
-        fetch('http://localhost:3000/admin/financial-overview'),
-        fetch('http://localhost:3000/trials/stats')
+        fetch('http://127.0.0.1:3000/admin/dashboard-stats'),
+        fetch('http://127.0.0.1:3000/admin/pending-instructors'),
+        fetch('http://127.0.0.1:3000/admin/recent-activity'),
+        fetch('http://127.0.0.1:3000/admin/financial-overview'),
+        fetch('http://127.0.0.1:3000/trials/stats')
       ]);
 
       const statsData = await statsRes.json();
@@ -85,13 +84,18 @@ export default function AdminDashboard() {
       const finData = await financialRes.json();
       const trialData = await trialRes.json();
 
-      if (statsData.ok) setStats({ ...statsData.stats, upcomingTrials: trialData.upcomingCount || 0 });
+      if (statsData.ok) {
+        setStats({ 
+          ...statsData.stats, 
+          upcomingTrials: trialData.upcomingCount || 0 
+        });
+      }
       if (pendingData.ok) setPendingInstructors(pendingData.instructors);
       if (activityData.ok) setActivities(activityData.activities);
       if (finData.ok) setFinancialData(finData.data);
 
     } catch (err) {
-      console.error("Dashboard fetch error:", err);
+      console.error("Dashboard synchronization failure:", err);
     } finally {
       setLoading(false);
     }
@@ -105,7 +109,7 @@ export default function AdminDashboard() {
     if (!confirmModal.data) return;
     setActionLoading(true);
     try {
-      const res = await fetch('http://localhost:3000/admin/approve-instructor', {
+      const res = await fetch('http://127.0.0.1:3000/admin/approve-instructor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -118,10 +122,10 @@ export default function AdminDashboard() {
         setConfirmModal({ show: false, type: '', data: null });
         fetchDashboardData();
       } else {
-        alert(data.message);
+        alert(data.message || "Database synchronization failed.");
       }
     } catch (err) {
-      alert("Action failed");
+      alert("Network failure. Ensure the administrative server is running.");
     } finally {
       setActionLoading(false);
     }
@@ -132,6 +136,8 @@ export default function AdminDashboard() {
   };
 
   const downloadFinancialReport = () => {
+    if (!financialData.length) return alert("System Notice: No financial data available for export.");
+    
     const csvData = financialData.map(m => ({
       Month: getMonthName(m.month),
       Year: new Date().getFullYear(),
@@ -152,26 +158,26 @@ export default function AdminDashboard() {
     document.body.removeChild(link);
   };
 
-  if (loading) return <div className="admDash__loading">Initializing Command Center...</div>;
+  if (loading) return <div className="admDash__loading">Synchronizing with Primary Database...</div>;
 
   return (
-    <div className="admDash__wrapper">
+    <div className="admDash__wrapper" id="id_admin_control_center">
       <div className="admDash__container">
         {/* Branding Header */}
         <header className="admDash__header">
           <div className="admDash__header-info">
-            <h1>Admin Control Center</h1>
-            <p>System Overview & Strategic Operations</p>
+            <h1>Command Center</h1>
+            <p>Intelligence & Operational Visibility</p>
           </div>
         </header>
 
         {/* Stats Row */}
         <div className="admDash__stats">
-          <div className="admDash__stat-card glass-panel">
+          <div className="admDash__stat-card glass-panel" id="stat_total_students">
             <div className="stat-icon students"><Users size={24} /></div>
             <div className="stat-info">
-              <span className="stat-label">Total Students</span>
-              <span className="stat-value">{studentCount}</span>
+              <span className="stat-label">Verified Students</span>
+              <span className="stat-value">{stats.totalStudents}</span>
             </div>
           </div>
           <div className="admDash__stat-card glass-panel">

@@ -424,6 +424,26 @@ export default function AdminInstructors() {
                   <label>License Number</label>
                   <input type="text" value={formData.licenseNo} onChange={e => setFormData({...formData, licenseNo: e.target.value})} />
                 </div>
+                <div className="form-group">
+                  <label>Phone Number</label>
+                  <input type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+                </div>
+                <div className="form-group">
+                  <label>NIC Number</label>
+                  <input type="text" value={formData.nic} onChange={e => setFormData({...formData, nic: e.target.value})} />
+                </div>
+                <div className="form-group">
+                  <label>MTD Reg Number</label>
+                  <input type="text" value={formData.regNo} onChange={e => setFormData({...formData, regNo: e.target.value})} />
+                </div>
+                <div className="form-group">
+                  <label>Specialization</label>
+                  <input type="text" value={formData.special} onChange={e => setFormData({...formData, special: e.target.value})} />
+                </div>
+                <div className="form-group" style={{ gridColumn: 'span 2' }}>
+                  <label>Home Address</label>
+                  <textarea rows="2" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
+                </div>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>Discard</button>

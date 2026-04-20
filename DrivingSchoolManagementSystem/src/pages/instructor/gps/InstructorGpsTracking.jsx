@@ -35,7 +35,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const SOCKET_URL = 'http://localhost:3000';
+const SOCKET_URL = 'http://127.0.0.1:3000';
 
 export default function InstructorGpsTracking() {
   const [isTripActive, setIsTripActive] = useState(false);
@@ -46,15 +46,16 @@ export default function InstructorGpsTracking() {
   const [elapsedTime, setElapsedTime] = useState('00:00:00');
   const [vehicles, setVehicles] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [tripHistory, setTripHistory] = useState([]);
 
   const socketRef = useRef(null);
   const watchIdRef = useRef(null);
   const timerRef = useRef(null);
 
-  // Auth Context
+  // Auth Context - Robust Identity Resolution
   const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || '{}');
-  const instructorId = user.instructor_id || 'INST-0045';
-  const instructorName = `${user.firstName} ${user.lastName}`;
+  const instructorId = user.instructor_id || user.user_id || user.userId || 'INST-DEFAULT';
+  const instructorName = `${user.first_name || user.firstName || 'Instructor'} ${user.last_name || user.lastName || ''}`;
 
   // Route Planning State
   const [isPlanning, setIsPlanning] = useState(false);
@@ -67,10 +68,11 @@ export default function InstructorGpsTracking() {
     // Fetch vehicles for selection
     const fetchVehicles = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/vehicles');
+        const res = await fetch('http://127.0.0.1:3000/api/vehicles');
         const data = await res.json();
-        setVehicles(data);
-        if (data.length > 0) setSelectedVehicle(data[0]);
+        const vehicleList = Array.isArray(data) ? data : (data.vehicles || []);
+        setVehicles(vehicleList);
+        if (vehicleList.length > 0) setSelectedVehicle(vehicleList[0]);
       } catch (err) {
         console.error("Failed to fetch vehicles", err);
       }
@@ -88,6 +90,23 @@ export default function InstructorGpsTracking() {
     };
   }, []);
 
+  // Fetch History whenever selectedVehicle changes
+  useEffect(() => {
+    if (selectedVehicle) {
+      fetchHistory(selectedVehicle.vehicle_id);
+    }
+  }, [selectedVehicle]);
+
+  const fetchHistory = async (vId) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:3000/gps/history/${vId}`);
+      const data = await res.json();
+      if (data.ok) setTripHistory(data.sessions || []);
+    } catch (err) {
+      console.error("Error fetching history:", err);
+    }
+  };
+
   const startTrip = () => {
     if (!selectedVehicle) return alert("Please select a vehicle first.");
 
@@ -98,7 +117,8 @@ export default function InstructorGpsTracking() {
     // Start Timer
     timerRef.current = setInterval(() => {
       const now = new Date();
-      const diff = now - new Date(startTime || now);
+      const st = startTime ? new Date(startTime) : now;
+      const diff = now - st;
       const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
       const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
       const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
@@ -120,7 +140,7 @@ export default function InstructorGpsTracking() {
             calculateETA(latitude, longitude, geoSpeed);
           }
 
-          // Broadcast to server
+          // Broadcast to server via socket
           socketRef.current.emit('update_location', {
             vehicleId: selectedVehicle.vehicle_id,
             regNumber: selectedVehicle.registration_number,
@@ -170,7 +190,7 @@ export default function InstructorGpsTracking() {
   const savePlanningRoute = async () => {
     if (plannedRoute.length < 2) return alert("Please select at least 2 points on the map.");
     try {
-      const res = await fetch('http://localhost:3000/gps/save-route', {
+      const res = await fetch('http://127.0.0.1:3000/gps/save-route', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -192,12 +212,13 @@ export default function InstructorGpsTracking() {
 
   const clearHistory = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/gps/clear-history/${instructorId}`, {
+      const res = await fetch(`http://127.0.0.1:3000/gps/clear-history/${instructorId}`, {
         method: 'DELETE'
       });
       const data = await res.json();
       if (data.ok) {
         setShowClearModal(false);
+        setTripHistory([]);
         alert("Historical logs cleared successfully.");
       }
     } catch (err) {
@@ -210,6 +231,7 @@ export default function InstructorGpsTracking() {
     if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
     if (timerRef.current) clearInterval(timerRef.current);
     setSpeed(0);
+    fetchHistory(selectedVehicle.vehicle_id);
     alert("Trip finished! Route data synchronized.");
   };
 
@@ -226,6 +248,7 @@ export default function InstructorGpsTracking() {
              <select 
                className="glass-input"
                disabled={isTripActive}
+               value={selectedVehicle?.vehicle_id || ''}
                onChange={(e) => setSelectedVehicle(vehicles.find(v => v.vehicle_id === parseInt(e.target.value)))}
              >
                {vehicles.map(v => <option key={v.vehicle_id} value={v.vehicle_id}>{v.registration_number} ({v.type})</option>)}
@@ -329,25 +352,33 @@ export default function InstructorGpsTracking() {
           <table className="glass-table">
             <thead>
               <tr>
-                <th>Vehicle</th>
-                <th>Distance</th>
+                <th>Trip ID</th>
+                <th>Start Time</th>
                 <th>Duration</th>
+                <th>Data Points</th>
                 <th>End Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>WP CAS-9021</td>
-                <td>12.5 km</td>
-                <td>01:15:30</td>
-                <td><span className="badge-success">Success</span></td>
-              </tr>
-              <tr>
-                <td>WP KR-4432</td>
-                <td>4.2 km</td>
-                <td>00:25:10</td>
-                <td><span className="badge-success">Success</span></td>
-              </tr>
+              {tripHistory.map((trip, idx) => {
+                const duration = new Date(trip.end_time) - new Date(trip.start_time);
+                const hrs = Math.floor(duration / 3600000);
+                const mns = Math.floor((duration % 3600000) / 60000);
+                return (
+                  <tr key={idx}>
+                    <td>{trip.session_id.substring(0, 15)}...</td>
+                    <td>{new Date(trip.start_time).toLocaleString()}</td>
+                    <td>{hrs > 0 ? `${hrs}h ` : ''}{mns}m</td>
+                    <td>{trip.points.length} coords</td>
+                    <td><span className="badge-success">Success</span></td>
+                  </tr>
+                );
+              })}
+              {tripHistory.length === 0 && (
+                <tr>
+                  <td colSpan="5" style={{ textAlign: 'center', opacity: 0.5, padding: '2rem' }}>No recent trip history found for this vehicle.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

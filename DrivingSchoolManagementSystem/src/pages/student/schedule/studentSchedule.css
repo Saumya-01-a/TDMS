@@ -1,441 +1,217 @@
 /* =====================================================
-   STUDENT SCHEDULE CSS - STUSCH__ PREFIX
-   Dark Glass Theme with Glassmorphism
+   STUDENT SCHEDULE CSS - STUSCH- PREFIX
+   Centered Layout with Premium Lesson Cards
    ===================================================== */
 
-:root {
-  --stuSch__yellow: #FFD700;
-  --stuSch__text: rgba(255, 255, 255, 0.92);
-  --stuSch__muted: rgba(255, 255, 255, 0.5);
-  --stuSch__border: rgba(255, 255, 255, 0.1);
+.stuSch__pageWrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0d1117;
 }
 
-/* ============ SCHEDULE PAGE WRAPPER ============ */
-
-.stuSch__schedulePageWrapper {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
+.stuSch__main {
+  flex: 1;
+  padding: 3rem;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
 }
 
-/* ============ PAGE TITLE ============ */
+.stuSch__container {
+  width: 100%;
+  max-width: 1100px; /* Optimized width for lesson cards */
+}
 
-.stuSch__schedulePageTitle {
-  font-size: 2rem;
+/* ============ HEADER ============ */
+.stuSch__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(225, 27, 34, 0.15);
+}
+
+.stuSch__title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #e6f1ff 0%, #8892b0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.stuSch__subtitle {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 1.1rem;
+}
+
+.stuSch__inquireBtn {
+  background: #E11B22;
+  color: #fff;
+  border: none;
+  padding: 0.9rem 1.8rem;
+  border-radius: 12px;
   font-weight: 700;
-  color: var(--stuSch__text);
-  margin: 0 0 2rem 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-/* ============ HEADER CARD - RED GRADIENT ============ */
+.stuSch__inquireBtn:hover {
+  background: #ff4d4d;
+  box-shadow: 0 8px 20px rgba(225, 27, 34, 0.3);
+  transform: translateY(-2px);
+}
 
-.stuSch__scheduleHeaderCard {
+/* ============ ALERTS & LOADING ============ */
+.stuSch__alert {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.stuSch__alert--success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.stuSch__alert--error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.stuSch__loading, .stuSch__empty {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 4rem;
+  font-style: italic;
+}
+
+/* ============ SCHEDULE GRID ============ */
+.stuSch__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.stuSch__card {
+  background: rgba(13, 17, 23, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.8rem;
+  transition: all 0.3s ease;
+}
+
+.stuSch__card:hover {
+  border-color: rgba(225, 27, 34, 0.3);
+  transform: translateX(5px);
+  background: rgba(13, 17, 23, 0.6);
+}
+
+.stuSch__cardTop {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 2rem;
-  padding: 2rem;
-  background: linear-gradient(135deg, rgba(124, 11, 11, 0.5) 0%, rgba(244, 67, 54, 0.2) 100%);
-  border-radius: 12px;
-  margin-bottom: 2.5rem;
-  border: 1px solid rgba(244, 67, 54, 0.2);
-  backdrop-filter: blur(10px);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.stuSch__headerContent {
-  flex: 1;
-}
-
-.stuSch__headerTitle {
-  font-size: 1.5rem;
+.stuSch__dateBlock {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
   font-weight: 700;
-  color: white;
-  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #fff;
 }
-
-.stuSch__headerSubtitle {
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0;
-}
-
-/* ============ BOOK APPOINTMENT BUTTON ============ */
-
-.stuSch__bookAppointmentBtn {
-  padding: 0.75rem 1.5rem;
-  background: var(--stuSch__yellow);
-  color: #1a1a2e;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-
-.stuSch__bookAppointmentBtn:hover {
-  background: #f0b000;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(244, 194, 26, 0.3);
-}
-
-/* ============ SCHEDULE CARDS CONTAINER ============ */
-
-.stuSch__scheduleCardsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* ============ SCHEDULE CARD ============ */
-
-.stuSch__scheduleCard {
-  display: flex;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background: rgba(15, 18, 24, 0.7);
-  border: 1px solid var(--stuSch__border);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.stuSch__scheduleCard:hover {
-  background: rgba(15, 18, 24, 0.9);
-  border-color: rgba(244, 194, 26, 0.3);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* ============ CARD LEFT SECTION - DATE/TIME ============ */
-
-.stuSch__cardLeftSection {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  min-width: 200px;
-}
-
-.stuSch__dateTimeBlock {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.95rem;
-  color: var(--stuSch__text);
-}
-
-.stuSch__dateTimeBlock .stuSch__icon {
-  font-size: 1.2rem;
-}
-
-.stuSch__dateTimeBlock .stuSch__text {
-  font-weight: 500;
-}
-
-/* ============ CARD MIDDLE SECTION - 3 INFO COLUMNS ============ */
-
-.stuSch__cardMiddleSection {
-  flex: 1;
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-}
-
-.stuSch__infoColumn {
-  display: flex;
-  gap: 0.6rem;
-  min-width: 150px;
-}
-
-.stuSch__infoColumn .stuSch__icon {
-  font-size: 1.2rem;
-  flex-shrink: 0;
-}
-
-.stuSch__infoText {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.stuSch__infoLabel {
-  font-size: 0.8rem;
-  color: var(--stuSch__muted);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.stuSch__infoValue {
-  font-size: 0.95rem;
-  color: var(--stuSch__text);
-  font-weight: 500;
-}
-
-/* ============ CARD RIGHT SECTION - STATUS & ACTION ============ */
-
-.stuSch__cardRightSection {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  align-items: flex-end;
-  min-width: 140px;
-}
-
-/* ============ VEHICLE TYPE PILL ============ */
-
-.stuSch__vehicleTypePill {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background: rgba(99, 102, 241, 0.15);
-  color: #6366f1;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.stuSch__vehicleTypePill.van {
-  background: rgba(59, 130, 246, 0.15);
-  color: #3b82f6;
-}
-
-.stuSch__vehicleTypePill.car {
-  background: rgba(34, 197, 94, 0.15);
-  color: #22c55e;
-}
-
-.stuSch__vehicleTypePill.motorcycle {
-  background: rgba(249, 115, 22, 0.15);
-  color: #f97316;
-}
-
-.stuSch__vehicleTypePill.three-wheeler {
-  background: rgba(168, 85, 247, 0.15);
-  color: #a855f7;
-}
-
-/* ============ STATUS PILL ============ */
 
 .stuSch__statusPill {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: capitalize;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .stuSch__statusPill.scheduled {
-  background: rgba(220, 38, 38, 0.15);
-  color: #dc2626;
+  background: rgba(255, 215, 0, 0.1);
+  color: #FFD700;
+  border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 .stuSch__statusPill.completed {
-  background: rgba(34, 197, 94, 0.15);
+  background: rgba(34, 197, 94, 0.1);
   color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
-/* ============ RESCHEDULE LINK ============ */
+.stuSch__cardBody {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
 
-.stuSch__rescheduleLink {
-  color: var(--stuSch__yellow);
-  text-decoration: none;
-  font-size: 0.9rem;
+.stuSch__infoRow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+}
+
+.stuSch__icon {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.stuSch__cardFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.stuSch__changeLink {
+  background: none;
+  border: 1px solid rgba(225, 27, 34, 0.4);
+  color: #ff4d4d;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
-.stuSch__rescheduleLink:hover {
-  color: #f0b000;
-  text-decoration: underline;
+.stuSch__changeLink:hover {
+  background: rgba(225, 27, 34, 0.1);
+  border-color: #E11B22;
 }
 
-/* ============ RESPONSIVE DESIGN ============ */
-
-@media (max-width: 1024px) {
-  .stuSch__schedulePageWrapper {
-    padding: 1.5rem 1rem;
-  }
-
-  .stuSch__schedulePageTitle {
-    font-size: 1.75rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .stuSch__scheduleHeaderCard {
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+  .stuSch__header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-  }
-
-  .stuSch__headerContent {
-    width: 100%;
-  }
-
-  .stuSch__bookAppointmentBtn {
-    align-self: flex-start;
-  }
-
-  .stuSch__scheduleCard {
-    gap: 1.2rem;
-    padding: 1.2rem;
-  }
-
-  .stuSch__cardMiddleSection {
     gap: 1.5rem;
-  }
-
-  .stuSch__infoColumn {
-    min-width: 120px;
   }
 }
 
 @media (max-width: 768px) {
-  .stuSch__schedulePageWrapper {
-    padding: 1.5rem 1rem;
+  .stuSch__main {
+    padding: 1.5rem;
   }
-
-  .stuSch__schedulePageTitle {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .stuSch__scheduleHeaderCard {
-    padding: 1.2rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .stuSch__headerTitle {
-    font-size: 1.3rem;
-  }
-
-  .stuSch__headerSubtitle {
-    font-size: 0.9rem;
-  }
-
-  .stuSch__bookAppointmentBtn {
-    padding: 0.65rem 1.2rem;
-    font-size: 0.85rem;
-    width: 100%;
-  }
-
-  .stuSch__scheduleCard {
+  
+  .stuSch__cardBody {
     flex-direction: column;
     gap: 1rem;
-    padding: 1rem;
-  }
-
-  .stuSch__cardLeftSection {
-    min-width: auto;
-  }
-
-  .stuSch__dateTimeBlock {
-    font-size: 0.9rem;
-  }
-
-  .stuSch__cardMiddleSection {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-    width: 100%;
-  }
-
-  .stuSch__infoColumn {
-    width: 100%;
-    min-width: auto;
-  }
-
-  .stuSch__cardRightSection {
-    flex-direction: row;
-    gap: 0.8rem;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    min-width: auto;
-  }
-
-  .stuSch__vehicleTypePill,
-  .stuSch__statusPill {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
-  }
-
-  .stuSch__rescheduleLink {
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .stuSch__schedulePageWrapper {
-    padding: 1rem;
-  }
-
-  .stuSch__schedulePageTitle {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-  }
-
-  .stuSch__scheduleHeaderCard {
-    padding: 1rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .stuSch__headerTitle {
-    font-size: 1.1rem;
-  }
-
-  .stuSch__headerSubtitle {
-    font-size: 0.85rem;
-  }
-
-  .stuSch__bookAppointmentBtn {
-    padding: 0.6rem 1rem;
-    font-size: 0.8rem;
-  }
-
-  .stuSch__scheduleCard {
-    padding: 0.8rem;
-  }
-
-  .stuSch__cardLeftSection {
-    gap: 0.6rem;
-  }
-
-  .stuSch__dateTimeBlock {
-    font-size: 0.85rem;
-  }
-
-  .stuSch__dateTimeBlock .stuSch__icon {
-    font-size: 1rem;
-  }
-
-  .stuSch__infoLabel {
-    font-size: 0.75rem;
-  }
-
-  .stuSch__infoValue {
-    font-size: 0.9rem;
-  }
-
-  .stuSch__cardMiddleSection {
-    gap: 0.8rem;
-  }
-
-  .stuSch__infoColumn .stuSch__icon {
-    font-size: 1rem;
-  }
-
-  .stuSch__vehicleTypePill,
-  .stuSch__statusPill {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.75rem;
-  }
-
-  .stuSch__rescheduleLink {
-    font-size: 0.8rem;
   }
 }

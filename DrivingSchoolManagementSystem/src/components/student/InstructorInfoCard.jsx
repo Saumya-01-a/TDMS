@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User, Phone, Award, Mail, MessageSquare, ShieldCheck } from 'lucide-react';
 import './instructorInfoCard.css';
 import '../../styles/glassmorphism.css';
 
-const API_BASE = "http://localhost:3000/instructor";
+const API_BASE = "http://127.0.0.1:3000/instructor";
 
 export default function InstructorInfoCard() {
   const [instructor, setInstructor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Assume useNavigate is imported or add it
 
   const userString = sessionStorage.getItem("user") || localStorage.getItem("user") || "{}";
   const user = JSON.parse(userString);
@@ -106,7 +108,10 @@ export default function InstructorInfoCard() {
         </div>
       </div>
 
-      <button className="ins-card__action glass-card">
+      <button 
+        className="ins-card__action glass-card"
+        onClick={() => navigate('/student/notifications')}
+      >
         <MessageSquare size={16} />
         Message Instructor
       </button>

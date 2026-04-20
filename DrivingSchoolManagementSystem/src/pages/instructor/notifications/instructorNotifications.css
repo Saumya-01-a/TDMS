@@ -1,13 +1,89 @@
-.instr-notifications-page {
-  padding: 2rem;
+/* =====================================================
+   INSTRUCTOR NOTIFICATIONS CSS - INSNOTIF- PREFIX
+   Centered Layout with Dual Panels (Inbox & Composer)
+   ===================================================== */
+
+.insNotif__pageWrapper {
+  display: flex;
   min-height: 100vh;
+  background-color: #0d1117;
 }
 
-.instr-notifications-card {
+.insNotif__main {
+  flex: 1;
+  padding: 3rem;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.insNotif__container {
+  width: 100%;
+  max-width: 1400px; /* Expanded for better dual-panel breathing room */
+}
+
+.insNotif__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  margin-top: 1rem;
+}
+
+.insNotif__card,
+.insNotif__composer {
   background: rgba(13, 17, 23, 0.4);
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  min-height: 75vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Clean header for full-page view */
+.insNotif__card .global-logo-container {
+  display: none !important; /* Hide redundant logo in card since it's in sidebar */
+}
+
+.notif-header {
+  border-bottom: 1px solid rgba(225, 27, 34, 0.15);
+  padding-bottom: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.notif-title {
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+  background: linear-gradient(135deg, #e6f1ff 0%, #8892b0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Responsive Overrides */
+@media (max-width: 1200px) {
+  .insNotif__grid {
+    grid-template-columns: 1fr;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .insNotif__card,
+  .insNotif__composer {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .insNotif__main {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .insNotif__grid {
+    gap: 1.5rem;
+  }
 }

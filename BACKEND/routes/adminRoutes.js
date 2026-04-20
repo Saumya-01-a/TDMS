@@ -32,18 +32,21 @@ router.delete("/delete-student/:id", adminController.deleteStudent);
 router.patch("/update-progress/:id", adminController.updateStudentProgress);
 router.patch("/complete-license/:id", adminController.completeLicense);
 router.get("/export-students", adminController.exportStudents);
+router.post("/sync-database", adminController.syncDatabaseStudents);
 
 // --- Fleet Management ---
 router.get("/all-vehicles", adminController.getAllVehicles);
 router.post("/add-vehicle", adminController.addVehicle);
 router.put("/edit-vehicle/:id", adminController.editVehicle);
 router.delete("/delete-vehicle/:id", adminController.deleteVehicle);
+router.post("/assign-vehicle-instructor", adminController.assignVehicleInstructor);
 router.get("/vehicle-location/:id", adminController.getLatestVehicleLocation);
 
 // --- Attendance Management ---
 router.get("/attendance-logs", adminController.getAllAttendanceLogs);
 router.get("/attendance-grid", adminController.getMonthlyAttendanceGrid);
 router.get("/attendance-stats", adminController.getAttendanceStats);
+router.post("/attendance-save", adminController.saveAttendance);
 router.delete("/attendance-clear", adminController.clearAttendanceHistory);
 router.delete("/bulk-cleanup", adminController.bulkCleanup);
 
@@ -67,5 +70,10 @@ router.get("/packages", adminController.getAdminPackages);
 router.post("/packages", adminController.addPackage);
 router.put("/packages/:id", adminController.editPackage);
 router.delete("/packages/:id", adminController.deletePackage);
+
+// --- Admin Personal Features ---
+router.put("/profile/:userId", adminController.updateAdminProfile);
+router.get("/payments", adminController.getAdminPayments);
+router.post("/payments", adminController.recordStudentPayment);
 
 module.exports = router;

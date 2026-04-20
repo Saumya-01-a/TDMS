@@ -21,11 +21,7 @@ import AdminAttendance from './pages/admin/attendance/AdminAttendance';
 import AdminTracking from './pages/admin/tracking/AdminTracking';
 import AdminTrialExams from './pages/admin/exams/AdminTrialExams';
 import AdminPackages from './pages/admin/packages/AdminPackages';
-
-
-// Admin Placeholder Components
-// Admin Placeholder Components
-const AdminPayments = () => <div className="adm-dashboard"><div className="adm-container"><h1 className="adm-title">Payments</h1><p>Coming soon...</p></div></div>;
+import AdminPayments from './pages/admin/payments/AdminPayments';
 
 // Student Imports
 import StudentLayout from './components/student/StudentLayout';

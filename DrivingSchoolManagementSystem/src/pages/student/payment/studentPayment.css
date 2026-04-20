@@ -1,614 +1,273 @@
-/* Student Payment Wrapper */
-.stu-paymentWrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
+/* Student Payment Premium Layout */
+.stu-payment__main {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-deep, #070a10);
 }
 
-/* Page Title */
-.stu-paymentTitle {
-  font-size: 2rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.92);
-  margin: 0 0 2rem 0;
-}
-
-/* Payment Container - Two Column Layout */
-.stu-paymentContainer {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-}
-
-/* LEFT COLUMN - PAYMENT FORM */
-.stu-paymentFormSection {
+.stu-payment__container {
+  flex: 1;
+  margin-left: 280px; /* Sidebar Width */
+  padding: 4rem 2rem;
+  max-width: 1400px;
+  margin-right: auto;
+  margin-left: calc(280px + (100% - 1400px - 280px) / 2);
   display: flex;
   flex-direction: column;
+  gap: 3rem;
 }
 
-.stu-paymentFormCard {
-  padding: 2rem;
-  background: rgba(15, 18, 24, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
+/* For users with ultra-wide screens, ensure centering relative to sidebar */
+@media (min-width: 1700px) {
+  .stu-payment__container {
+    margin-left: calc(280px + (100% - 1400px - 280px) / 2);
+  }
+}
+
+.stu-payment__header {
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 2rem;
+}
+
+.stu-paymentTitle {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(to right, #fff, #8892b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1.5px;
+  margin-bottom: 0.5rem;
+}
+
+.stu-paymentSubtitle {
+  color: #8892b0;
+  font-size: 1.1rem;
+}
+
+.stu-paymentContainer {
+  display: grid;
+  grid-template-columns: 1.8fr 1.2fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Glass Panels */
+.glass-panel {
+  background: rgba(15, 18, 24, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
 .stu-formCardTitle {
   font-size: 1.5rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.92);
-  margin: 0 0 0.5rem 0;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: #fff;
 }
 
 .stu-formCardSubtitle {
+  color: #8892b0;
+  margin-bottom: 2.5rem;
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.65);
-  margin: 0 0 1.5rem 0;
 }
 
-/* Payment Methods Group */
+/* Payment Methods */
 .stu-paymentMethodsGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .stu-paymentMethodItem {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(15, 18, 24, 0.5);
+  padding: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.stu-paymentMethodItem:hover {
-  background: rgba(15, 18, 24, 0.7);
-  border-color: rgba(244, 194, 26, 0.3);
-}
-
-.stu-paymentMethodItem.selected {
-  background: rgba(244, 194, 26, 0.1);
-  border-color: #FFD700;
-}
-
-.stu-methodLeft {
-  flex-shrink: 0;
-}
-
-.stu-methodIcon {
-  font-size: 1.5rem;
-}
-
-.stu-methodContent {
-  flex: 1;
-  min-width: 0;
-}
-
-.stu-methodTitle {
-  font-size: 1rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
-  margin: 0;
-}
-
-.stu-methodSubtext {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.65);
-  margin: 0.25rem 0 0 0;
-}
-
-.stu-methodRight {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.stu-paymentMethodItem.selected .stu-methodRight {
-  background: #FFD700;
-  border-color: #FFD700;
-}
-
-.stu-methodCheckmark {
-  color: #FFD700;
-  font-weight: 700;
-  font-size: 0.8rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.stu-methodCheckmark.visible {
-  opacity: 1;
-  color: #1a1a2e;
-}
-
-/* Payment Form */
-.stu-paymentForm {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.stu-paymentMethodItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(225, 27, 34, 0.3);
+  transform: translateY(-4px);
+}
+
+.stu-paymentMethodItem.selected {
+  background: rgba(225, 27, 34, 0.05);
+  border-color: #E11B22;
+  box-shadow: 0 10px 30px rgba(225, 27, 34, 0.1);
+}
+
+.stu-methodIcon {
+  font-size: 2rem;
+}
+
+.stu-methodTitle {
+  font-weight: 800;
+  color: #fff;
+}
+
+.stu-methodSubtext {
+  font-size: 0.8rem;
+  color: #8892b0;
+}
+
+.stu-methodRight {
+  display: none; /* Let the border handle selected state */
+}
+
+/* Form Styles */
+.stu-paymentForm {
+  display: grid;
+  gap: 1.5rem;
 }
 
 .stu-formGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .stu-formLabel {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #E11B22;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 .stu-formInput {
-  padding: 0.875rem;
-  background: rgba(15, 18, 24, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
-
-.stu-formInput::placeholder {
-  color: rgba(255, 255, 255, 0.65);
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  padding: 1.2rem !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  transition: border-color 0.3s ease;
 }
 
 .stu-formInput:focus {
+  border-color: #E11B22 !important;
   outline: none;
-  border-color: #FFD700;
-  background: rgba(15, 18, 24, 0.9);
-  box-shadow: 0 0 0 3px rgba(244, 194, 26, 0.1);
 }
 
 .stu-formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-/* Pay Now Button */
-.stu-payNowBtn {
-  width: 100%;
-  padding: 1rem;
-  background: #FFD700;
-  color: #1a1a2e;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 0.5rem;
-}
-
-.stu-payNowBtn:hover {
-  background: #f0b000;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(244, 194, 26, 0.3);
-}
-
-.stu-payNowBtn:active {
-  transform: translateY(0);
-}
-
-/* Bank Transfer Info */
-.stu-bankTransferInfo {
-  background: rgba(244, 194, 26, 0.05);
-  border-left: 3px solid #FFD700;
-  padding: 1.5rem;
-  border-radius: 8px;
-  margin-top: 1rem;
-}
-
-.stu-bankTransferInfo p {
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.92);
-  margin: 0 0 1rem 0;
-}
-
-.stu-bankDetails p {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.92);
-  margin: 0.5rem 0;
-}
-
-.stu-bankDetails strong {
-  color: #FFD700;
-}
-
-/* RIGHT COLUMN - PAYMENT INFO */
-.stu-paymentInfoSection {
-  display: flex;
-  flex-direction: column;
   gap: 1.5rem;
 }
 
-.stu-paymentInfoCard {
-  padding: 1.5rem;
-  background: rgba(15, 18, 24, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.stu-payNowBtn {
+  background: #E11B22;
+  color: #fff;
+  padding: 1.4rem;
   border-radius: 12px;
-  backdrop-filter: blur(10px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border: none;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.stu-payNowBtn:hover {
+  background: #ff2d3d;
+  box-shadow: 0 10px 30px rgba(225, 27, 34, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Right Rail Info */
+.stu-paymentInfoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .stu-infoCardTitle {
   font-size: 1.1rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.92);
-  margin: 0 0 1rem 0;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.stu-paymentItemsList {
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .stu-paymentItem {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 0;
-  position: relative;
-}
-
-.stu-paymentItemLeft {
-  flex: 1;
-  min-width: 0;
+  padding: 1.25rem 0;
 }
 
 .stu-paymentItemTitle {
+  font-weight: 700;
+  color: #fff;
   font-size: 0.95rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
-  margin: 0;
 }
 
 .stu-paymentItemDate {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.65);
-  margin: 0.25rem 0 0 0;
-}
-
-.stu-paymentItemRight {
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.stu-paymentItemAmount {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.65);
-  margin: 0;
-}
-
-.stu-amountValue {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #FFD700;
-}
-
-.stu-paymentItemId {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: #8892b0;
   margin-top: 0.25rem;
 }
 
+.stu-amountValue {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #E11B22;
+}
+
 .stu-paymentItemDivider {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(to right, rgba(255,255,255,0.05), transparent);
 }
 
-.stu-paymentItem:last-child .stu-paymentItemDivider {
-  display: none;
-}
-
-/* View All Transactions Button */
 .stu-viewAllBtn {
-  width: 100%;
-  padding: 0.75rem;
-  margin-top: 1rem;
-  background: rgba(15, 18, 24, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.92);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 800;
+  margin-top: 2rem;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .stu-viewAllBtn:hover {
-  background: rgba(15, 18, 24, 0.8);
-  border-color: rgba(244, 194, 26, 0.3);
-  color: #FFD700;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #E11B22;
 }
 
-/* Responsive Design */
+.empty-text {
+  color: #8892b0;
+  font-style: italic;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .stu-payment__container {
+    margin-left: 280px;
+    margin-right: 2rem;
+  }
+}
+
 @media (max-width: 1024px) {
   .stu-paymentContainer {
     grid-template-columns: 1fr;
-  }
-
-  .stu-formRow {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .stu-paymentWrapper {
-    padding: 1.5rem 1rem;
-  }
-
-  .stu-paymentTitle {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .stu-paymentFormCard {
-    padding: 1.5rem;
-  }
-
-  .stu-formCardTitle {
-    font-size: 1.3rem;
-  }
-
-  .stu-paymentMethodItem {
-    padding: 0.875rem;
-    gap: 0.75rem;
-  }
-
-  .stu-methodIcon {
-    font-size: 1.25rem;
-  }
-
-  .stu-methodTitle {
-    font-size: 0.95rem;
-  }
-
-  .stu-methodSubtext {
-    font-size: 0.8rem;
-  }
-
-  .stu-formRow {
-    grid-template-columns: 1fr;
-  }
-
-  .stu-paymentInfoCard {
-    padding: 1.2rem;
-  }
-
-  .stu-infoCardTitle {
-    font-size: 1rem;
-    margin-bottom: 0.8rem;
-    padding-bottom: 0.8rem;
-  }
-
-  .stu-paymentItem {
-    padding: 0.8rem 0;
-  }
-
-  .stu-paymentItemTitle {
-    font-size: 0.9rem;
-  }
-
-  .stu-paymentItemAmount {
-    font-size: 0.85rem;
-  }
-
-  .stu-amountValue {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .stu-paymentWrapper {
-    padding: 1rem;
-  }
-
-  .stu-paymentTitle {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-  }
-
-  .stu-paymentFormCard {
-    padding: 1.2rem;
-  }
-
-  .stu-formCardTitle {
-    font-size: 1.1rem;
-  }
-
-  .stu-formCardSubtitle {
-    font-size: 0.9rem;
-  }
-
-  .stu-paymentMethodItem {
-    padding: 0.75rem;
-    gap: 0.6rem;
-  }
-
-  .stu-methodIcon {
-    font-size: 1.1rem;
-  }
-
-  .stu-methodTitle {
-    font-size: 0.9rem;
-  }
-
-  .stu-methodSubtext {
-    font-size: 0.75rem;
-    display: none;
-  }
-
-  .stu-formLabel {
-    font-size: 0.8rem;
-  }
-
-  .stu-formInput {
-    padding: 0.75rem;
-    font-size: 0.9rem;
-  }
-
-  .stu-payNowBtn {
-    padding: 0.875rem;
-    font-size: 0.95rem;
-  }
-
-  .stu-paymentInfoCard {
-    padding: 1rem;
-  }
-
-  .stu-infoCardTitle {
-    font-size: 0.95rem;
-    margin-bottom: 0.6rem;
-    padding-bottom: 0.6rem;
-  }
-
-  .stu-paymentItem {
-    padding: 0.6rem 0;
-    gap: 0.5rem;
-  }
-
-  .stu-paymentItemTitle {
-    font-size: 0.85rem;
-  }
-
-  .stu-paymentItemDate {
-    font-size: 0.75rem;
-  }
-
-  .stu-paymentItemAmount {
-    font-size: 0.8rem;
-  }
-
-  .stu-amountValue {
-    font-size: 0.95rem;
-  }
-
-  .stu-paymentItemId {
-    font-size: 0.7rem;
-  }
-
-  .stu-viewAllBtn {
-    padding: 0.6rem;
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .student-payment-wrapper {
-    padding: 1rem;
-  }
-
-  .student-payment-title {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-  }
-
-  .student-payment-form-card {
-    padding: 1.2rem;
-  }
-
-  .form-card-title {
-    font-size: 1.1rem;
-  }
-
-  .form-card-subtitle {
-    font-size: 0.9rem;
-  }
-
-  .payment-method-item {
-    padding: 0.75rem;
-    gap: 0.6rem;
-  }
-
-  .method-icon {
-    font-size: 1.1rem;
-  }
-
-  .method-title {
-    font-size: 0.9rem;
-  }
-
-  .method-subtext {
-    font-size: 0.75rem;
-    display: none;
-  }
-
-  .form-label {
-    font-size: 0.8rem;
-  }
-
-  .form-input {
-    padding: 0.75rem;
-    font-size: 0.9rem;
-  }
-
-  .pay-now-btn {
-    padding: 0.875rem;
-    font-size: 0.95rem;
-  }
-
-  .payment-info-card {
-    padding: 1rem;
-  }
-
-  .info-card-title {
-    font-size: 0.95rem;
-    margin-bottom: 0.6rem;
-    padding-bottom: 0.6rem;
-  }
-
-  .payment-item {
-    padding: 0.6rem 0;
-    gap: 0.5rem;
-  }
-
-  .payment-item-title {
-    font-size: 0.85rem;
-  }
-
-  .payment-item-date {
-    font-size: 0.75rem;
-  }
-
-  .payment-item-amount {
-    font-size: 0.8rem;
-  }
-
-  .amount-value {
-    font-size: 0.95rem;
-  }
-
-  .payment-item-id {
-    font-size: 0.7rem;
-  }
-
-  .view-all-btn {
-    padding: 0.6rem;
-    font-size: 0.85rem;
   }
 }

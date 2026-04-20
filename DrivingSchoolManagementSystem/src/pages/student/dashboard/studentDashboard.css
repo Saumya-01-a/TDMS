@@ -34,11 +34,13 @@
 /* ============ MAIN CONTENT ============ */
 
 .stdDash__main {
-  margin-left: 260px;
   flex: 1;
   position: relative;
   min-height: 100vh;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .stdDash__bgGlow {
@@ -59,11 +61,14 @@
 /* ============ DASHBOARD TITLE ============ */
 
 .stdDash__dashboardTitle {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--stdDash__text-primary);
+  font-size: 2.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #e6f1ff 0%, #8892b0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-align: center;
-  margin-bottom: 2rem;
+  margin: 0;
 }
 
 /* ============ WELCOME BANNER ============ */
@@ -102,8 +107,8 @@
 
 .stdDash__grid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
 }
 
 /* ============ PANELS ============ */
@@ -583,15 +588,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(225, 27, 34, 0.2);
+  margin-bottom: 3.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(225, 27, 34, 0.15);
+}
+
+.stdDash__headerSide {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.stdDash__headerSide:last-child {
+  justify-content: flex-end;
 }
 
 .stdDash__banner-progress-container {
   margin-top: 1.5rem;
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .stdDash__banner-progress-label {

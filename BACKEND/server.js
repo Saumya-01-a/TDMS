@@ -39,12 +39,23 @@ app.use("/trials", trialRoutes);
 // Shared API routes for the entire system
 const instructorController = require("./controllers/instructorController");
 const vehicleController = require("./controllers/vehicleController");
+const adminController = require("./controllers/adminController");
 app.get("/api/materials", instructorController.getMaterials);
 app.get("/api/vehicles", vehicleController.getAllVehicles);
+app.get("/api/packages", adminController.getAdminPackages); // Alias for frontend compatibility
 
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error("🏁 GLOBAL ERROR HANDLER:", err);
+  
+  // Specific handling for Multer errors
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({
+      ok: false,
+      message: "File is too large! Maximum limit is 25MB."
+    });
+  }
+
   res.status(err.status || 500).json({
     ok: false,
     message: err.message || "Internal Server Error",
@@ -56,12 +67,18 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log('Server running on port ' + PORT));
 
 // Handle Graceful Shutdown (Stops DB connection leaks on Ctrl+C)
-process.on("SIGINT", async () => {
+let isShuttingDown = false;
+const handleShutdown = async () => {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
   console.log("🔄 Gracefully shutting down...");
   try {
     const pool = require("./config/db");
-    await pool.end(); // close all open connections
-    console.log("✅ Database pool closed");
+    // Only call end if it hasn't already been called
+    if (pool && !pool.ended) {
+      await pool.end(); // close all open connections
+      console.log("✅ Database pool closed");
+    }
   } catch (err) {
     console.error("❌ Error during shutdown:", err.message);
   }
@@ -70,4 +87,8 @@ process.on("SIGINT", async () => {
     console.log("✅ Server closed. Exiting process.");
     process.exit(0);
   });
-});
+};
+
+process.on("SIGINT", handleShutdown);
+process.on("SIGTERM", handleShutdown);
+process.once("SIGUSR2", handleShutdown); // For nodemon restarts

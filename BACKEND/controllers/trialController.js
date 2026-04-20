@@ -45,9 +45,10 @@ exports.getTrialStudents = async (req, res) => {
   const { trialId } = req.params;
   try {
     const result = await pool.query(`
-      SELECT tea.*, s.first_name, s.last_name, s.profile_image, p.name as package_name
+      SELECT tea.*, u.first_name, u.last_name, p.name as package_name
       FROM trial_exam_assignments tea
       JOIN students s ON tea.student_id = s.student_id
+      JOIN users u ON s.user_id = u.user_id
       LEFT JOIN packages p ON s.package_id = p.id
       WHERE tea.trial_id = $1
     `, [trialId]);

@@ -357,3 +357,26 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
+// Fetch Public User Profile (Centralized)
+exports.getUserProfile = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT user_id, first_name, last_name, email, role, status, tel_no, created_date,
+              address_line_1, address_line_2, city
+       FROM users 
+       WHERE user_id = $1`,
+      [userId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ ok: false, message: "User not found" });
+    }
+
+    res.json({ ok: true, user: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: err.message });
+  }
+};
+
+

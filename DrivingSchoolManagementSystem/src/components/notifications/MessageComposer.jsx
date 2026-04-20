@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Send, User, Users, Search, AlertTriangle, ShieldCheck, Info } from "lucide-react";
+import { Send, User, Users, Search, AlertTriangle, ShieldCheck, Info, Loader2 } from "lucide-react";
 import "./MessageComposer.css";
 
 export default function MessageComposer({ adminId, onMessageSent }) {
@@ -18,7 +18,10 @@ export default function MessageComposer({ adminId, onMessageSent }) {
 
   useEffect(() => {
     if (searchQuery.length > 2) {
-      searchUsers();
+      const delayDebounceFn = setTimeout(() => {
+        searchUsers();
+      }, 500);
+      return () => clearTimeout(delayDebounceFn);
     } else {
       setSearchResults([]);
     }
@@ -26,24 +29,26 @@ export default function MessageComposer({ adminId, onMessageSent }) {
 
   const searchUsers = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/notifications/search?query=${searchQuery}`);
+      // 🌐 Standardized to 127.0.0.1
+      const res = await fetch(`http://127.0.0.1:3000/notifications/search?query=${searchQuery}`);
       const data = await res.json();
       if (data.ok) setSearchResults(data.users);
     } catch (err) {
-      console.error("Search failed:", err);
+      console.error("Search failure:", err);
     }
   };
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (recipientRole === "Individual" && !selectedUser) return alert("Select a recipient");
-    if (!subject || !message) return alert("Fill in subject and message");
+    if (recipientRole === "Individual" && !selectedUser) return alert("System Notice: Please select a valid recipient.");
+    if (!subject || !message) return alert("System Notice: Subject and Message body are required.");
 
     setLoading(true);
-    setStatus("Sending...");
+    setStatus("Dispatching message...");
 
     try {
-      const res = await fetch("http://localhost:3000/notifications/send", {
+      // 🌐 Standardized to 127.0.0.1
+      const res = await fetch("http://127.0.0.1:3000/notifications/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -59,54 +64,60 @@ export default function MessageComposer({ adminId, onMessageSent }) {
 
       const data = await res.json();
       if (data.ok) {
-        setStatus("✅ Message sent successfully!");
+        setStatus("✅ Message dispatched successfully!");
         setSubject("");
         setMessage("");
         setSelectedUser(null);
         setSearchQuery("");
         if (onMessageSent) onMessageSent();
+        
+        // Auto-clear status after 3 seconds
+        setTimeout(() => setStatus(""), 3000);
       } else {
-        setStatus("❌ Failed: " + data.message);
+        setStatus("❌ Dispatch Failed: " + data.message);
       }
     } catch (err) {
-      setStatus("❌ Error: " + err.message);
+      setStatus("❌ Network Error: Unable to reach administrative server.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="composer-card">
+    <div className="composer-card" id="id_message_composer">
       <div className="composer-header">
         <Send size={20} color="#E11B22" />
-        New Message
+        Message Dispatcher
       </div>
 
       <form className="composer-form" onSubmit={handleSend}>
         <div className="composer-row">
           <div className="composer-field half">
-            <label>Recipient Type</label>
-            <select value={recipientRole} onChange={(e) => { setRecipientRole(e.target.value); setSelectedUser(null); }}>
-              <option value="Individual">Specific User</option>
-              <option value="All Students">All Students</option>
-              <option value="All Instructors">All Instructors</option>
+            <label>Recipient Target</label>
+            <select id="select_recipient_type" value={recipientRole} onChange={(e) => { setRecipientRole(e.target.value); setSelectedUser(null); }}>
+              <option value="Individual">Individual Staff/Student</option>
+              <option value="All Students">Broadcast to All Students</option>
+              <option value="All Instructors">Broadcast to All Instructors</option>
             </select>
           </div>
 
           <div className="composer-field half">
-            <label>Category</label>
+            <label>Communication Alert Level</label>
             <div className="cat-chips">
               <button 
+                id="btn_cat_info"
                 type="button" 
                 className={`cat-chip info ${category === 'info' ? 'active' : ''}`}
                 onClick={() => setCategory('info')}
               ><Info size={14} /> Info</button>
               <button 
+                id="btn_cat_success"
                 type="button" 
                 className={`cat-chip success ${category === 'success' ? 'active' : ''}`}
                 onClick={() => setCategory('success')}
-              ><ShieldCheck size={14} /> Success</button>
+              ><ShieldCheck size={14} /> Confirmation</button>
               <button 
+                id="btn_cat_warning"
                 type="button" 
                 className={`cat-chip warning ${category === 'warning' ? 'active' : ''}`}
                 onClick={() => setCategory('warning')}
@@ -117,12 +128,13 @@ export default function MessageComposer({ adminId, onMessageSent }) {
 
         {recipientRole === "Individual" && (
           <div className="composer-field relative">
-            <label>Search User (Name or ID)</label>
+            <label>Reciever Lookup (Name/ID)</label>
             <div className="search-box">
               <Search size={18} className="search-icon" />
               <input 
+                id="input_user_search"
                 type="text" 
-                placeholder="Type 3+ characters..." 
+                placeholder="Lookup administrative IDs..." 
                 value={selectedUser ? `${selectedUser.first_name} ${selectedUser.last_name} (${selectedUser.user_id})` : searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 disabled={!!selectedUser}
@@ -148,10 +160,11 @@ export default function MessageComposer({ adminId, onMessageSent }) {
         )}
 
         <div className="composer-field">
-          <label>Subject</label>
+          <label>Subject Header</label>
           <input 
+            id="input_msg_subject"
             type="text" 
-            placeholder="Action required / New system update..." 
+            placeholder="System Update / Action Required..." 
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             required 
@@ -159,10 +172,11 @@ export default function MessageComposer({ adminId, onMessageSent }) {
         </div>
 
         <div className="composer-field">
-          <label>Message Body</label>
+          <label>Official Correspondence</label>
           <textarea 
+            id="input_msg_body"
             rows="5" 
-            placeholder="Type your message here..."
+            placeholder="Type your administrative message here..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
@@ -172,15 +186,17 @@ export default function MessageComposer({ adminId, onMessageSent }) {
         <div className="composer-footer">
           <div className="priority-check">
             <input 
+              id="check_high_priority"
               type="checkbox" 
               checked={priority === 'urgent'} 
               onChange={(e) => setPriority(e.target.checked ? 'urgent' : 'normal')}
             />
-            <span>Mark as High Priority (Pulse Alert)</span>
+            <span>Pulse Alert (High Priority)</span>
           </div>
 
-          <button className="send-btn" type="submit" disabled={loading}>
-            <Send size={18} /> {loading ? 'Sending...' : 'Send Message'}
+          <button className="send-btn" id="btn_send_notification" type="submit" disabled={loading}>
+            {loading ? <Loader2 className="spin" size={18} /> : <Send size={18} />} 
+            <span>{loading ? 'Dispatching...' : 'Dispatch Message'}</span>
           </button>
         </div>
 

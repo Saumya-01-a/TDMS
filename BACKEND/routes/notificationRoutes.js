@@ -5,8 +5,9 @@ const notificationController = require("../controllers/notificationController");
 // Get all notifications for a user (Student, Instructor, etc.)
 router.get("/:userId", notificationController.getNotifications);
 
-// Mark as read
+// Single actions
 router.put("/read/:id", notificationController.markAsRead);
+router.delete("/:id", notificationController.deleteSingle);
 
 // Mark all as read
 router.put("/read-all/:userId", notificationController.markAllAsRead);

@@ -1,108 +1,136 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import StudentSidebar from '../../../components/student/StudentSidebar';
 import './studentPackages.css';
 
 export default function StudentPackages() {
-  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
-  const packages = [
-    {
-      id: 1,
-      name: 'Van Package',
-      price: '10,000',
-      description: 'Van training only',
-      icon: '🚐',
-      sessions: [
-        { name: 'Motorcycle / Bike', count: '' },
-        { name: 'Three Wheeler', count: '' },
-        { name: 'Van', count: '' },
-      ],
-      isNew: false,
-    },
-    {
-      id: 2,
-      name: 'Beginner Package',
-      price: '45,000',
-      description: 'Perfect for new drivers',
-      icon: '🚗',
-      sessions: [
-        { name: 'Motorcycle / Bike', count: '' },
-        { name: 'Three Wheeler', count: '' },
-        { name: 'Van', count: '' },
-      ],
-      isNew: true,
-    },
-    {
-      id: 3,
-      name: 'Premium Package',
-      price: '55,000',
-      description: 'Comprehensive training package',
-      icon: '👑',
-      sessions: [
-        { name: 'Motorcycle / Bike', count: '' },
-        { name: 'Three Wheeler', count: '' },
-        { name: 'Van', count: '' },
-      ],
-      isNew: false,
-    },
-  ];
+  const userString = localStorage.getItem('user') || sessionStorage.getItem('user') || '{}';
+  const user = JSON.parse(userString);
+  const userId = user.userId || user.user_id;
 
-  const handleSelectPackage = (pkg) => {
-    setSelectedPackage(pkg);
+  const [confirmingId, setConfirmingId] = useState(null);
+
+  useEffect(() => {
+    fetchPackages();
+  }, []);
+
+  // Reset confirmation if user waits too long
+  useEffect(() => {
+    if (confirmingId) {
+      const timer = setTimeout(() => setConfirmingId(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [confirmingId]);
+
+  const fetchPackages = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('http://127.0.0.1:3000/student/packages');
+      const data = await res.json();
+      if (data.ok) {
+        setPackages(data.packages);
+      } else {
+        setError(data.message);
+      }
+    } catch (err) {
+      setError('Failed to load packages. Please check if your server is running.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelectPackage = async (pkg) => {
+    if (confirmingId !== pkg.id) {
+      setConfirmingId(pkg.id);
+      return;
+    }
+
+    try {
+      setSuccess(null);
+      setError(null);
+      setConfirmingId(null);
+      const res = await fetch('http://127.0.0.1:3000/student/select-package', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, packageId: pkg.id })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setSuccess(`Successfully selected ${pkg.name}!`);
+        // Update local storage if needed
+        const updatedUser = { ...user, package_id: pkg.id };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      } else {
+        setError(data.message);
+      }
+    } catch (err) {
+      setError('Failed to select package. Please try again.');
+    }
   };
 
   return (
-    <div className="stu-packagesPage">
-      <div className="stu-packagesPageHeader">
-        <h1>Available Packages</h1>
-      </div>
-
-      {/* Header Card */}
-      <div className="stu-packagesHeaderCard">
-        <h2>Available Packages</h2>
-        <p>Choose the right driving package for you</p>
-      </div>
-
-      {/* Packages Grid */}
-      <div className="stu-packagesContainer">
-        {packages.map(pkg => (
-          <div key={pkg.id} className="stu-packageCard">
-            {pkg.isNew && <div className="stu-newBadge">New one</div>}
-            
-            <div className="stu-packageIconTile">{pkg.icon}</div>
-            
-            <div className="stu-packagePrice">
-              <span className="stu-currency">Rs.</span>
-              <span className="stu-amount">{pkg.price}</span>
-            </div>
-            
-            <h3 className="stu-packageName">{pkg.name}</h3>
-            <p className="stu-packageDesc">{pkg.description}</p>
-
-            {/* Detailed Information Section */}
-            <div className="stu-detailedInfo">
-              <h4 className="stu-sectionHeading">Detailed Information</h4>
-              <p className="stu-sectionSubheading">Included Training Sessions</p>
-              
-              <div className="stu-sessionsList">
-                {pkg.sessions.map((session, idx) => (
-                  <div key={idx} className="stu-sessionItem">
-                    <span className="stu-sessionTick">✓</span>
-                    <span className="stu-sessionName">{session.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <button 
-              className="stu-selectBtn"
-              onClick={() => handleSelectPackage(pkg)}
-            >
-              <span className="stu-btnIcon">✓</span>
-              Select Package
-            </button>
+    <div className="pkgPage__wrapper">
+      <StudentSidebar />
+      
+      <main className="pkgPage__main">
+        <div className="pkgPage__container">
+          <div className="pkgPage__header">
+            <h1 className="pkgPage__title">Driving Training Packages</h1>
+            <p className="pkgPage__subtitle">Choose the perfect program to kickstart your driving journey</p>
           </div>
-        ))}
-      </div>
+
+          {error && <div className="pkgPage__alert pkgPage__alert--error">{error}</div>}
+          {success && <div className="pkgPage__alert pkgPage__alert--success">{success}</div>}
+
+          {loading ? (
+            <div className="pkgPage__loading">Loading available packages...</div>
+          ) : (
+            <div className="pkgPage__grid">
+              {packages.map(pkg => (
+                <div key={pkg.id} className={`pkgPage__card glass-panel ${confirmingId === pkg.id ? 'confirming' : ''}`}>
+                  <div className="pkgPage__iconTile">
+                     {pkg.name.includes('Premium') ? '👑' : pkg.name.includes('Standard') ? '🚗' : '🚐'}
+                  </div>
+                  
+                  <div className="pkgPage__price">
+                    <span className="pkgPage__currency">Rs.</span>
+                    <span className="pkgPage__amount">{parseFloat(pkg.price).toLocaleString()}</span>
+                  </div>
+                  
+                  <h3 className="pkgPage__name">{pkg.name}</h3>
+                  <p className="pkgPage__desc">{pkg.description}</p>
+
+                  <div className="pkgPage__features">
+                    <div className="pkgPage__featureItem">
+                      <span className="pkgPage__tick">✓</span>
+                      <span>Full Theory Support</span>
+                    </div>
+                    <div className="pkgPage__featureItem">
+                      <span className="pkgPage__tick">✓</span>
+                      <span>Practical Training</span>
+                    </div>
+                    <div className="pkgPage__featureItem">
+                      <span className="pkgPage__tick">✓</span>
+                      <span>Expert Instructors</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    className={`pkgPage__selectBtn ${confirmingId === pkg.id ? 'btn-confirm' : ''}`}
+                    onClick={() => handleSelectPackage(pkg)}
+                  >
+                    {confirmingId === pkg.id ? 'Are you sure? Click to Confirm' : 'Select Program'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }
