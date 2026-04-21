@@ -3,6 +3,7 @@ const fs = require('fs');
 const { broadcastInstructorStatus, broadcastStudentUpdate, sendNotificationToUser } = require('../socket');
 const supabase = require('../config/supabaseClient');
 
+// Securely handles file uploads for student study materials using cloud storage
 exports.uploadMaterial = async (req, res) => {
   const { title, instructorId, category, description } = req.body;
   const file = req.file;
@@ -246,10 +247,7 @@ exports.getPackages = async (req, res) => {
   }
 };
 
-/**
- * Update student progress (Instructor Context)
- * Verifies student is assigned to this instructor.
- */
+// Updates learning progress after verifying instructor-student assignment
 exports.updateStudentProgressInstructor = async (req, res) => {
   const { studentId } = req.params;
   const { progress, instructorId } = req.body;
@@ -357,7 +355,7 @@ exports.getMonthlyAttendance = async (req, res) => {
   }
 };
 
-// Bulk Save Attendance
+// Processes daily attendance records and auto-increments student progress
 exports.saveAttendance = async (req, res) => {
   const { records } = req.body; // Array of { student_id, instructor_id, date, status, session_number, time_slot }
 
@@ -494,10 +492,7 @@ exports.updateLessonStatusInstructor = async (req, res) => {
 
 // --- New Admin & Profile Features ---
 
-/**
- * Fetch Full profile data for the Profile Page
- * Includes sensitive info like NIC, License
- */
+// Returns comprehensive profile data for the instructor management portal
 exports.getInstructorFullProfile = async (req, res) => {
   const { userId } = req.params;
   try {

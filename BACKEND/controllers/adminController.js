@@ -9,8 +9,8 @@ const {
 } = require("../socket");
 
 
- //Fetches all instructors whose applications have not yet been processed.
- 
+// Core administrative logic for student/instructor management and system analytics
+
 exports.getPendingInstructors = async (req, res) => {
   try {
     const result = await pool.query(
@@ -25,7 +25,7 @@ exports.getPendingInstructors = async (req, res) => {
   }
 };
 
-// Approves or rejects an instructor application and handles downstream side-effects.
+// Handles approval/rejection and triggers downstream verification emails
 exports.approveInstructor = async (req, res) => {
   const { instructorId, status } = req.body; // status: 'approved' or 'rejected'
 
@@ -100,9 +100,7 @@ exports.approveInstructor = async (req, res) => {
   }
 };
 
-//Get Dashboard Stats
-//Aggregates system-wide statistics for the Admin Dashboard.
- 
+// Aggregates high-level system metrics for the dashboard overview
 exports.getDashboardStats = async (req, res) => {
   try {
     // 1. Core Counts
@@ -260,8 +258,7 @@ exports.exportStudents = async (req, res) => {
   }
 };
 
-//  Permanently deletes multiple student accounts and their associated system data.
- 
+// Cascading hard-delete for multiple student accounts and linked data
 exports.bulkCleanup = async (req, res) => {
   const { ids } = req.body; // Array of student_ids
 

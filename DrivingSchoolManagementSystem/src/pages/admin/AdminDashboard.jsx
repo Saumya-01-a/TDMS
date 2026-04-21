@@ -30,7 +30,7 @@ import { useStudentContext } from '../../context/StudentContext';
 import GlobalLogo from '../../components/common/GlobalLogo';
 import './adminDashboard.css';
 
-// Provides real-time visibility into student registration, instructor workflows, and financial performance.
+// Central overview for administrators to track registrations, instructor status, and financial health
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -54,11 +54,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchDashboardData();
 
-    /**
-     * Socket.io Synchronization
-     * Listening for global financial and student updates to keep the dashboard 
-     * synchronized without requiring manual page refreshes.
-     */
+    // Real-time synchronization for global financial and student updates
     const socket = io('http://127.0.0.1:3000');
     socket.on("financial_update", () => {
       console.log("📈 Real-time Financial Update Received");
@@ -73,10 +69,7 @@ export default function AdminDashboard() {
     return () => socket.disconnect();
   }, []);
 
-  /**
-   * Orchestrates the fetching of all dashboard components.
-   * Uses Promise.all to fetch data in parallel, minimizing total loading time.
-   */
+  // Orchestrates parallel fetching of all dashboard metrics
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
@@ -111,16 +104,13 @@ export default function AdminDashboard() {
     }
   };
 
-  // Triggers the confirmation modal for instructor approval/rejection.
+  // Triggers action confirmation for instructor status updates
 
   const handleActionClick = (instructor, type) => {
     setConfirmModal({ show: true, type, data: instructor });
   };
 
-  /**
-   * Executes the instructor status update on the server.
-   * Includes error handling and UI state updates for the action button spinner.
-   */
+  // Executes the instructor status update on the server
   const processApproval = async () => {
     if (!confirmModal.data) return;
     setActionLoading(true);
@@ -151,10 +141,7 @@ export default function AdminDashboard() {
     return new Date(2024, m - 1).toLocaleString('default', { month: 'short' });
   };
 
-  /**
-   * Generates and downloads a CSV financial report based on current dashboard data.
-   * Uses PapaParse for reliable CSV formatting.
-   */
+  // Generates and downloads a CSV financial report based on current data
   const downloadFinancialReport = () => {
     if (!financialData.length) return alert("System Notice: No financial data available for export.");
     

@@ -1,8 +1,5 @@
-/**
- * @file server.js
- * @description Main entry point for the Thisara Driving School Management System backend.
- * Responsible for initializing Express, middleware, database connections, socket.io, and route mounting.
- */
+// Entry point for Thisara Driving School Backend
+// Initializing core services, middleware, and API routes
 
 const express = require("express");
 const cors = require("cors");
@@ -23,27 +20,16 @@ const trialRoutes = require("./routes/trialRoutes");
 const app = express();
 const server = http.createServer(app);
 
-/**
- * Socket.io Initialization
- * Enables real-time updates for financial data, student progress, and notifications.
- */
+// Real-time updates for financial data and student progress
 initSocket(server);
 
-// Middleware Configuration
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-/**
- * Health Check Route
- * Used by monitoring tools or Docker to verify the service is alive.
- */
 app.get("/health", (req, res) => res.json({ ok: true }));
 
-/**
- * API Route Mounting
- * Organized by business entity to maintain modularity.
- */
+// Core business logic routes
 app.use("/auth", authenticationRoutes);
 app.use("/admin", adminRoutes);
 app.use("/instructor", instructorRoutes);
@@ -52,22 +38,16 @@ app.use("/gps", gpsRoutes);
 app.use("/student", studentRoutes);
 app.use("/trials", trialRoutes);
 
-/**
- * Shared/Aliased API Routes
- * These endpoints provide shared resources used across different organizational modules.
- */
 const instructorController = require("./controllers/instructorController");
 const vehicleController = require("./controllers/vehicleController");
 const adminController = require("./controllers/adminController");
+
+// Global shared utility routes
 app.get("/api/materials", instructorController.getMaterials);
 app.get("/api/vehicles", vehicleController.getAllVehicles);
-app.get("/api/packages", adminController.getAdminPackages); // Alias for frontend compatibility
+app.get("/api/packages", adminController.getAdminPackages); 
 
-/**
- * Global Error Handler
- * Standardizes error responses across the entire application.
- * Specifically handles common issues like Multer file limit exceptions.
- */
+// Global error management (including Multer file limits)
 app.use((err, req, res, next) => {
   console.error("[System Error] Global Exception Caught:", err);
   
@@ -88,10 +68,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log('Server running on port ' + PORT));
 
-/**
- * Graceful Shutdown Logic
- * Prevents database connection leaks and ensuring clear process termination during updates or maintenance.
- */
+// Cleanup logic to prevent database connection leaks during restarts
 let isShuttingDown = false;
 const handleShutdown = async () => {
   if (isShuttingDown) return;
@@ -115,5 +92,6 @@ const handleShutdown = async () => {
 
 process.on("SIGINT", handleShutdown);
 process.on("SIGTERM", handleShutdown);
-process.on("SIGUSR2", handleShutdown); // Support for nodemon auto-restarts
+process.on("SIGUSR2", handleShutdown);
+
 

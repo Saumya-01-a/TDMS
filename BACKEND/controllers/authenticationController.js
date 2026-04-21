@@ -5,16 +5,11 @@ const supabase = require("../config/supabaseClient");
 const sendEmail = require("../utils/sendEmail");
 const { passwordResetTemplate, studentVerificationTemplate } = require("../utils/emailTemplates");
 
-
- //Generates a unique ID with a specified prefix.
- 
 function makeId(prefix) {
   return `${prefix}${Date.now()}`;
 }
 
-
-   //Handles new user registration for both Students and Instructors.
- 
+// Handles the unified registration flow for both students and instructors
 exports.register = async (req, res) => {
   const {
     firstName,
@@ -51,8 +46,7 @@ exports.register = async (req, res) => {
     const userId = makeId("U");
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Secure Document Upload to Supabase
-    // We use Supabase Storage to handle large files and offload bandwidth from the primary API server.
+    // Offload large verification documents to Supabase Storage to save local bandwidth
     if (position === "instructor" && req.file) {
       try {
         const fileBuffer = req.file.buffer;
@@ -77,8 +71,7 @@ exports.register = async (req, res) => {
       }
     }
 
-    // Database Transaction
-    // Transactions ensure that we don't end up with a User record without a corresponding Student/Instructor profile if an error occurs mid-way.
+    // Atomic transaction to ensure either both user and role-specific records are created, or neither
     await client.query("BEGIN");
 
     const role = position === "instructor" ? "Instructor" : "Student";
@@ -101,12 +94,10 @@ exports.register = async (req, res) => {
         [studentId, userId, nic, fullAddress]
       );
 
-      // JWT Generation for Email Verification
-      // Tokens are short-lived (1 day) to ensure security and prevent replay attacks on expired links.
+      // Secure verification token link with 24h expiration
       const verifyToken = jwt.sign(
         { userId, email, role: "Student", type: "email_verification" },
         process.env.JWT_SECRET || "dev_secret",
-
         { expiresIn: "1d" }
       );
       const verifyLink = `http://localhost:3000/auth/verify-email/${verifyToken}`;
@@ -140,7 +131,6 @@ exports.register = async (req, res) => {
       );
     }
 
-    // Log Activity
     await client.query(
       "INSERT INTO activity_logs (message, type) VALUES ($1, 'registration')",
       [`New ${position} registered: ${firstName} ${lastName}`]
@@ -165,6 +155,7 @@ exports.register = async (req, res) => {
   }
 };
 
+// Validates token and activates account status
 exports.verifyEmail = async (req, res) => {
   const { token } = req.params;
 
@@ -180,7 +171,6 @@ exports.verifyEmail = async (req, res) => {
     try {
       await client.query("BEGIN");
 
-      // Set user status to active
       const userRes = await client.query(
         "UPDATE users SET status = 'active', email_verified = true WHERE user_id = $1 RETURNING first_name",
         [userId]
@@ -190,7 +180,6 @@ exports.verifyEmail = async (req, res) => {
         throw new Error("User not found");
       }
 
-      // Ensure instructor approval status is approved (already set by admin, but good to sync)
       await client.query(
         "UPDATE instructors SET approval_status = 'approved' WHERE user_id = $1",
         [userId]
@@ -223,6 +212,7 @@ exports.verifyEmail = async (req, res) => {
   }
 };
 
+// Authenticates user and checks for approval status before granting access
 exports.login = async (req, res) => {
   const { email, password, rememberMe } = req.body;
 
@@ -244,7 +234,7 @@ exports.login = async (req, res) => {
 
     const user = result.rows[0];
 
-    // Status Check
+    // Enforce pending status check (both student email and instructor admin approval)
     if (user.status === "pending") {
       const message = user.role === "Student" 
         ? "Access Denied: Please verify your email address before logging in."
@@ -273,7 +263,6 @@ exports.login = async (req, res) => {
         return res.status(403).json({ ok: false, message: "Instructor record not found" });
       }
 
-      // THE NEW STRICT CHECK
       if (user.status === "approved") {
         return res.status(403).json({
           ok: false,
@@ -320,6 +309,7 @@ exports.login = async (req, res) => {
   }
 };
 
+// Triggers secure password reset link generation
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
   if (!email) {
@@ -333,13 +323,11 @@ exports.forgotPassword = async (req, res) => {
     );
 
     if (result.rowCount === 0) {
-      // Logically return true to prevent email enumeration/harvesting attacks
       return res.json({ ok: true, message: "If that email is registered, a reset link was sent." });
     }
 
     const user = result.rows[0];
 
-    // Generate secure 1h Token
     const resetToken = jwt.sign(
       { userId: user.user_id, email: user.email, type: "password_reset" },
       process.env.JWT_SECRET || "dev_secret",
@@ -348,7 +336,6 @@ exports.forgotPassword = async (req, res) => {
 
     const resetLink = `http://localhost:5173/reset-password-final?token=${resetToken}`;
 
-    // Dispatch Email
     await sendEmail({
       email: user.email,
       subject: "Password Reset Request - Thisara Driving School",
@@ -366,7 +353,6 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-// Fetch Public User Profile (Centralized)
 exports.getUserProfile = async (req, res) => {
   const { userId } = req.params;
   try {
@@ -387,5 +373,6 @@ exports.getUserProfile = async (req, res) => {
     res.status(500).json({ ok: false, message: err.message });
   }
 };
+
 
 

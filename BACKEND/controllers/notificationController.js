@@ -5,7 +5,7 @@ const { sendNotificationToUser } = require("../socket");
 exports.getNotifications = async (req, res) => {
   const { userId } = req.params;
   try {
-    // 🔍 Resolve if user is Admin to include SYSTEM_ADMIN bucket
+    // Resolve if user is Admin to include SYSTEM_ADMIN bucket
     const userLookup = await pool.query("SELECT role FROM users WHERE user_id = $1", [userId]);
     const isAdmin = userLookup.rowCount > 0 && userLookup.rows[0].role === 'Admin';
 
