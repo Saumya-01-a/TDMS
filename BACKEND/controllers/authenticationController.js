@@ -5,10 +5,16 @@ const supabase = require("../config/supabaseClient");
 const sendEmail = require("../utils/sendEmail");
 const { passwordResetTemplate, studentVerificationTemplate } = require("../utils/emailTemplates");
 
+
+ //Generates a unique ID with a specified prefix.
+ 
 function makeId(prefix) {
   return `${prefix}${Date.now()}`;
 }
 
+
+   //Handles new user registration for both Students and Instructors.
+ 
 exports.register = async (req, res) => {
   const {
     firstName,
@@ -19,7 +25,7 @@ exports.register = async (req, res) => {
     addressLine2,
     city,
     nic,
-    position, // "student" or "instructor"
+    position, 
     instructorRegNumber,
     specialization,
     password,
@@ -35,7 +41,6 @@ exports.register = async (req, res) => {
 
   const client = await pool.connect();
   try {
-    // 1. Initial Uniqueness Checks
     const emailCheck = await client.query("SELECT 1 FROM users WHERE email=$1", [email]);
     if (emailCheck.rowCount > 0) {
       return res.status(409).json({ ok: false, message: "Email already registered" });
@@ -46,7 +51,8 @@ exports.register = async (req, res) => {
     const userId = makeId("U");
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // 2. Supabase Upload (if instructor)
+    // Secure Document Upload to Supabase
+    // We use Supabase Storage to handle large files and offload bandwidth from the primary API server.
     if (position === "instructor" && req.file) {
       try {
         const fileBuffer = req.file.buffer;
@@ -71,7 +77,8 @@ exports.register = async (req, res) => {
       }
     }
 
-    // 3. Database Updates
+    // Database Transaction
+    // Transactions ensure that we don't end up with a User record without a corresponding Student/Instructor profile if an error occurs mid-way.
     await client.query("BEGIN");
 
     const role = position === "instructor" ? "Instructor" : "Student";
@@ -94,10 +101,12 @@ exports.register = async (req, res) => {
         [studentId, userId, nic, fullAddress]
       );
 
-      // Generate Verification Token & Send Email
+      // JWT Generation for Email Verification
+      // Tokens are short-lived (1 day) to ensure security and prevent replay attacks on expired links.
       const verifyToken = jwt.sign(
         { userId, email, role: "Student", type: "email_verification" },
         process.env.JWT_SECRET || "dev_secret",
+
         { expiresIn: "1d" }
       );
       const verifyLink = `http://localhost:3000/auth/verify-email/${verifyToken}`;

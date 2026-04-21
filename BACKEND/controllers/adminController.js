@@ -8,6 +8,9 @@ const {
   broadcastPackageUpdate
 } = require("../socket");
 
+
+ //Fetches all instructors whose applications have not yet been processed.
+ 
 exports.getPendingInstructors = async (req, res) => {
   try {
     const result = await pool.query(
@@ -22,6 +25,7 @@ exports.getPendingInstructors = async (req, res) => {
   }
 };
 
+// Approves or rejects an instructor application and handles downstream side-effects.
 exports.approveInstructor = async (req, res) => {
   const { instructorId, status } = req.body; // status: 'approved' or 'rejected'
 
@@ -96,9 +100,9 @@ exports.approveInstructor = async (req, res) => {
   }
 };
 
-/**
- * Get Dashboard Stats
- */
+//Get Dashboard Stats
+//Aggregates system-wide statistics for the Admin Dashboard.
+ 
 exports.getDashboardStats = async (req, res) => {
   try {
     // 1. Core Counts
@@ -256,7 +260,8 @@ exports.exportStudents = async (req, res) => {
   }
 };
 
-// Bulk Cleanup
+//  Permanently deletes multiple student accounts and their associated system data.
+ 
 exports.bulkCleanup = async (req, res) => {
   const { ids } = req.body; // Array of student_ids
 

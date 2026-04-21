@@ -4,6 +4,17 @@ import { Users, UserPlus, Clock, Calendar, TrendingUp, Circle, CheckCircle2, Ale
 import NotificationTray from '../../../components/notifications/NotificationTray';
 import './instructorDashboard.css';
 
+/**
+ * @component InstructorDashboard
+ * @description The operational hub for driving instructors.
+ * Manages daily lesson schedules, availability tracking, and student trial candidate monitoring.
+ * 
+ * Features:
+ * - Real-time availability status updates (Socket.io).
+ * - Weekly training overview grid.
+ * - Integration with NotificationTray for real-time instructor alerts.
+ * - Identification of high-priority trial candidates.
+ */
 export default function InstructorDashboard() {
   const [availabilityStatus, setAvailabilityStatus] = useState('Available');
   const [statsData, setStatsData] = useState({
