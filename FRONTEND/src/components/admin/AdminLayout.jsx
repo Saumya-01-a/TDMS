@@ -28,11 +28,15 @@ export default function AdminLayout() {
       <main style={{
         marginLeft: '280px', // Matches sidebar width
         flex: 1,
+        minWidth: 0,
+        maxWidth: 'calc(100vw - 280px)',
+        width: 'calc(100% - 280px)',
         position: 'relative',
         zIndex: 1,
         minHeight: '100vh',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        overflowX: 'hidden'
       }}>
         <Outlet />
       </main>

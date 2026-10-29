@@ -28,6 +28,40 @@ html {
   box-sizing: border-box;
 }
 
+/* ============ NAVBAR STYLES ============ */
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 88px;
+  z-index: 1000;
+  background: rgba(2, 6, 23, 0.90);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.main-navbar-container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .main-navbar-container {
+    padding: 16px 20px;
+  }
+}
+
 .social-links {
   display: flex;
   gap: 15px;

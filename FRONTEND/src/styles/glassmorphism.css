@@ -55,6 +55,26 @@
   box-shadow: 0 0 10px rgba(225, 27, 34, 0.1);
 }
 
+select.glass-input,
+.glass-select {
+  color-scheme: dark;
+}
+
+select.glass-input option,
+.glass-select option {
+  background-color: #111827;
+  color: #f3f4f6;
+  padding: 8px 12px;
+}
+
+select.glass-input option:checked,
+select.glass-input option:hover,
+.glass-select option:checked,
+.glass-select option:hover {
+  background-color: #1f2937;
+  color: #ffffff;
+}
+
 .glass-input:disabled {
   opacity: 0.5;
   cursor: not-allowed;

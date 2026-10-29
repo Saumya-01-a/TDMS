@@ -61,9 +61,11 @@ router.post("/schedule", adminController.createLesson);
 router.put("/schedule/:id", adminController.updateLesson);
 router.delete("/schedule/:id", adminController.deleteLesson);
 
+const studyMaterialController = require("../controllers/studyMaterialController");
+
 // --- Study Materials Management (Admin Only) ---
-router.post("/materials/upload", upload.single("file"), instructorController.uploadMaterial);
-router.delete("/materials/:id", instructorController.deleteMaterial);
+router.post("/materials/upload", upload.single("file"), studyMaterialController.uploadStudyMaterial);
+router.delete("/materials/:id", studyMaterialController.deleteStudyMaterial);
 
 // --- Package Management ---
 router.get("/packages", adminController.getAdminPackages);

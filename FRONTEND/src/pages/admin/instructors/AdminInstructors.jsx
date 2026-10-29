@@ -224,20 +224,21 @@ export default function AdminInstructors() {
         </div>
       </div>
 
-      {/* Main Table */}
-      <div className="adm-table-wrapper shadow-xl">
-        <table className="std-table">
-          <thead>
-            <tr>
-              <th>Professional</th>
-              <th>Reg / License</th>
-              <th>Specialization</th>
-              <th>Contact Info</th>
-              <th>Credentials</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+      {/* Main Table Container & Responsive Scroll */}
+      <div className="adm-table-card shadow-xl">
+        <div className="adm-table-responsive">
+          <table className="std-table">
+            <thead>
+              <tr>
+                <th className="th-professional">PROFESSIONAL</th>
+                <th className="th-reg">REG / LICENSE</th>
+                <th className="th-spec">SPECIALIZATION</th>
+                <th className="th-contact">CONTACT INFO</th>
+                <th className="th-credentials">CREDENTIALS</th>
+                <th className="th-status">STATUS</th>
+                <th className="th-actions">ACTIONS</th>
+              </tr>
+            </thead>
           <tbody>
             {filteredInstructors.map(ins => (
               <tr key={ins.instructor_id}>
@@ -308,7 +309,8 @@ export default function AdminInstructors() {
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
 
       {/* --- ADD MODAL --- */}

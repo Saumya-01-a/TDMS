@@ -15,7 +15,7 @@ export default function Navbar() {
     
     const observerOptions = {
       root: null,
-      rootMargin: '-10% 0px -80% 0px', // More precise for header highlighting
+      rootMargin: '-10% 0px -80% 0px', // Precise threshold for section detection
       threshold: 0
     };
 
@@ -51,47 +51,60 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 w-full min-h-[90px] z-50 backdrop-blur-md bg-slate-950/85 border-b border-white/10 flex items-center transition-all duration-300">
-      <div className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 py-5 flex items-center justify-between">
+    <header className="main-header fixed top-0 left-0 w-full min-h-[88px] z-50 backdrop-blur-md bg-slate-950/90 border-b border-white/10 flex items-center transition-all duration-300">
+      {/* Centered Symmetrical Container with 16px 48px Padding */}
+      <div 
+        className="main-navbar-container w-full mx-auto flex items-center justify-between"
+        style={{ maxWidth: "1280px", padding: "16px 48px", boxSizing: "border-box" }}
+      >
         
-        {/* Left: Logo */}
-        <div className="flex-shrink-0">
+        {/* Left: Logo strictly centered vertically */}
+        <div className="flex items-center shrink-0">
           <a href="/" className="hover:opacity-90 transition-opacity flex items-center">
-            <GlobalLogo layout="horizontal" className="h-11 sm:h-12 w-auto object-contain" />
+            <GlobalLogo layout="horizontal" className="h-11 sm:h-12 w-auto object-contain flex items-center" />
           </a>
         </div>
 
-        {/* Center: Navigation Tabs */}
-        <nav className="hidden lg:flex items-center gap-x-10 xl:gap-x-12">
-          {navLinks.map((link) => (
-            <a
-              key={link.id}
-              href={`#${link.id}`}
-              className={`relative text-base xl:text-lg font-medium transition-all duration-300 py-1
-                ${activeSection === link.id 
-                  ? 'text-yellow-400 font-bold' 
-                  : 'text-slate-200 hover:text-[#ff4d4d]'
+        {/* Center: Navigation Tabs with 32px Gap & White Active Text */}
+        <nav 
+          className="hidden lg:flex items-center"
+          style={{ gap: "32px" }}
+        >
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.id;
+            return (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                className={`relative text-base xl:text-lg transition-all duration-200 py-1 flex items-center ${
+                  isActive 
+                    ? 'text-white font-bold' 
+                    : 'text-slate-300 hover:text-white font-medium'
                 }`}
-            >
-              {link.name}
-              {activeSection === link.id && (
-                <span className="absolute bottom-[-8px] left-0 w-full h-0.5 bg-[#ff4d4d] rounded-full animate-in fade-in slide-in-from-bottom-1 duration-300 shadow-[0_0_12px_rgba(255,77,77,0.8)]"></span>
-              )}
-            </a>
-          ))}
+              >
+                {link.name}
+                {isActive && (
+                  <span 
+                    className="absolute -bottom-1.5 left-0 w-full h-[2.5px] bg-[#E11B22] rounded-full animate-in fade-in duration-200"
+                    style={{ boxShadow: '0 0 10px rgba(225, 27, 34, 0.85)' }}
+                  ></span>
+                )}
+              </a>
+            );
+          })}
         </nav>
 
-        {/* Right: Auth Buttons */}
-        <div className="hidden lg:flex items-center gap-6">
+        {/* Right: Auth Buttons strictly vertically centered */}
+        <div className="hidden lg:flex items-center gap-6 shrink-0">
           <a 
             href="/login" 
-            className="text-white text-base font-semibold hover:text-[#ff4d4d] transition-colors px-3 py-2"
+            className="text-white text-base font-semibold hover:text-[#ff4d4d] transition-colors px-2 py-1 flex items-center"
           >
             Log In
           </a>
           <a 
             href="/register" 
-            className="bg-[#E11B22] text-white px-7 py-2.5 rounded-full font-bold text-base hover:bg-[#c4141b] hover:scale-105 hover:shadow-[0_0_20px_rgba(225,27,34,0.4)] active:scale-95 transition-all shadow-lg shadow-red-500/20 text-center flex items-center justify-center min-w-[130px]"
+            className="bg-[#E11B22] text-white px-7 py-2.5 rounded-full font-bold text-base hover:bg-[#c4141b] hover:scale-105 hover:shadow-[0_0_20px_rgba(225,27,34,0.4)] active:scale-95 transition-all shadow-lg shadow-red-500/25 text-center flex items-center justify-center min-w-[130px]"
           >
             Sign Up
           </a>
@@ -99,7 +112,7 @@ export default function Navbar() {
 
         {/* Mobile Toggle */}
         <button 
-          className="lg:hidden flex flex-col gap-1.5 cursor-pointer z-50 p-2" 
+          className="lg:hidden flex flex-col gap-1.5 cursor-pointer z-50 p-2 items-center justify-center" 
           onClick={toggleMenu}
           aria-label="Toggle Menu"
         >
@@ -111,16 +124,21 @@ export default function Navbar() {
         {/* Mobile Menu Overlay */}
         {menuOpen && (
           <div className="lg:hidden fixed inset-0 bg-slate-950/98 backdrop-blur-xl flex flex-col items-center justify-center gap-8 animate-in fade-in zoom-in duration-300 z-40">
-            {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={`#${link.id}`}
-                onClick={() => setMenuOpen(false)}
-                className={`text-2xl font-bold tracking-tight transition-colors ${activeSection === link.id ? 'text-yellow-400' : 'text-white hover:text-[#ff4d4d]'}`}
-              >
-                {link.name}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <a
+                  key={link.id}
+                  href={`#${link.id}`}
+                  onClick={() => setMenuOpen(false)}
+                  className={`text-2xl font-bold tracking-tight transition-colors ${
+                    isActive ? 'text-white' : 'text-slate-300 hover:text-[#ff4d4d]'
+                  }`}
+                >
+                  {link.name}
+                </a>
+              );
+            })}
             <div className="flex flex-col items-center gap-4 mt-6 w-full max-w-xs px-6">
               <a 
                 href="/login" 

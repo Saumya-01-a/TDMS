@@ -10,9 +10,9 @@ import {
   TrendingUp, 
   CreditCard, 
   CheckSquare, 
-  MapPin,
-  LogOut,
-  MessageCircle
+  MapPin, 
+  LogOut, 
+  MessageCircle 
 } from 'lucide-react';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import GlobalLogo from '../common/GlobalLogo';
@@ -24,7 +24,7 @@ export default function StudentSidebar() {
   const { name, designation, avatar, loading } = useUserProfile();
   const [isContactOpen, setIsContactOpen] = useState(false);
 
-  // Still need user object for ContactAdmin senderId
+  // User object for ContactAdmin senderId
   const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
 
   const menuItems = [
@@ -70,14 +70,14 @@ export default function StudentSidebar() {
           ))}
           
           {/* Contact Admin Action */}
-          <li className="stuSb__menuItem" style={{ marginTop: 'auto', borderTop: '1px solid rgba(225, 27, 34, 0.1)', paddingTop: '1.5rem' }}>
+          <li className="stuSb__menuItem stuSb__contactItem">
             <button 
               className="stuSb__menuLink contact-btn-sidebar" 
               onClick={() => setIsContactOpen(true)}
               style={{ background: 'transparent', border: 'none', width: '100%', cursor: 'pointer', textAlign: 'left' }}
             >
-              <span className="stuSb__menuIcon"><MessageCircle size={20} color="#E11B22" /></span>
-              <span className="stuSb__menuLabel" style={{ color: '#E11B22', fontWeight: '800' }}>Contact Admin</span>
+              <span className="stuSb__menuIcon"><MessageCircle size={20} color="#E50914" /></span>
+              <span className="stuSb__menuLabel" style={{ color: '#E50914', fontWeight: '700' }}>Contact Admin</span>
             </button>
           </li>
         </ul>
@@ -91,9 +91,9 @@ export default function StudentSidebar() {
         onClose={() => setIsContactOpen(false)} 
       />
 
-      {/* User Panel */}
+      {/* User Panel (Bottom Profile Card) */}
       <div className="stuSb__userPanel">
-        <div className="stuSb__userCard glass-card">
+        <div className="stuSb__userCard">
           <div className="stuSb__userAvatar">{loading ? "" : avatar}</div>
           <div className="stuSb__userInfo">
             <div className="stuSb__username">

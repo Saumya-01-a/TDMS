@@ -64,7 +64,26 @@
   transition: all 0.3s ease;
 }
 
+.composer-field select {
+  color-scheme: dark;
+  cursor: pointer;
+  background-color: #111827;
+}
+
+.composer-field select option {
+  background-color: #111827;
+  color: #f3f4f6;
+  padding: 10px 14px;
+}
+
+.composer-field select option:checked,
+.composer-field select option:hover {
+  background-color: #1f2937;
+  color: #ffffff;
+}
+
 .composer-field input:focus,
+.composer-field select:focus,
 .composer-field textarea:focus {
   outline: none;
   border-color: #E11B22;

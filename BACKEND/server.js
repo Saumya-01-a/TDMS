@@ -17,6 +17,8 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const gpsRoutes = require("./routes/gpsRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 const trialRoutes = require("./routes/trialRoutes");
+const studyMaterialRoutes = require("./routes/studyMaterialRoutes");
+const studyMaterialController = require("./controllers/studyMaterialController");
 
 const app = express();
 const server = http.createServer(app);
@@ -38,13 +40,14 @@ app.use("/notifications", notificationRoutes);
 app.use("/gps", gpsRoutes);
 app.use("/student", studentRoutes);
 app.use("/trials", trialRoutes);
+app.use("/api/study-materials", studyMaterialRoutes);
 
 const instructorController = require("./controllers/instructorController");
 const vehicleController = require("./controllers/vehicleController");
 const adminController = require("./controllers/adminController");
 
 // Global shared utility routes
-app.get("/api/materials", instructorController.getMaterials);
+app.get("/api/materials", studyMaterialController.getStudyMaterials);
 app.get("/api/vehicles", vehicleController.getAllVehicles);
 app.get("/api/packages", adminController.getAdminPackages); 
 

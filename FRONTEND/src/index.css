@@ -20,6 +20,11 @@
 }
 
 /* Global Reset & Typography */
+:root,
+html {
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -31,6 +36,80 @@ body {
   line-height: 1.6;
   letter-spacing: 0.015em;
   overflow-x: hidden;
+  color-scheme: dark;
+}
+
+/* ============================================================
+   GLOBAL SELECT & DROPDOWN ACCESSIBILITY / DARK THEME STYLES
+   Ensures native OS dropdown menus and options render with a
+   dark canvas (#111827 / #1e293b) and crisp white text.
+   ============================================================ */
+
+select {
+  color-scheme: dark !important;
+  background-color: #111827;
+  color: #f3f4f6;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: #E11B22 !important;
+  box-shadow: 0 0 0 2px rgba(225, 27, 34, 0.25);
+}
+
+select option,
+select optgroup,
+datalist option {
+  background-color: #111827 !important;
+  color: #f3f4f6 !important;
+  font-size: 0.95rem;
+  padding: 10px 14px;
+}
+
+select option:hover,
+select option:focus,
+select option:checked,
+select option:active {
+  background-color: #1f2937 !important;
+  color: #ffffff !important;
+}
+
+select optgroup {
+  font-weight: 700;
+  color: #94a3b8 !important;
+  background-color: #0b1120 !important;
+}
+
+/* Custom dropdown and headless listbox consistency */
+[role="listbox"],
+[role="menu"],
+.dropdown-menu,
+.custom-select-menu {
+  background-color: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f3f4f6 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+}
+
+[role="option"],
+[role="menuitem"],
+.dropdown-item,
+.custom-select-item {
+  color: #f3f4f6 !important;
+  background-color: transparent;
+  transition: all 0.15s ease;
+}
+
+[role="option"]:hover,
+[role="option"][aria-selected="true"],
+[role="menuitem"]:hover,
+.dropdown-item:hover,
+.custom-select-item:hover {
+  background-color: #1f2937 !important;
+  color: #ffffff !important;
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
