@@ -413,7 +413,7 @@ html, body, #root {
   box-shadow: 0 8px 32px rgba(185, 28, 28, 0.1);
 }
 
-.section-header {
+.admin-section .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;

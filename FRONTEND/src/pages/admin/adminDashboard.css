@@ -130,7 +130,7 @@
   margin-bottom: 2rem;
 }
 
-.section-header {
+.admin-dashboard .section-header {
   display: flex;
   align-items: flex-start;
   gap: 0.8rem;

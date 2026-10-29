@@ -3,8 +3,9 @@
 
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+require("dotenv").config();
 const authenticationRoutes = require("./routes/authenticationRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const instructorRoutes = require("./routes/instructorRoutes");
@@ -93,5 +94,3 @@ const handleShutdown = async () => {
 process.on("SIGINT", handleShutdown);
 process.on("SIGTERM", handleShutdown);
 process.on("SIGUSR2", handleShutdown);
-
-

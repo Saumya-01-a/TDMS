@@ -11,11 +11,11 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    const sectionIds = ['home', 'about', 'services', 'contact'];
+    const sectionIds = ['home', 'about', 'services', 'pricing', 'contact'];
     
     const observerOptions = {
       root: null,
-      rootMargin: '-10% 0px -80% 0px', // More precise for header high-highlighting
+      rootMargin: '-10% 0px -80% 0px', // More precise for header highlighting
       threshold: 0
     };
 
@@ -46,51 +46,52 @@ export default function Navbar() {
     { name: 'Home', id: 'home' },
     { name: 'About Us', id: 'about' },
     { name: 'Services', id: 'services' },
+    { name: 'Pricing', id: 'pricing' },
     { name: 'Contact Us', id: 'contact' },
   ];
 
   return (
-    <header className="fixed top-0 left-0 w-full min-h-[90px] z-50 backdrop-blur-sm bg-slate-950/80 border-b border-white/10 flex items-center">
-      <div className="max-w-[1440px] w-full mx-auto px-12 py-8 flex items-center justify-between">
+    <header className="fixed top-0 left-0 w-full min-h-[90px] z-50 backdrop-blur-md bg-slate-950/85 border-b border-white/10 flex items-center transition-all duration-300">
+      <div className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 py-5 flex items-center justify-between">
         
         {/* Left: Logo */}
         <div className="flex-shrink-0">
-          <a href="/" className="hover:opacity-90 transition-opacity">
-            <GlobalLogo layout="horizontal" className="h-12 w-auto object-contain" />
+          <a href="/" className="hover:opacity-90 transition-opacity flex items-center">
+            <GlobalLogo layout="horizontal" className="h-11 sm:h-12 w-auto object-contain" />
           </a>
         </div>
 
         {/* Center: Navigation Tabs */}
-        <nav className="hidden md:flex items-center gap-x-14">
+        <nav className="hidden lg:flex items-center gap-x-10 xl:gap-x-12">
           {navLinks.map((link) => (
             <a
               key={link.id}
               href={`#${link.id}`}
-              className={`relative text-lg font-medium transition-all duration-300 py-1
+              className={`relative text-base xl:text-lg font-medium transition-all duration-300 py-1
                 ${activeSection === link.id 
                   ? 'text-yellow-400 font-bold' 
-                  : 'text-white hover:text-[#ff4d4d]'
+                  : 'text-slate-200 hover:text-[#ff4d4d]'
                 }`}
             >
               {link.name}
               {activeSection === link.id && (
-                <span className="absolute bottom-[-10px] left-0 w-full h-0.5 bg-[#ff4d4d] rounded-full animate-in fade-in slide-in-from-bottom-1 duration-300 shadow-[0_0_12px_rgba(255,77,77,0.8)]"></span>
+                <span className="absolute bottom-[-8px] left-0 w-full h-0.5 bg-[#ff4d4d] rounded-full animate-in fade-in slide-in-from-bottom-1 duration-300 shadow-[0_0_12px_rgba(255,77,77,0.8)]"></span>
               )}
             </a>
           ))}
         </nav>
 
         {/* Right: Auth Buttons */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-6">
           <a 
             href="/login" 
-            className="text-white text-lg font-medium hover:text-[#ff4d4d] hover:underline underline-offset-8 transition-all"
+            className="text-white text-base font-semibold hover:text-[#ff4d4d] transition-colors px-3 py-2"
           >
             Log In
           </a>
           <a 
             href="/register" 
-            className="bg-[#ff4d4d] text-white px-10 py-3 rounded-full font-bold text-lg hover:bg-[#e64444] hover:scale-105 hover:shadow-[0_0_20px_rgba(255,77,77,0.4)] active:scale-95 transition-all shadow-lg shadow-red-500/20 text-center flex items-center justify-center min-w-[160px]"
+            className="bg-[#E11B22] text-white px-7 py-2.5 rounded-full font-bold text-base hover:bg-[#c4141b] hover:scale-105 hover:shadow-[0_0_20px_rgba(225,27,34,0.4)] active:scale-95 transition-all shadow-lg shadow-red-500/20 text-center flex items-center justify-center min-w-[130px]"
           >
             Sign Up
           </a>
@@ -98,7 +99,7 @@ export default function Navbar() {
 
         {/* Mobile Toggle */}
         <button 
-          className="md:hidden flex flex-col gap-1.5 cursor-pointer z-50" 
+          className="lg:hidden flex flex-col gap-1.5 cursor-pointer z-50 p-2" 
           onClick={toggleMenu}
           aria-label="Toggle Menu"
         >
@@ -109,20 +110,32 @@ export default function Navbar() {
 
         {/* Mobile Menu Overlay */}
         {menuOpen && (
-          <div className="md:hidden fixed inset-0 bg-slate-950 flex flex-col items-center justify-center gap-8 animate-in fade-in zoom-in duration-300">
+          <div className="lg:hidden fixed inset-0 bg-slate-950/98 backdrop-blur-xl flex flex-col items-center justify-center gap-8 animate-in fade-in zoom-in duration-300 z-40">
             {navLinks.map((link) => (
               <a
                 key={link.id}
                 href={`#${link.id}`}
                 onClick={() => setMenuOpen(false)}
-                className={`text-2xl font-bold ${activeSection === link.id ? 'text-yellow-400' : 'text-white'}`}
+                className={`text-2xl font-bold tracking-tight transition-colors ${activeSection === link.id ? 'text-yellow-400' : 'text-white hover:text-[#ff4d4d]'}`}
               >
                 {link.name}
               </a>
             ))}
-            <div className="flex flex-col items-center gap-4 mt-4">
-              <a href="/login" className="text-white text-xl">Log In</a>
-              <a href="/register" className="bg-[#ff4d4d] text-white px-8 py-3 rounded-full font-bold text-xl">Sign Up</a>
+            <div className="flex flex-col items-center gap-4 mt-6 w-full max-w-xs px-6">
+              <a 
+                href="/login" 
+                onClick={() => setMenuOpen(false)}
+                className="w-full text-center py-3 text-white text-lg font-semibold border border-white/20 rounded-xl hover:bg-white/10"
+              >
+                Log In
+              </a>
+              <a 
+                href="/register" 
+                onClick={() => setMenuOpen(false)}
+                className="w-full text-center bg-[#E11B22] text-white py-3 rounded-xl font-bold text-lg shadow-lg shadow-red-600/30"
+              >
+                Sign Up
+              </a>
             </div>
           </div>
         )}
@@ -130,4 +143,3 @@ export default function Navbar() {
     </header>
   );
 }
-
