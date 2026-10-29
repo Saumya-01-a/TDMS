@@ -52,10 +52,12 @@ import InstructorProfile from './pages/instructor/profile/InstructorProfile';
 import StudyMaterials from './pages/instructor/StudyMaterials';
 
 import { StudentProvider } from './context/StudentContext';
+import { ToastProvider } from './context/ToastContext';
 
 function App() {
   return (
     <StudentProvider>
+    <ToastProvider>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -69,15 +71,18 @@ function App() {
             <Route index element={<AdminDashboard />} />
             <Route path="notifications" element={<AdminNotifications />} />
             <Route path="materials" element={<AdminStudyMaterials />} />
+            <Route path="study-materials" element={<AdminStudyMaterials />} />
             <Route path="students" element={<AdminStudents />} />
             <Route path="instructors" element={<AdminInstructors />} />
             <Route path="vehicles" element={<AdminFleet />} />
             <Route path="packages" element={<AdminPackages />} />
             <Route path="payments" element={<AdminPayments />} />
             <Route path="appointments" element={<AdminSchedule />} />
+            <Route path="schedule" element={<AdminSchedule />} />
             <Route path="attendance" element={<AdminAttendance />} />
             <Route path="tracking" element={<AdminTracking />} />
             <Route path="exams" element={<AdminTrialExams />} />
+            <Route path="trial-exams" element={<AdminTrialExams />} />
             <Route path="profile" element={<AdminProfile />} />
           </Route>
 
@@ -110,6 +115,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      </ToastProvider>
     </StudentProvider>
   );
 }

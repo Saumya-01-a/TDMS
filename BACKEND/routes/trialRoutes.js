@@ -5,6 +5,7 @@ const trialController = require("../controllers/trialController");
 // --- Trial Date Management (Admin) ---
 router.post("/toggle", trialController.toggleTrialDate);
 router.get("/dates", trialController.getTrialDates);
+router.get("/all", trialController.getTrialDates);
 
 // --- Student Assignment (Admin) ---
 router.get("/students/:trialId", trialController.getTrialStudents);

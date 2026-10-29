@@ -19,12 +19,14 @@ router.post("/record-payout", adminController.recordInstructorPayout);
 // Approve or reject an instructor
 router.post("/approve-instructor", adminController.approveInstructor);
 router.get("/all-instructors", adminController.getAllInstructors);
+router.get("/instructors", adminController.getAllInstructors);
 router.post("/add-instructor", adminController.addInstructor);
 router.put("/edit-instructor/:id", adminController.editInstructor);
 router.delete("/delete-instructor/:id", adminController.deleteInstructor);
 
 // --- Student Management ---
 router.get("/all-students", adminController.getAllStudents);
+router.get("/students", adminController.getAllStudents);
 router.post("/assign-instructor", adminController.assignInstructor);
 router.post("/add-student", adminController.addStudent);
 router.put("/edit-student/:id", adminController.editStudent);
@@ -36,6 +38,7 @@ router.post("/sync-database", adminController.syncDatabaseStudents);
 
 // --- Fleet Management ---
 router.get("/all-vehicles", adminController.getAllVehicles);
+router.get("/vehicles", adminController.getAllVehicles);
 router.post("/add-vehicle", adminController.addVehicle);
 router.put("/edit-vehicle/:id", adminController.editVehicle);
 router.delete("/delete-vehicle/:id", adminController.deleteVehicle);
@@ -44,6 +47,7 @@ router.get("/vehicle-location/:id", adminController.getLatestVehicleLocation);
 
 // --- Attendance Management ---
 router.get("/attendance-logs", adminController.getAllAttendanceLogs);
+router.get("/attendance", adminController.getAllAttendanceLogs);
 router.get("/attendance-grid", adminController.getMonthlyAttendanceGrid);
 router.get("/attendance-stats", adminController.getAttendanceStats);
 router.post("/attendance-save", adminController.saveAttendance);

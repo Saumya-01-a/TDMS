@@ -42,6 +42,12 @@ export default function Sidebar() {
   const handleLogout = () => {
     localStorage.clear();
     sessionStorage.clear();
+    // Clear cookies across root domain
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
     window.location.href = '/login';
   };
 
@@ -54,20 +60,29 @@ export default function Sidebar() {
 
       {/* Menu items */}
       <nav className="sidebar-menu">
-        {/* Static Dashboard Link (No Active State) */}
-        <Link 
+        {/* Active Dashboard Link */}
+        <NavLink 
           to="/admin" 
-          className="menu-item text-slate-400"
+          end
+          className={({ isActive }) => 
+            `menu-item ${isActive ? 'bg-white/10 border-l-4 border-red-600 active' : 'text-slate-400'}`
+          }
         >
           <span className="menu-icon"><LayoutDashboard size={20} /></span>
           <span className="menu-label">Dashboard</span>
-        </Link>
+        </NavLink>
 
         {menuItems.map((item, index) => (
           <NavLink
             key={index}
             to={item.path}
-            className={`menu-item ${location.pathname === item.path ? 'bg-white/10 border-l-4 border-red-600' : 'text-slate-400'}`}
+            className={({ isActive }) => {
+              const isMatch = isActive || 
+                (item.id === 'materials' && (location.pathname === '/admin/study-materials' || location.pathname === '/admin/materials')) ||
+                (item.id === 'appointments' && (location.pathname === '/admin/schedule' || location.pathname === '/admin/appointments')) ||
+                (item.id === 'exams' && (location.pathname === '/admin/trial-exams' || location.pathname === '/admin/exams'));
+              return `menu-item ${isMatch ? 'bg-white/10 border-l-4 border-red-600 active' : 'text-slate-400'}`;
+            }}
           >
             <span className="menu-icon">{item.icon}</span>
             <span className="menu-label">{item.label}</span>

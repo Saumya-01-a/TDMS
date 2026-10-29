@@ -996,9 +996,6 @@ exports.assignVehicleInstructor = async (req, res) => {
  * --- Attendance Management (Admin View) ---
  */
 
-// Fetch all attendance logs with joined names
-exports.getAllAttendanceLogs = async (req, res) => {
-  try {
 // Fetch All Attendance Logs (Flattened for Audit Table)
 exports.getAllAttendanceLogs = async (req, res) => {
   try {
@@ -1014,12 +1011,9 @@ exports.getAllAttendanceLogs = async (req, res) => {
        ORDER BY a.attendance_date DESC, a.created_at DESC
        LIMIT 100`
     );
-    res.json({ ok: true, logs: result.rows, history: result.rows }); // history alias for frontend compatibility
+    res.json({ ok: true, logs: result.rows, history: result.rows });
   } catch (err) {
-    res.status(500).json({ ok: false, message: err.message });
-  }
-};
-  } catch (err) {
+    console.error("Error in getAllAttendanceLogs:", err);
     res.status(500).json({ ok: false, message: err.message });
   }
 };
