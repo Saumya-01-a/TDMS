@@ -1400,7 +1400,7 @@ exports.recordStudentPayment = async (req, res) => {
 
       // 3. Log Activity
       await client.query(
-        "INSERT INTO activity_logs (message, type) VALUES ($1, 'payment')",
+        "INSERT INTO activity_logs (message, type) VALUES ($1, $2)",
         [`Payment of Rs. ${amount} recorded for Student ID: ${student_id}. ${newTotalPaid >= price ? 'Account cleared.' : ''}`, 'payment']
       );
 

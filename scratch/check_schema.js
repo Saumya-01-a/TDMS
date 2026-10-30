@@ -59,3 +59,4 @@ async function checkSchema() {
 }
 
 checkSchema().catch(console.error);
+

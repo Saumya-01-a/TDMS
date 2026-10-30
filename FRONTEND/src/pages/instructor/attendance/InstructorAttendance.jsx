@@ -23,6 +23,22 @@ const SESSIONS = [
   { id: 4, name: 'Session 4', time: '03:00 PM - 05:00 PM' },
 ];
 
+
+// Helper to convert DB timestamp to local YYYY-MM-DD
+function getRecordLocalDate(dateVal) {
+  if (!dateVal) return '';
+  try {
+    const d = new Date(dateVal);
+    if (isNaN(d.getTime())) return '';
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  } catch {
+    return '';
+  }
+}
+
 export default function InstructorAttendance() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -91,8 +107,11 @@ export default function InstructorAttendance() {
     const dateStr = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     setActiveCell({ studentId, date: dateStr });
     
-    const existing = monthlyRecords.find(r => r.student_id === studentId && r.attendance_date.startsWith(dateStr)) 
-                    || pendingMarks[`${studentId}_${dateStr}`];
+    const existing = pendingMarks[`${studentId}_${dateStr}`] ||
+      monthlyRecords.find(r => 
+        String(r.student_id) === String(studentId) && 
+        (getRecordLocalDate(r.attendance_date) === dateStr || (r.attendance_date && String(r.attendance_date).startsWith(dateStr)))
+      );
 
     if (existing) {
       setSelection({ 
@@ -188,16 +207,43 @@ export default function InstructorAttendance() {
   const getCellStatus = (studentId, day) => {
     const dateStr = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     const mark = pendingMarks[`${studentId}_${dateStr}`] 
-               || monthlyRecords.find(r => r.student_id === studentId && r.attendance_date.startsWith(dateStr));
+               || monthlyRecords.find(r => 
+                    String(r.student_id) === String(studentId) && 
+                    (getRecordLocalDate(r.attendance_date) === dateStr || (r.attendance_date && String(r.attendance_date).startsWith(dateStr)))
+                  );
     return mark;
   };
 
   const stats = useMemo(() => {
-    const allRecords = [...monthlyRecords, ...Object.values(pendingMarks)];
+    let present = 0;
+    let late = 0;
+    let absent = 0;
+
+    (monthlyRecords || []).forEach(r => {
+      if (r.status === 'Present') present++;
+      else if (r.status === 'Late') late++;
+      else if (r.status === 'Absent') absent++;
+    });
+
+    Object.values(pendingMarks || {}).forEach(p => {
+      const existing = (monthlyRecords || []).find(r => 
+        String(r.student_id) === String(p.student_id) && 
+        (getRecordLocalDate(r.attendance_date) === p.attendance_date || (r.attendance_date && String(r.attendance_date).startsWith(p.attendance_date)))
+      );
+      if (existing) {
+        if (existing.status === 'Present') present--;
+        else if (existing.status === 'Late') late--;
+        else if (existing.status === 'Absent') absent--;
+      }
+      if (p.status === 'Present') present++;
+      else if (p.status === 'Late') late++;
+      else if (p.status === 'Absent') absent++;
+    });
+
     return {
-      present: allRecords.filter(r => r.status === 'Present').length,
-      late: allRecords.filter(r => r.status === 'Late').length,
-      absent: allRecords.filter(r => r.status === 'Absent').length,
+      present: Math.max(0, present),
+      late: Math.max(0, late),
+      absent: Math.max(0, absent),
     };
   }, [monthlyRecords, pendingMarks]);
 
