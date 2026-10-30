@@ -147,8 +147,8 @@ exports.getDashboardStats = async (req, res) => {
         activeInstructors: instructorsRes.rows[0].count,
         pendingApprovals: pendingRes.rows[0].count,
         activeVehicles: vehiclesRes.rows[0].count,
-        totalStudentDues: studentDuesRes.rows[0].dues || 0,
-        totalInstructorPayable: instructorPayablesRes.rows[0].payables || 0
+        totalStudentDues: Math.max(0, parseFloat(studentDuesRes.rows[0].dues) || 0),
+        totalInstructorPayable: Math.max(0, parseFloat(instructorPayablesRes.rows[0].payables) || 0)
       }
     });
   } catch (err) {
